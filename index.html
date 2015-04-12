@@ -9,12 +9,19 @@
         float: left;
     }
 
-    .sectionTitle {
+    .subtitle {
+            font-size : 12pt;
+    }
+
+    .sectionTitle, .subtitle {
             background-color : #dadadf;
             font-family : "Arial";
-            font-size : 14pt;
             padding : 5px;
             border: solid 1px #000000;
+    }
+    
+    .sectionTitle {
+                font-size : 14pt;
     }
     
     .sectionContents {
@@ -68,12 +75,13 @@
     
     #container {
         margin: 40px;
+        min-width: 860px;
     }
 
 #banner {
-    	margin: 0 auto 0 auto;
-    	width: 800px; /* -6px, width of border-right and border-left */
-    	text-align: center;
+        margin: 0 auto 0 auto;
+        width: 800px; /* -6px, width of border-right and border-left */
+        text-align: center;
     border: solid 2px #000000;
     font-family : "Arial";
      font-size : 24pt;
@@ -96,16 +104,24 @@
     
     <div id="container">
     
-        <div id="time">
+        <div >
             <div class="sectionTitle">
-                Enter the time
+                Enter the time and your location
             </div>
             <div class="sectionContents">
             Julian date:
             </div>
-            <div id="starA">
-                <div class="sectionTitle">
-                    Specify the first star (A)
+        </div>
+            <div id="firstDiff">
+            
+            <div class="sectionTitle">
+                                First brighntess difference
+                            </div>
+                <div class="sectionContents">
+                
+                
+               <div class="subtitle">
+                    Specify the brighter star (A)
                 </div>
                 <div class="sectionContents">
                     <!--  star input  -->
@@ -131,9 +147,10 @@
                         <div class="clear">&nbsp;</div>
                     <!--  end of star input  -->
                 </div>
-                <div id="starB">
-                    <div class="sectionTitle">
-                        Specify the second star (B)
+                
+                
+                    <div class="subtitle">
+                        Specify the dimmer star (B)
                     </div>
                         <div class="sectionContents">
                             <!--  star input  -->
@@ -159,75 +176,110 @@
                                 <div class="clear">&nbsp;</div>
                             <!--  end of star input  -->
                     </div>
-                    <div id="starE">
-                        <div class="sectionTitle">
-                            Specify the third star (C)
-                        </div>
-                        <div class="sectionContents">
-                            <!--  star input  -->
-                                <div class="mag">
-                                <input placeholder="Name of the star" size="12">
-                                </div>
-                                <div class="coords">
-                                    &nbsp;or specify equatorial coordinates - RA:
-                                    <input placeholder="RA [h]" size="5">
-                                    <input placeholder="RA [m]" size="5">
-                                    <input placeholder="RA [s]" size="5">
-                                </div>
-                                <div class="coords">
-                                    &nbsp;DEC:
-                                    <input placeholder="DEC [deg]" size="5">
-                                    <input placeholder="DEC [']" size="5">
-                                    <input placeholder="Dec ['']" size="5">
-                                </div>
-                                <div class="mag">
-                                    &nbsp;Specify the magnitude:
-                                    <input placeholder="mag." size="5">
-                                </div>
-                                <div class="clear">&nbsp;</div>
-                            <!--  end of star input  -->
-                        </div>
-                        <div id="brightnessDif1">
-                            <div class="sectionTitle">
-                                First brighntess difference
+                
+                              <div class="subtitle">
+                                brighntess difference
                             </div>
                             <div class="sectionContents">
-                                Measured between the brighter
-                                    <select name="brighter">
-                                        <option value="0">A</option>
-                                        <option value="1">B</option>
-                                        <option value="2">C</option>
-                                    </select>
-                                and the dimmer 
-                                    <select name="dimmer">
-                                        <option value="0">A</option>
-                                        <option value="1">B</option>
-                                        <option value="2">C</option>
-                                    </select>
-                                    :
-                                    <input placeholder="brightness degrees" size="15">
+                               <input placeholder="brightness degrees" size="15">
                             </div>
-                            <div id="brightnessDif2">
-                                <div class="sectionTitle">
-                                    Second brighntess difference
+
+                </div>
+            
+                 
+                 
+                 
+                 
+                 
+                 
+                 
+               </div>  
+                 
+            <div id="secondDiff">
+            
+            <div class="sectionTitle">
+                                Second brighntess difference
+                            </div>
+                <div class="sectionContents">
+                
+                
+               <div class="subtitle">
+                    Specify the brighter star (A)
+                </div>
+                <div class="sectionContents">
+                    <!--  star input  -->
+                        <div class="mag">
+                        <input placeholder="Name of the star" size="12">
+                        </div>
+                        <div class="coords">
+                            &nbsp;or specify equatorial coordinates - RA:
+                            <input placeholder="RA [h]" size="5">
+                            <input placeholder="RA [m]" size="5">
+                            <input placeholder="RA [s]" size="5">
+                        </div>
+                        <div class="coords">
+                            &nbsp;DEC:
+                            <input placeholder="DEC [deg]" size="5">
+                            <input placeholder="DEC [']" size="5">
+                            <input placeholder="Dec ['']" size="5">
+                        </div>
+                        <div class="mag">
+                            &nbsp;Specify the magnitude:
+                            <input placeholder="mag." size="5">
+                        </div>
+                        <div class="clear">&nbsp;</div>
+                    <!--  end of star input  -->
+                </div>
+                
+                
+                    <div class="subtitle">
+                        Specify the dimmer star (B)
+                    </div>
+                        <div class="sectionContents">
+                            <!--  star input  -->
+                                <div class="mag">
+                                <input placeholder="Name of the star" size="12">
                                 </div>
-                                <div class="sectionContents">
-                                Measured between the brighter
-                                    <select name="brighter">
-                                        <option value="0">A</option>
-                                        <option value="1">B</option>
-                                        <option value="2">C</option>
-                                    </select>
-                                and the dimmer 
-                                    <select name="dimmer">
-                                        <option value="0">A</option>
-                                        <option value="1">B</option>
-                                        <option value="2">C</option>
-                                    </select>
-                                    :
-                                    <input placeholder="brightness degrees" size="15">
+                                <div class="coords">
+                                    &nbsp;or specify equatorial coordinates - RA:
+                                    <input placeholder="RA [h]" size="5">
+                                    <input placeholder="RA [m]" size="5">
+                                    <input placeholder="RA [s]" size="5">
                                 </div>
-                                <div id="k_results">
+                                <div class="coords">
+                                    &nbsp;DEC:
+                                    <input placeholder="DEC [deg]" size="5">
+                                    <input placeholder="DEC [']" size="5">
+                                    <input placeholder="Dec ['']" size="5">
+                                </div>
+                                <div class="mag">
+                                    &nbsp;Specify the magnitude:
+                                    <input placeholder="mag." size="5">
+                                </div>
+                                <div class="clear">&nbsp;</div>
+                            <!--  end of star input  -->
+                    </div>
+                
+                              <div class="subtitle">
+                                brighntess difference
+                            </div>
+                            <div class="sectionContents">
+                               <input placeholder="brightness degrees" size="15">
+                            </div>
+
+                </div>
+            
+                 
+                 
+                 
+                 
+                 
+                 
+                 
+               </div>  
+
+
+                                <div>
                                     <div class="sectionTitle">
                                         Zenith distances and air mass values:
                                     </div>
@@ -235,28 +287,32 @@
                                         <table>
                                             <tr>
                                                 <td>&nbsp;</td>
-                                                <td>First star (A)</td>
-                                                <td>Second star (B)</td>
-                                                <td>Third star (C)</td>
+                                                <td>First comparison, brighter star (A)</td>
+                                                <td>First comparison, dimmer star (B)</td>
+                                                <td>Second comparison, brighter star (A)</td>
+                                                <td>Second comparison, dimmer star (B)</td>
                                             </tr>
                                             
                                             <tr>
                                                 <td>Zenith distance</td>
-                                                <td id="za" class="results">unknown</td>
-                                                <td id="zb" class="results">unknown</td>
-                                                <td id="zc" class="results">unknown</td>
+                                                <td id="z1a" class="results">unknown</td>
+                                                <td id="z1b" class="results">unknown</td>
+                                                <td id="z2a" class="results">unknown</td>
+                                                <td id="z2b" class="results">unknown</td>
                                             </tr>
 
                                             <tr>
                                                 <td>Air mass value</td>
-                                                <td id="xa" class="results">unknown</td>
-                                                <td id="xb" class="results">unknown</td>
-                                                <td id="xc" class="results">unknown</td>
+                                                <td id="x1a" class="results">unknown</td>
+                                                <td id="x1b" class="results">unknown</td>
+                                                <td id="x2a" class="results">unknown</td>
+                                                <td id="x2b" class="results">unknown</td>
                                             </tr>
 
                                         </table>
                                     </div>
-
+                                </div>
+                                <div>
                                     <div class="sectionTitle">
                                         Computed extinction coefficient
                                     </div>
@@ -264,12 +320,6 @@
                                         K = <span id="k" class="results">unknown</span>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-       </div>
 
 
         <div style="float: left"><pre>
