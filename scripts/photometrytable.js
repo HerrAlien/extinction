@@ -12,12 +12,12 @@ var PhotmetryTable = {
             return foundStar;
         },
         
-        init : function (coords, span) {
+        init : function (coords, span, mag) {
             alert ("Init at " + cords[0] + ", " + coords[1]);
         }
     },
     
-    // namespace holding utilities to access the VSP
+    // namespace holding utilities to access the VSX
     AAVSO : {
         config: { // 
             vsxFormURL : "http://www.aavso.org/vsx/index.php?view=results.submit1&order=0&constid=0&ql=1&filter[]=0&ident=",
@@ -63,7 +63,7 @@ var PhotmetryTable = {
 
                 PhotmetryTable.centerCoords  = PhotmetryTable.AAVSO.GetCenter (doc);
 
-                PhotmetryTable.searchTree.init (PhotmetryTable.centerCoords, FOV);
+                PhotmetryTable.searchTree.init (PhotmetryTable.centerCoords, FOV, limittingMag);
             }
         }
         xmlHttpReq.open(PhotmetryTable.AAVSO.config.method, PhotmetryTable.AAVSO.config.vsxFormURL+ encodeURI(starName), true);
