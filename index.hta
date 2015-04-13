@@ -78,6 +78,8 @@
       
       <div>
         <div id="wizard">
+        
+        <span id="debug"></span>
         <ol>
           <li>
             Current JD:<br>
@@ -138,10 +140,10 @@
               </ol>
           </li>
 
-        <li>
-        Considering extinction, brightness of V is:<br>
-        <span id="brightnessWithExtinction">unknown</span>
-        </li>
+          <li>
+          Considering extinction, brightness of V is:<br>
+          <span id="brightnessWithExtinction">unknown</span>
+          </li>
 
         </ol>
         </div>
@@ -150,7 +152,7 @@
         </div>
         <div class="clear">&nbsp;</div>
       </div>
-
+        
         <div style="float: left"><pre>
             Extinction-O-Meter - an HTML & JavaScript utility to compute atmospheric extinction.
                
@@ -188,3 +190,18 @@
 </body>
 
 </html>
+
+<script src="scripts/chartxytoradec.js"></script>
+
+<script>
+
+var elem = document.getElementById ("debug");
+
+function onCoordsChanged (radec) {
+    elem.innerHTML = radec[0]/15.0 + ", " + radec[1];
+}
+
+ChartXYToRADec.init ([279.23683333333333333333333333333, -28.927722222222222222222222222222], 900);
+ChartXYToRADec.onCoordsChanged = onCoordsChanged;
+
+</script>
