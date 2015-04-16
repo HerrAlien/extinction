@@ -94,8 +94,8 @@
           <li>
               AAVSO chart and photometry table:<br>
               chart ID: <input placeholder="[chart ID]" id="chartID" size="7"><br>
-	      variable name: <input placeholder="[ex. R Leo]" id="varID" size="7"><br>
-	      field of view: <input placeholder="[arc minutes]" id="FOV" size="7">
+          variable name: <input placeholder="[ex. R Leo]" id="varID" size="7"><br>
+          field of view: <input placeholder="[arc minutes]" id="FOV" size="7">
           </li>
     
           <li>
@@ -205,5 +205,8 @@ ChartXYToRADec.init ([279.23683333333333333333333333333, -28.9277222222222222222
 //ChartXYToRADec.init ([0, 0], 900);
 
 ChartXYToRADec.onCoordsChanged = onCoordsChanged;
+
+
+PhotmetryTable.init("13221ASP", 13);
 
 </script>

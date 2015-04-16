@@ -65,23 +65,23 @@ var PhotmetryTable = {
             // do an initial fill here; this acts as filter for sons
             var i = 0;
             for (; i < stars.length; i++)
-                if (mag > stars[i]["mag"] && this.hasCoords ( [stars[i]["ra"], stars[i]["dec"] ) )
-                    this.stars.append (stars[i]);
+                if (mag > stars[i]["mag"] && this.hasCoords ( stars[i]["ra"], stars[i]["dec"] ) )
+                    this.stars.push (stars[i]);
             
             // now that we bit a little more, we can set back the FOV
             this.fov = fov;
             if (this.fov > PhotmetryTable.searchTree.settings.maxFovPerNode * 1.1) {
                 var sonsFOV = this.fov * 0.5;
-                this.sons.append (new PhotmetryTable.searchTree.node ( [coords[0] + sonsFOV, coords[1] + sonsFOV] , sonsFOV, this.stars));
-                this.sons.append (new PhotmetryTable.searchTree.node ( [coords[0] - sonsFOV, coords[1] - sonsFOV] , sonsFOV, this.stars));
-                this.sons.append (new PhotmetryTable.searchTree.node ( [coords[0] + sonsFOV, coords[1] - sonsFOV] , sonsFOV, this.stars));
-                this.sons.append (new PhotmetryTable.searchTree.node ( [coords[0] - sonsFOV, coords[1] + sonsFOV] , sonsFOV, this.stars));
+                this.sons.push (new PhotmetryTable.searchTree.node ( [coords[0] + sonsFOV, coords[1] + sonsFOV] , sonsFOV, this.stars));
+                this.sons.push (new PhotmetryTable.searchTree.node ( [coords[0] - sonsFOV, coords[1] - sonsFOV] , sonsFOV, this.stars));
+                this.sons.push (new PhotmetryTable.searchTree.node ( [coords[0] + sonsFOV, coords[1] - sonsFOV] , sonsFOV, this.stars));
+                this.sons.push (new PhotmetryTable.searchTree.node ( [coords[0] - sonsFOV, coords[1] + sonsFOV] , sonsFOV, this.stars));
                 this.stars = []; // all stars were passed along to the sons
             }
         },
         
         init : function (data, mag) {
-            // create the quad tree
+            // create the quad tree            
             PhotmetryTable.searchTree.root = new PhotmetryTable.searchTree.node (data.centerCoords, data.fov, data.stars, mag);
         }
     },
@@ -99,30 +99,41 @@ var PhotmetryTable = {
                 fov : 400,
                 stars : []
             };
-            text = text.toLowerCase();
-            // locate the FOV and center coords
-            
             data.fov = PhotmetryTable.AAVSO.GetFOV (text);
             data.centerCoords = PhotmetryTable.AAVSO.GetCoords(text);
             data.stars = PhotmetryTable.AAVSO.GetStars (text);
+            
+            return data;
         },
         
         GetFOV : function (text) {
             var fovBegins = text.indexOf ("within ") + 7; // length of string
-            return eval (text.substr (fovBegins, 7));
+            return 2 * 60 * eval (text.substr (fovBegins, 7));
         },
         
         GetCoords : function (text) {
-            var numberStartsAt = text.indexOf (" (") + 2;
-            var numberEndsAt = text.indexOf (")</font>");
-            var ra = eval (text.substring (numberStartsAt, numberEndsAt));
+
+            truncatedText = text.toLowerCase()
             
-            var decText = text.substring (numberEndsAt + 1);
+            var numberStartsAt = truncatedText.indexOf (" (") + 2;
+            var numberEndsAt = truncatedText.indexOf (")</font>");
+            var raStr = truncatedText.substring (numberStartsAt, numberEndsAt);
+            var ra = eval (raStr);
+            
+            var decText = truncatedText.substring (numberEndsAt + 1);
             numberStartsAt = decText.indexOf (" (") + 2;
             numberEndsAt = decText.indexOf (")</font>");
-            var dec = eval (decText.substring (numberStartsAt, numberEndsAt));
+            var decStr = decText.substring (numberStartsAt, numberEndsAt);
+            var dec = eval (decStr);
             
             return [ra, dec];
+        },
+        
+        extractNumericalValue : function  (str, begin, end) {
+                var valueStartsAt = str.indexOf (begin) + begin.length;
+                var valueEndsAt =  str.indexOf (end);
+                var valueAsString = str.substring (valueStartsAt, valueEndsAt);
+                return (eval (valueAsString));
         },
         
         GetStars : function (text) {
@@ -135,20 +146,18 @@ var PhotmetryTable = {
             // get the table
             var table = hostElement.getElementsByTagName("table")[0];
             
-            var extractNumericalValue = function (str, begin, end) {
-                var valueStartsAt = str.indexOf (begin) + begin.length;
-                var valueEndsAt =  str.indexOf (end);
-                return eval (str.substring (valueStartsAt, valueEndsAt));
-            };
-            
-            var i = 0;
-            for (i = 0; i < table.rows.length; i++) {
-                var currentRow = table.rows[i];
-                var ra = extractNumericalValue (currentRow.cells[1].innerHTML, " [", "d]");
-                var dec = extractNumericalValue (currentRow.cells[2].innerHTML, " [", "d]");
-                var label = extractNumericalValue (currentRow.cells[3].innerHTML, "<b>", "</b>");
-                var mag = extractNumericalValue (currentRow.cells[6].innerHTML, "size=-1>", " (");
-                stars.append ( { "ra": ra, "dec": dec, "mag" : mag, "label" : label } );
+            try {
+                var i = 1;
+                for (i = 1; i < table.rows.length - 1; i++) {
+                    var currentRow = table.rows[i];
+                    var ra = PhotmetryTable.AAVSO.extractNumericalValue (currentRow.cells[1].innerHTML, " [", "d]");
+                    var dec = PhotmetryTable.AAVSO.extractNumericalValue (currentRow.cells[2].innerHTML, " [", "d]");
+                    var label = PhotmetryTable.AAVSO.extractNumericalValue (currentRow.cells[3].innerHTML, "<B>", "</B>");
+                    var mag = PhotmetryTable.AAVSO.extractNumericalValue (currentRow.cells[6].innerHTML, "size=-1>", " (");
+                    stars.push ( { "ra": ra, "dec": dec, "mag" : mag, "label" : label } );
+                }
+            } catch (err) {
+                
             }
             
             delete hostElement;
