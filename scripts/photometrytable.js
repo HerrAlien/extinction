@@ -34,7 +34,7 @@ var PhotmetryTable = {
             return foundStar;
         },
         
-        node : function (coords, fov, stars) {
+        node : function (coords, fov, stars, mag) {
             this.sons = [];
             this.coords = coords;
             this.fov = fov * 1.1; // this is to overlap a bit with neighbors
@@ -65,7 +65,7 @@ var PhotmetryTable = {
             // do an initial fill here; this acts as filter for sons
             var i = 0;
             for (; i < stars.length; i++)
-                if (this.hasCoords ( [stars[i]["ra"], stars[i]["dec"] ) )
+                if (mag > stars[i]["mag"] && this.hasCoords ( [stars[i]["ra"], stars[i]["dec"] ) )
                     this.stars.append (stars[i]);
             
             // now that we bit a little more, we can set back the FOV
@@ -82,7 +82,7 @@ var PhotmetryTable = {
         
         init : function (data, mag) {
             // create the quad tree
-            PhotmetryTable.searchTree.root = new PhotmetryTable.searchTree.node (data.centerCoords, data.fov, data.stars);
+            PhotmetryTable.searchTree.root = new PhotmetryTable.searchTree.node (data.centerCoords, data.fov, data.stars, mag);
         }
     },
     
