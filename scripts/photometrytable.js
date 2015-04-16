@@ -10,14 +10,26 @@ var PhotmetryTable = {
         },
         
         getClosestStar : function(ra, dec) {
-            var foundStar = { "ra": ra, "dec": dec, "mag" : 0 };
+            var foundStar = { "ra": ra, "dec": dec, "mag" : "n/a", "label" : "n/a" };
             // this gets filled with the result of the search
             
             var closestStars = PhotmetryTable.searchTree.root.GetStarsAt ([ra, dec]);
             
             // loop through them, return the one closest to input param
             var i = 0;
-            for (i = 0; i < )
+            var distanceSqrMin = 999999999;
+            var currentSqrDistance = 0;
+            var diffRA = 0;
+            var diffDec = 0;
+            for (i = 0; i < closestStars.length; i++) {
+                diffRA = ra - closestStars[i]["ra"];
+                diffDec = dec - closestStars[i]["dec"];
+                currentSqrDistance = diffRA * diffRA + diffDec * diffDec;
+                if (currentSqrDistance < distanceSqrMin) {
+                    distanceSqrMin = currentSqrDistance;
+                    foundStar = closestStars[i];
+                }
+            }
             
             return foundStar;
         },
@@ -68,63 +80,93 @@ var PhotmetryTable = {
             }
         },
         
-        init : function (coords, fov, mag) {
-            alert ("Init at " + cords[0] + ", " + coords[1]);
-            // T0DO: prepare a list of stars, up to mag
-            var stars = [];
-            
-            // then create the quad tree
-            PhotmetryTable.searchTree.root = new PhotmetryTable.searchTree.node (coords, fov, stars);
+        init : function (data, mag) {
+            // create the quad tree
+            PhotmetryTable.searchTree.root = new PhotmetryTable.searchTree.node (data.centerCoords, data.fov, data.stars);
         }
     },
     
-    // namespace holding utilities to access the VSX
+    // namespace holding utilities to access the VSP data
     AAVSO : {
         config: { // 
-            vsxFormURL : "http://www.aavso.org/vsx/index.php?view=results.submit1&order=0&constid=0&ql=1&filter[]=0&ident=",
+            url : "http://www.aavso.org/cgi-bin/vsp.pl?ccdtable=on&chartid=",
             method: "GET"
         },
         
-        GetCenter : function (text) {
+        GetData : function (text) {
+            var data = {
+                centerCoords : [0, 0],
+                fov : 400,
+                stars : []
+            };
+            text = text.toLowerCase();
+            // locate the FOV and center coords
             
-            var beginAt = text.indexOf ("J2000.0");
-            if (beginAt < 0)
-                throw "Could not find start tag";
+            data.fov = PhotmetryTable.AAVSO.GetFOV (text);
+            data.centerCoords = PhotmetryTable.AAVSO.GetCoords(text);
+            data.stars = PhotmetryTable.AAVSO.GetStars (text);
+        },
+        
+        GetFOV : function (text) {
+            var fovBegins = text.indexOf ("within ") + 7; // length of string
+            return eval (text.substr (fovBegins, 7));
+        },
+        
+        GetCoords : function (text) {
+            var numberStartsAt = text.indexOf (" (") + 2;
+            var numberEndsAt = text.indexOf (")</font>");
+            var ra = eval (text.substring (numberStartsAt, numberEndsAt));
             
-            var textToInset = text.substring (beginAt);
-            beginAt = textToInset.indexOf ("<table");
-             if (beginAt < 0)
-                throw "Could not find start tag";
+            var decText = text.substring (numberEndsAt + 1);
+            numberStartsAt = decText.indexOf (" (") + 2;
+            numberEndsAt = decText.indexOf (")</font>");
+            var dec = eval (decText.substring (numberStartsAt, numberEndsAt));
             
-            var endAt = textToInset.indexOf ("</table>");
-            if (endAt < 0)
-                return null;
-            endAt = eval (endAt + 8 /* the </table> */);
+            return [ra, dec];
+        },
+        
+        GetStars : function (text) {
+            var stars = [];
+            // parse the DOM
+            // but first, insert it in the doc
+            var hostElement = document.createElement ("div");
+            hostElement.style.display = "none";
+            hostElement.innerHTML = text;
+            // get the table
+            var table = hostElement.getElementsByTagName("table")[0];
             
-            textToInset = textToInset.substring (beginAt, endAt);
+            var extractNumericalValue = function (str, begin, end) {
+                var valueStartsAt = str.indexOf (begin) + begin.length;
+                var valueEndsAt =  str.indexOf (end);
+                return eval (str.substring (valueStartsAt, valueEndsAt));
+            };
             
-            beginAt = textToInset.indexOf("(");
-            endAt = textToInset.indexOf(")");
+            var i = 0;
+            for (i = 0; i < table.rows.length; i++) {
+                var currentRow = table.rows[i];
+                var ra = extractNumericalValue (currentRow.cells[1].innerHTML, " [", "d]");
+                var dec = extractNumericalValue (currentRow.cells[2].innerHTML, " [", "d]");
+                var label = extractNumericalValue (currentRow.cells[3].innerHTML, "<b>", "</b>");
+                var mag = extractNumericalValue (currentRow.cells[6].innerHTML, "size=-1>", " (");
+                stars.append ( { "ra": ra, "dec": dec, "mag" : mag, "label" : label } );
+            }
             
-            textToInset = textToInset.substring (beginAt + 1, endAt);
-            
-            var indexOfSpace = textToInset.indexOf(" ");
-            
-            return [eval(textToInset.substring (0, indexOfSpace)), eval(textToInset.substring (indexOfSpace))];            
+            delete hostElement;
+            return stars;
         }
         
     },
 
-    init : function (starName, FOV, limittingMag) {
+    init : function (chartID, limittingMag) {
         var xmlHttpReq = new XMLHttpRequest();
         xmlHttpReq.onreadystatechange = function() {
             if(xmlHttpReq.readyState == 4) {
                 var doc =  xmlHttpReq.responseText;
-                var centerCoords  = PhotmetryTable.AAVSO.GetCenter (doc);
-                PhotmetryTable.searchTree.init (centerCoords, FOV, limittingMag);
+                var structuredData  = PhotmetryTable.AAVSO.GetData (doc);
+                PhotmetryTable.searchTree.init (structuredData, limittingMag);
             }
         }
-        xmlHttpReq.open(PhotmetryTable.AAVSO.config.method, PhotmetryTable.AAVSO.config.vsxFormURL+ encodeURI(starName), true);
+        xmlHttpReq.open(PhotmetryTable.AAVSO.config.method, PhotmetryTable.AAVSO.config.url + chartID, true);
         xmlHttpReq.send(null);              
     }
 };
