@@ -198,10 +198,12 @@
 var elem = document.getElementById ("debug");
 
 function onCoordsChanged (radec) {
-    elem.innerHTML = radec[0]/15.0 + ", " + radec[1];
+    elem.innerHTML = radec[0]/15 + ", " + radec[1];
 }
 
 ChartXYToRADec.init ([279.23683333333333333333333333333, -28.927722222222222222222222222222], 900);
+//ChartXYToRADec.init ([0, 0], 900);
+
 ChartXYToRADec.onCoordsChanged = onCoordsChanged;
 
 </script>
