@@ -23,9 +23,10 @@
     }
     
     #container {
-        margin: 40px;
-        min-width: 860px;
-    }
+        margin: 10px;
+	text-align: center;
+	min-width: 1000px;
+}
 
 #banner {
     margin: 0px auto 50px auto;
@@ -47,10 +48,15 @@
     clear: both;
 }
 
+pre {
+	text-align: left;
+}
+
 #wizard {
     float: left;
     margin: 0px 50px 0px 20px;
-    width: 340px;
+    width: 420px;
+    text-align: left;
 }
 
 #imageContainer{
@@ -82,20 +88,24 @@
         <span id="debug"></span>
         <ol>
           <li>
-            Current JD:<br>
-            <input placeholder="[JD]" id="JD" size="7">
+            Current JD:  <input placeholder="[JD]" id="JD" size="7">
           </li>
           <li>
-            Location:<br>
-            latitude: <input placeholder="[degrees]" id="lat" size="7"><br>
-            longitude: <input placeholder="[degrees]" id="long" size="7">
+            Location (0.1 degree accuracy is enough):<br>
+            latitude: <input placeholder="[degrees]" id="lat" size="7">, longitude: <input placeholder="[degrees]" id="long" size="7">
           </li>
 
           <li>
               AAVSO chart and photometry table:<br>
               chart ID: <input placeholder="[chart ID]" id="chartID" size="7"><br>
-          variable name: <input placeholder="[ex. R Leo]" id="varID" size="7"><br>
-          field of view: <input placeholder="[arc minutes]" id="FOV" size="7">
+	     photometry table ID: <input placeholder="[table ID]" id="tableID" size="7"><br>
+	     limitting magnitude: <input placeholder="[number]" id="mag" size="7"><br>
+	     chart orientation: 
+	     <select id="chartOrientation"> 
+		<option value="0">South up, East to the right (Newtons, refractors & SCTs)</option>
+		<option value="0">North up, East to the right (refractors & SCTs with diagonals)</option>
+		<option value="0">North up, West to the right (binoculars & terestrial instruments)</option>
+	     </select>
           </li>
     
           <li>
