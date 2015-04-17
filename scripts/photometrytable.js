@@ -43,18 +43,15 @@ var PhotmetryTable = {
                 var mag = __mag;
               
               function internalNode() {
-              
-                  //alert (_stars.length);
-                  
                     this.sons = [];
                     this.coords = _coords;
                     this.fov = _fov;
                     this.stars = [];
                 
                     this.HasCoords = function (radec) {
-                        var halfFOVDeg = 0.5 / 60 * this.fov; 
-                        return ((radec[0] > (this.coords[0] - halfFOVDeg)) && (radec [0] < (this.coords[0] + halfFOVDeg)) &&
-                                (radec[1] > (this.coords[1] - halfFOVDeg)) && (radec [1] < (this.coords[1] + halfFOVDeg)));
+                        var hc_halfFOVDeg = 0.5 / 60 * this.fov; 
+                        return ((radec[0] > (this.coords[0] - hc_halfFOVDeg)) && (radec [0] < (this.coords[0] + hc_halfFOVDeg)) &&
+                                (radec[1] > (this.coords[1] - hc_halfFOVDeg)) && (radec [1] < (this.coords[1] + hc_halfFOVDeg)));
                     }
                     
                     this.GetStarsAt = function (radec) {
@@ -73,20 +70,18 @@ var PhotmetryTable = {
                         return [];
                     }
                     
-                    this.FilterStars = function (__stars, _m) {
+                    this.FilterStars = function (pStars, _m) {
                         // do an initial fill here; this acts as filter for sons
-                        var i = 0;
-                        var starsForThisNode = [];
-                        for (i = 0; i < __stars.length; i++) {
-                            if (_m > __stars[i]["mag"]) {
-                                if (this.HasCoords ( [__stars[i]["ra"], __stars[i]["dec"]] ) )
-                                    starsForThisNode.push (__stars[i]);
+                        var starIndex = 0;
+                        var __starsForThisNode = [];
+                        for (;starIndex < pStars.length; starIndex++) {
+                            if (_m > pStars[starIndex]["mag"]) {
+                                if (this.HasCoords ( [pStars[starIndex]["ra"], pStars[starIndex]["dec"]] ) )
+                                    __starsForThisNode.push (pStars[starIndex]);
                             } 
                         }
                         
-                        //alert (__stars.length + " -> " + starsForThisNode.length);
-                        
-                        return starsForThisNode;
+                        return __starsForThisNode;
                     }
                     
                     this.SerializeToStr  = function () {
@@ -99,45 +94,43 @@ var PhotmetryTable = {
                         return res;
                     }
                     
-                    this.SetupNode = function () {
+                    this.SetupNode = function (parentStars) {
                         // now that we bit a little more, we can set back the FOV
                         var myself = this;
-                        var _st = _stars;
                         (function () {
                             var myOldFOV = myself.fov;
-                            myself.fov = myself.fov * 2;
-                            var myStars = myself.FilterStars (_st, mag);
+                            myself.fov = myself.fov * 1.5;
+                            var _stars = myself.FilterStars (parentStars, mag);
                             myself.fov = myOldFOV;
-                            /*if (myStars.length > PhotmetryTable.searchTree.settings.maxStarsPerNode) {
-                                
+                            
+                            var halfSonsFovDEG = myself.fov / 240.0;
+                            var _fov = myself.fov * 0.5;
+
+                            if (_stars.length > PhotmetryTable.searchTree.settings.maxStarsPerNode) {
                                 myself.sons [0] = function(){                         
-                                    var sonsFOV = myself.fov * 0.5;
-                                    var halfSonsFovDEG = myself.fov / 240.0;
-                                    return PhotmetryTable.searchTree.node ( [myself.coords[0] + halfSonsFovDEG, myself.coords[1] + halfSonsFovDEG] , sonsFOV, myStars); 
+                                    var _coords = [myself.coords[0] + halfSonsFovDEG, myself.coords[1] + halfSonsFovDEG];
+                                    return PhotmetryTable.searchTree.node(_coords, _fov, _stars, mag);
                                 }();
                                 myself.sons [1] = function(){                         
-                                    var sonsFOV = myself.fov * 0.5;
-                                    var halfSonsFovDEG = myself.fov / 240.0;
-                                    return PhotmetryTable.searchTree.node ( [myself.coords[0] - halfSonsFovDEG, myself.coords[1] + halfSonsFovDEG] , sonsFOV, myStars); 
+                                    var _coords = [myself.coords[0] - halfSonsFovDEG, myself.coords[1] + halfSonsFovDEG];
+                                    return PhotmetryTable.searchTree.node(_coords, _fov, _stars, mag);
                                 }();
                                 myself.sons [2] = function(){                         
-                                    var sonsFOV = myself.fov * 0.5;
-                                    var halfSonsFovDEG = myself.fov / 240.0;
-                                    return PhotmetryTable.searchTree.node ( [myself.coords[0] - halfSonsFovDEG, myself.coords[1] - halfSonsFovDEG] , sonsFOV, myStars); 
+                                    var _coords = [myself.coords[0] - halfSonsFovDEG, myself.coords[1] - halfSonsFovDEG];
+                                    return PhotmetryTable.searchTree.node(_coords, _fov, _stars, mag);
                                 }();
                                 myself.sons [3] = function(){                         
-                                    var sonsFOV = myself.fov * 0.5;
-                                    var halfSonsFovDEG = myself.fov / 240.0;
-                                    return PhotmetryTable.searchTree.node ( [myself.coords[0] + halfSonsFovDEG, myself.coords[1] - halfSonsFovDEG] , sonsFOV, myStars); 
+                                    var _coords = [myself.coords[0] + halfSonsFovDEG, myself.coords[1] - halfSonsFovDEG];
+                                    return PhotmetryTable.searchTree.node(_coords, _fov, _stars, mag);
                                 }();
                                 myself.stars = [];
                             }
-                            else */
-                                myself.stars = myStars;
+                            else
+                                myself.stars = _stars;
                         })();
                     }
                     
-                    this.SetupNode();
+                    this.SetupNode(_stars);
                 }
               
               var builtNode = new internalNode();
@@ -147,7 +140,6 @@ var PhotmetryTable = {
         init : function (data, mag) {
             // create the quad tree            
             PhotmetryTable.searchTree.root = PhotmetryTable.searchTree.node (data.centerCoords, data.fov, data.stars, mag);
-            alert (PhotmetryTable.searchTree.root.SerializeToStr());
         }
     },
     
