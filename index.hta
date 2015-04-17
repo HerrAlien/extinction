@@ -101,10 +101,10 @@ pre {
 	     photometry table ID: <input placeholder="[table ID]" id="tableID" size="7"><br>
 	     limitting magnitude: <input placeholder="[number]" id="mag" size="7"><br>
 	     chart orientation: 
-	     <select id="chartOrientation"> 
-		<option value="0">South up, East to the right (Newtons, refractors & SCTs)</option>
-		<option value="0">North up, East to the right (refractors & SCTs with diagonals)</option>
+	     <select id="chartOrientation" value="0"> 
 		<option value="0">North up, West to the right (binoculars & terestrial instruments)</option>
+		<option value="1">South up, East to the right (Newtons, refractors & SCTs)</option>
+		<option value="2">North up, East to the right (refractors & SCTs with diagonals)</option>
 	     </select>
           </li>
     
@@ -209,7 +209,7 @@ var elem = document.getElementById ("debug");
 
 function onCoordsChanged (radec) {
     var star = PhotmetryTable.searchTree.getClosestStar (radec[0], radec[1]);
-    elem.innerHTML = radec[0] + ", " + radec[1] + " <br> " + star.label;
+    elem.innerHTML = star.ra + ", " + star.dec + " <br> " + star.label;
 }
 
 PhotmetryTable.onInit = function () { 
