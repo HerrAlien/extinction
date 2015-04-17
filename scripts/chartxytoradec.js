@@ -11,11 +11,13 @@ var ChartXYToRADec = {
     onCoordsChanged : null,
     
     getRADec : function (xy) {
-        var dx = xy[0] - ChartXYToRADec.centerXYCoords[0];
-        var dy = ChartXYToRADec.centerXYCoords[1] - xy[1];
+        var dx = (xy[0] - ChartXYToRADec.centerXYCoords[0]) / ChartXYToRADec.focalLength;
+        var dy = (ChartXYToRADec.centerXYCoords[1] - xy[1]) / ChartXYToRADec.focalLength;
         
-        var dra = 180 / Math.PI * Math.atan (dx / ChartXYToRADec.focalLength);
-        var ddec = 180 / Math.PI * Math.atan (dy / ChartXYToRADec.focalLength);
+	    var secondOrderK = -0.1;
+	    
+        var dra = 180 / Math.PI * Math.atan (dx  + secondOrderK * dx * dx);
+        var ddec = 180 / Math.PI * Math.atan (dy + secondOrderK * dy * dy);
         
         return [ChartXYToRADec.centerRADecCoords[0] - dra, ChartXYToRADec.centerRADecCoords[1] + ddec];
     },
