@@ -198,15 +198,22 @@
 var elem = document.getElementById ("debug");
 
 function onCoordsChanged (radec) {
-    elem.innerHTML = radec[0]/15 + ", " + radec[1];
+    var star = PhotmetryTable.searchTree.getClosestStar (radec[0], radec[1]);
+    elem.innerHTML = radec[0] + ", " + radec[1] + " <br> " + star.label;
 }
 
-ChartXYToRADec.init ([279.23683333333333333333333333333, -28.927722222222222222222222222222], 900);
+PhotmetryTable.onInit = function () { 
+
+    ChartXYToRADec.init (PhotmetryTable.searchTree.root.coords, PhotmetryTable.searchTree.root.fov);
+    ChartXYToRADec.onCoordsChanged = onCoordsChanged; 
+
+};
+
+PhotmetryTable.init("14727KA", 7);
+
 //ChartXYToRADec.init ([0, 0], 900);
 
-ChartXYToRADec.onCoordsChanged = onCoordsChanged;
 
 
-PhotmetryTable.init("13221ASP", 13);
 
 </script>
