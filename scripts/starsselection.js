@@ -31,28 +31,30 @@ var StarsSelection = {
     },
     
     Selector : {
-        build : function (guiID) {
-            function () {
-                
+        build : function (inputElement) {
+            return function () {
                 var privateData {
                     "star" : null,
-                    "uiElement" : document.getElementById (guiID)
+                    "uiElement" : inputElement
                 }
                 
                 return new function () {
                     var data = privateData;
-                    
                     this.set = function (st) {
                         data.star = st;
                         data.uiElement.value = data.star.label;
-                    }
-                    
+                    }   
                     this.get = function () {
                         return data.star;
                     }
                 }
-                    
             }();
+        },
+        
+        buildIntoDOM : function (parentElement) {
+            var createdInput = parentElement.ownerDocument.createElement ("input");
+            parentElement.appendChild (createdInput);
+            return Selector.build (createdInput);
         }
     }
 };
