@@ -47,6 +47,9 @@ var StarsSelection = {
                     this.get = function () {
                         return data.star;
                     }
+                    this.addEventHandler = function (eventName, handler) {
+                        data.uiElement[eventName] = handler;
+                    }
                 }
             }();
         },
