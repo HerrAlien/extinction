@@ -177,7 +177,7 @@ pre {
         </ol>
         </div>
         <div id="imageContainer">
-          <img src="http://www.aavso.org/tmp3/d14973.png" id="chart">
+          <img src="http://www.aavso.org/cgi-bin/vsp.pl?chartid=14735CA&printable=yes" id="chart">
         </div>
         <div class="clear">&nbsp;</div>
       </div>
@@ -221,6 +221,7 @@ pre {
 </html>
 
 <script src="scripts/chartxytoradec.js"></script>
+<script src="scripts/starsselection.js"></script>
 
 <script>
 
@@ -228,6 +229,7 @@ var elem = document.getElementById ("debug");
 
 function onCoordsChanged (radec) {
     var star = PhotmetryTable.searchTree.getClosestStar (radec[0], radec[1]);
+    StarsSelection.currentlyHoveredStar = star;
     elem.innerHTML = star.ra + ", " + star.dec + " <br> " + star.label;
 }
 
@@ -240,6 +242,27 @@ document.getElementById("chartOrientation").onchange = function () {
     ChartXYToRADec.chartOrientation = this.value;
 }
 
+var selectorField=document.getElementById("selectAforEstimate");
+var selector = StarsSelection.Selector.build(selectorField);
+
+StarsSelection.activeSelector = selector;
+
+selectorField=document.getElementById("selectBforEstimate");
+StarsSelection.Selector.build(selectorField);
+
+selectorField=document.getElementById("selectE1forEstimate");
+StarsSelection.Selector.build(selectorField);
+
+selectorField=document.getElementById("selectE2forEstimate");
+StarsSelection.Selector.build(selectorField);
+
+selectorField=document.getElementById("selectE3forEstimate");
+StarsSelection.Selector.build(selectorField);
+
+selectorField=document.getElementById("selectE4forEstimate");
+StarsSelection.Selector.build(selectorField);
+
+StarsSelection.init();
 PhotmetryTable.init("14734AJI", 9);
 
 //ChartXYToRADec.init ([0, 0], 900);

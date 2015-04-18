@@ -21,25 +21,26 @@ var StarsSelection = {
     currentlyHoveredStar : null,
     imageElem : document.getElementById ("chart"),
     activeSelector : null,
-    activeSelectorsMethod : null,
     
     init : function () {
         StarsSelection.imageElem.onclick = function () {
-            if (activeSelector && activeSelectorsMethod)
-                activeSelector [activeSelectorsMethod] (StarsSelection.currentlyHoveredStar);
+            if (StarsSelection.activeSelector)
+                StarsSelection.activeSelector.set(StarsSelection.currentlyHoveredStar);
         }
     },
     
     Selector : {
         build : function (inputElement) {
             return function () {
-                var privateData {
+                var privateData = {
                     "star" : null,
                     "uiElement" : inputElement
-                }
+                };
                 
                 return new function () {
                     var data = privateData;
+                    var sel = this;
+                    
                     this.set = function (st) {
                         data.star = st;
                         data.uiElement.value = data.star.label;
@@ -50,6 +51,10 @@ var StarsSelection = {
                     this.addEventHandler = function (eventName, handler) {
                         data.uiElement[eventName] = handler;
                     }
+                    
+                    this.addEventHandler ("onclick", function () {
+                        StarsSelection.activeSelector = sel;
+                    });
                 }
             }();
         },
