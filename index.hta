@@ -1,3 +1,22 @@
+<!--
+Extinction-O-Meter - an HTML & JavaScript utility to compute atmospheric extinction.
+               
+Copyright 2015  Herr_Alien <garone80@yahoo.com>
+                
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+                
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+                
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see https://www.gnu.org/licenses/agpl.html
+-->
+
 <html>
 
 <head>
@@ -24,8 +43,8 @@
     
     #container {
         margin: 10px;
-	text-align: center;
-	min-width: 1000px;
+    text-align: center;
+    min-width: 1000px;
 }
 
 #banner {
@@ -49,7 +68,7 @@
 }
 
 pre {
-	text-align: left;
+    text-align: left;
 }
 
 #wizard {
@@ -98,14 +117,14 @@ pre {
           <li>
               AAVSO chart and photometry table:<br>
               chart ID: <input placeholder="[chart ID]" id="chartID" size="7"><br>
-	     photometry table ID: <input placeholder="[table ID]" id="tableID" size="7"><br>
-	     limitting magnitude: <input placeholder="[number]" id="mag" size="7"><br>
-	     chart orientation: 
-	     <select id="chartOrientation" value="0"> 
-		<option value="0">North up, West to the right (binoculars & terestrial instruments)</option>
-		<option value="1">South up, East to the right (Newtons, refractors & SCTs)</option>
-		<option value="2">North up, East to the right (refractors & SCTs with diagonals)</option>
-	     </select>
+         photometry table ID: <input placeholder="[table ID]" id="tableID" size="7"><br>
+         limitting magnitude: <input placeholder="[number]" id="mag" size="7"><br>
+         chart orientation: 
+         <select id="chartOrientation" value="0"> 
+        <option value="0">North up, West to the right (binoculars & terestrial instruments)</option>
+        <option value="1">South up, East to the right (Newtons, refractors & SCTs)</option>
+        <option value="2">North up, East to the right (refractors & SCTs with diagonals)</option>
+         </select>
           </li>
     
           <li>
@@ -158,7 +177,7 @@ pre {
         </ol>
         </div>
         <div id="imageContainer">
-          <img src="resources/14564DM.png" id="chart">
+          <img src="http://www.aavso.org/tmp3/d14973.png" id="chart">
         </div>
         <div class="clear">&nbsp;</div>
       </div>
@@ -213,13 +232,15 @@ function onCoordsChanged (radec) {
 }
 
 PhotmetryTable.onInit = function () { 
-
     ChartXYToRADec.init (PhotmetryTable.searchTree.root.coords, PhotmetryTable.searchTree.root.fov);
     ChartXYToRADec.onCoordsChanged = onCoordsChanged; 
-
 };
 
-PhotmetryTable.init("14727KA", 7);
+document.getElementById("chartOrientation").onchange = function () {
+    ChartXYToRADec.chartOrientation = this.value;
+}
+
+PhotmetryTable.init("14734AJI", 9);
 
 //ChartXYToRADec.init ([0, 0], 900);
 

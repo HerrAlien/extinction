@@ -1,4 +1,21 @@
-////     //*[@id="content-content"]/table[1]/tbody/tr[2]/td[2]/font
+/*
+Extinction-O-Meter - an HTML & JavaScript utility to compute atmospheric extinction.
+               
+Copyright 2015  Herr_Alien <garone80@yahoo.com>
+                
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+                
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+                
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see https://www.gnu.org/licenses/agpl.html
+*/
 
 var PhotmetryTable = {
     
@@ -42,7 +59,7 @@ var PhotmetryTable = {
                 var _stars = stars;
                 var mag = __mag;
               
-              function internalNode() {
+                return new function() {
                     this.sons = [];
                     this.coords = _coords;
                     this.fov = _fov;
@@ -95,32 +112,31 @@ var PhotmetryTable = {
                     }
                     
                     this.SetupNode = function (parentStars) {
-                        // now that we bit a little more, we can set back the FOV
                         var myself = this;
                         (function () {
                             var myOldFOV = myself.fov;
-                            myself.fov = myself.fov * 1.5;
+                            myself.fov = myself.fov * 1.5; // enlarge the FOV, so that we overlap a bit
                             var _stars = myself.FilterStars (parentStars, mag);
                             myself.fov = myOldFOV;
                             
-                            var halfSonsFovDEG = myself.fov / 240.0;
+                            var sonsCenterDispDEG = myself.fov / 240.0;
                             var _fov = myself.fov * 0.5;
 
                             if (_stars.length > PhotmetryTable.searchTree.settings.maxStarsPerNode) {
                                 myself.sons [0] = function(){                         
-                                    var _coords = [myself.coords[0] + halfSonsFovDEG, myself.coords[1] + halfSonsFovDEG];
+                                    var _coords = [myself.coords[0] + sonsCenterDispDEG, myself.coords[1] + sonsCenterDispDEG];
                                     return PhotmetryTable.searchTree.node(_coords, _fov, _stars, mag);
                                 }();
                                 myself.sons [1] = function(){                         
-                                    var _coords = [myself.coords[0] - halfSonsFovDEG, myself.coords[1] + halfSonsFovDEG];
+                                    var _coords = [myself.coords[0] - sonsCenterDispDEG, myself.coords[1] + sonsCenterDispDEG];
                                     return PhotmetryTable.searchTree.node(_coords, _fov, _stars, mag);
                                 }();
                                 myself.sons [2] = function(){                         
-                                    var _coords = [myself.coords[0] - halfSonsFovDEG, myself.coords[1] - halfSonsFovDEG];
+                                    var _coords = [myself.coords[0] - sonsCenterDispDEG, myself.coords[1] - sonsCenterDispDEG];
                                     return PhotmetryTable.searchTree.node(_coords, _fov, _stars, mag);
                                 }();
                                 myself.sons [3] = function(){                         
-                                    var _coords = [myself.coords[0] + halfSonsFovDEG, myself.coords[1] - halfSonsFovDEG];
+                                    var _coords = [myself.coords[0] + sonsCenterDispDEG, myself.coords[1] - sonsCenterDispDEG];
                                     return PhotmetryTable.searchTree.node(_coords, _fov, _stars, mag);
                                 }();
                                 myself.stars = [];
@@ -132,9 +148,6 @@ var PhotmetryTable = {
                     
                     this.SetupNode(_stars);
                 }
-              
-              var builtNode = new internalNode();
-              return builtNode;
         },
         
         init : function (data, mag) {
@@ -218,7 +231,7 @@ var PhotmetryTable = {
                         catch (err) {
                         }
                         
-                        var star = { ra : raNum, dec : decNum, mag : magNum, label : labelStr };
+                        var star = { "ra" : raNum, "dec" : decNum, "mag" : magNum, "label" : labelStr };
                         stars.push ( star );
                 }
             
