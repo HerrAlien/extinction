@@ -102,9 +102,7 @@ pre {
       </div>
       
       <div>
-        <div id="wizard">
-        
-        <span id="debug"></span>
+        <div id="wizard">        
         <ol>
           <li>
             Current JD:  <input placeholder="[JD]" id="JD" size="7">
@@ -177,6 +175,9 @@ pre {
         </ol>
         </div>
         <div id="imageContainer">
+          Selecting for: <span id="activeSel"></span><br>
+          Current star: <span id="debug"></span><br>
+
           <img src="http://www.aavso.org/cgi-bin/vsp.pl?chartid=14735CA&printable=yes" id="chart">
         </div>
         <div class="clear">&nbsp;</div>
@@ -226,11 +227,13 @@ pre {
 <script>
 
 var elem = document.getElementById ("debug");
+var activeSel = document.getElementById ("activeSel");
 
 function onCoordsChanged (radec) {
     var star = PhotmetryTable.searchTree.getClosestStar (radec[0], radec[1]);
     StarsSelection.currentlyHoveredStar = star;
-    elem.innerHTML = star.ra + ", " + star.dec + " <br> " + star.label;
+    elem.innerHTML = star.label;
+    activeSel.innerHTML = StarsSelection.activeSelector.id;
 }
 
 PhotmetryTable.onInit = function () { 

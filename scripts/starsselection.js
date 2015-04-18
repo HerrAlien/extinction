@@ -39,8 +39,7 @@ var StarsSelection = {
                 
                 return new function () {
                     var data = privateData;
-                    var sel = this;
-                    
+                    this.id = data.uiElement.id;
                     this.set = function (st) {
                         data.star = st;
                         data.uiElement.value = data.star.label;
@@ -51,7 +50,8 @@ var StarsSelection = {
                     this.addEventHandler = function (eventName, handler) {
                         data.uiElement[eventName] = handler;
                     }
-                    
+
+                    var sel = this;
                     this.addEventHandler ("onclick", function () {
                         StarsSelection.activeSelector = sel;
                     });
