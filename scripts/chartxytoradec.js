@@ -26,8 +26,18 @@ var ChartXYToRADec = {
     focalLength : 0,
     chartOrientation : 0,
     onCoordsChanged : null,
+    fov_mins : 0,
     
     getRADec : function (xy) {
+        // so that we don't need to re-init in case of window resize
+        var fov_mins = ChartXYToRADec.fov_mins;
+        var offset = [ChartXYToRADec.imageElem.x || ChartXYToRADec.imageElem.offsetLeft, 
+                      ChartXYToRADec.imageElem.y || ChartXYToRADec.imageElem.offsetTop];
+        ChartXYToRADec.centerXYCoords = [ChartXYToRADec.imageElem.width * ChartXYToRADec.centerXYCoordsRatios[0] + offset[0],
+                                         ChartXYToRADec.imageElem.height * ChartXYToRADec.centerXYCoordsRatios[1] + offset[1]];
+        ChartXYToRADec.focalLength = (0.5 * ChartXYToRADec.imageElem.width * ChartXYToRADec. usefullWidthRatio) / 
+                                     (Math.tan(((0.5 * fov_mins)/60) * Math.PI / 180));
+
         var dx = (xy[0] - ChartXYToRADec.centerXYCoords[0]) / ChartXYToRADec.focalLength;
         var dy = (ChartXYToRADec.centerXYCoords[1] - xy[1]) / ChartXYToRADec.focalLength;
         
@@ -67,16 +77,7 @@ var ChartXYToRADec = {
 
     init : function (centerRADec, fov_mins) {
         ChartXYToRADec.centerRADecCoords = centerRADec;
-        var offset = [ChartXYToRADec.imageElem.x || ChartXYToRADec.imageElem.offsetLeft, 
-                      ChartXYToRADec.imageElem.y || ChartXYToRADec.imageElem.offsetTop];
-        ChartXYToRADec.centerXYCoords = [ChartXYToRADec.imageElem.width * ChartXYToRADec.centerXYCoordsRatios[0] + offset[0],
-                                         ChartXYToRADec.imageElem.height * ChartXYToRADec.centerXYCoordsRatios[1] + offset[1]];
-
-    /* use a tangent projection:
-          ChartXYToRADec.imageElem.width / 2 = R * tan (fov/2) =>
-          R =  ChartXYToRADec.imageElem.width / (2 * tan (fov/2))
-    */
-        ChartXYToRADec.focalLength = (0.5 * ChartXYToRADec.imageElem.width * ChartXYToRADec. usefullWidthRatio) / ( Math.tan(((0.5 * fov_mins)/60) * Math.PI / 180 ));
+        ChartXYToRADec.fov_mins = fov_mins;
         ChartXYToRADec.imageElem.onmousemove = function (e) { ChartXYToRADec.handleMouseMovement(e); }
     }
 };
