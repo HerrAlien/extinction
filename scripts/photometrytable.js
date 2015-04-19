@@ -204,6 +204,7 @@ var PhotmetryTable = {
                 var valueEndsAt =  str.indexOf (end);
                 var valueAsString = str.substring (valueStartsAt, valueEndsAt);
                 return eval (valueAsString);
+                
         },
         
         GetStars : function (text) {
@@ -223,12 +224,21 @@ var PhotmetryTable = {
                     
                         var raNum = PhotmetryTable.AAVSO.extractNumericalValue (currentRow.cells[1].innerHTML, "[", "d]");
                         var decNum = PhotmetryTable.AAVSO.extractNumericalValue (currentRow.cells[2].innerHTML, "[", "d]");
-                        var labelStr = PhotmetryTable.AAVSO.extractNumericalValue (currentRow.cells[3].innerHTML, "<B>", "</B>");
+                        var labelStr = "n/a";
+                        try 
+                        {   
+                            labelStr= PhotmetryTable.AAVSO.extractNumericalValue (currentRow.cells[3].innerHTML, "<B>", "</B>");
+                        } catch (err1) {
+                            labelStr = PhotmetryTable.AAVSO.extractNumericalValue (currentRow.cells[3].innerHTML, "<b>", "</b>");
+                        }
                         var magNum = 0.1 * eval (labelStr);
                         try {
                             magNum = PhotmetryTable.AAVSO.extractNumericalValue (currentRow.cells[6].innerHTML, "<FONT size=-1>", " (");
-                        }
-                        catch (err) {
+                        } catch (err2) {
+                            try {
+                                magNum = PhotmetryTable.AAVSO.extractNumericalValue (currentRow.cells[6].innerHTML, "<font size=\"-1\">", " (");
+                            } catch (err3) {
+                            }
                         }
                         
                         var star = { "ra" : raNum, "dec" : decNum, "mag" : magNum, "label" : labelStr };
