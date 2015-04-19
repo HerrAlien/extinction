@@ -23,7 +23,7 @@ var PhotmetryTable = {
         root : null,
         
         settings : {
-            maxStarsPerNode : 16
+            maxStarsPerNode : 8
         },
         
         getClosestStar : function(raNum, decNum) {
