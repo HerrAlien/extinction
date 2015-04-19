@@ -24,8 +24,13 @@ var StarsSelection = {
     
     init : function () {
         StarsSelection.imageElem.onclick = function () {
-            if (StarsSelection.activeSelector)
+            if (StarsSelection.activeSelector) {
                 StarsSelection.activeSelector.set(StarsSelection.currentlyHoveredStar);
+                
+                StarsSelection.activeSelector.setClassName("selectorItem");
+                StarsSelection.activeSelector = null;
+                StarsSelection.imageElem.className = "normalCursor";
+            }
         }
     },
     
@@ -50,10 +55,19 @@ var StarsSelection = {
                     this.addEventHandler = function (eventName, handler) {
                         data.uiElement[eventName] = handler;
                     }
+                    this.setClassName = function (cn) {
+                        data.uiElement.className = cn;
+                    }
 
                     var sel = this;
                     this.addEventHandler ("onclick", function () {
+                        if (StarsSelection.activeSelector)
+                            StarsSelection.activeSelector.setClassName("selectorItem");
+                            
+                        sel.setClassName("selectorItemActive");
                         StarsSelection.activeSelector = sel;
+                        
+                        StarsSelection.imageElem.className = "readyToSelect";
                     });
                 }
             }();

@@ -21,7 +21,7 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl.html
 
 <head>
   <title>Extinction-O-Meter</title>
-  
+<!--  <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE11" />  -->
 <style>
 
     #donate {
@@ -63,6 +63,15 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl.html
     height: 750px;
 }
 
+.readyToSelect {
+	cursor: pointer;
+}
+
+.normalCursor {
+	cursor: default;
+}
+
+
 .clear {
     clear: both;
 }
@@ -81,13 +90,24 @@ pre {
 #imageContainer{
 }
 
-#selectAforEstimate, #selectBforEstimate {
-    cursor: pointer;
+.selectorItem, .selectorItemActive {
+  cursor: pointer;
+}
+
+.selectorItem {
+  background-color : #dadadf; 
+  border : solid 1px #000000;
+}
+
+.selectorItemActive {
+  background-color : #cacaff; 
+  border : solid 2px #8080ff;
 }
 
 #brightnessNoExtinction {
   color: #AF0000;
 }
+
 
 </style>
 
@@ -127,10 +147,10 @@ pre {
     
           <li>
               Brightness estimate (A [number] V [number] B)<br>
-              star A: <input size="30" id="selectAforEstimate" readonly="true" placeholder="[click me then select from the map]"><br>
+              star A: <input class="selectorItem" size="30" id="selectAforEstimate" readonly="true" placeholder="[click me then select from the map]"><br>
               is brighter than V by <input placeholder="[number]" id="AtoVar" size="5"> degrees,<br>
               and V is brighter by <input placeholder="[number]" id="VarToB" size="5"> degrees than <br>
-              star B: <input size="30" id="selectBforEstimate" readonly="true" placeholder="[click me then select from the map]">
+              star B: <input class="selectorItem" size="30" id="selectBforEstimate" readonly="true" placeholder="[click me then select from the map]">
               <hr>
               Without considering extinction, brightness of V is:<br>
               <span id="brightnessNoExtinction">unknown</span>
@@ -150,18 +170,18 @@ pre {
                   <li>
                       First estimate between known stars<br> 
                       (E1 [number] E2)<br>
-                      star E1: <input size="30" id="selectE1forEstimate" readonly="true" placeholder="[click me then select from the map]"><br>
+                      star E1: <input class="selectorItem" size="30" id="selectE1forEstimate" readonly="true" placeholder="[click me then select from the map]"><br>
                       is brighter than<br>
-                      star E2: <input size="30" id="selectE2forEstimate" readonly="true" placeholder="[click me then select from the map]"><br>
+                      star E2: <input class="selectorItem" size="30" id="selectE2forEstimate" readonly="true" placeholder="[click me then select from the map]"><br>
                       by <input placeholder="[number]" id="E1toE2" size="5"> degrees
                   </li>
                   <li>
                       Second estimate between known stars<br> 
                       (E3 [number] E4)<br>
                       (you can reuse at most one of the stars from above)<br>
-                      E3: <input size="30" id="selectE3forEstimate" readonly="true" placeholder="[click me then select from the map]"><br>
+                      E3: <input class="selectorItem" size="30" id="selectE3forEstimate" readonly="true" placeholder="[click me then select from the map]"><br>
                       is brighter than<br>
-                      E4: <input size="30" id="selectE4forEstimate" readonly="true" placeholder="[click me then select from the map]"><br>
+                      E4: <input class="selectorItem" size="30" id="selectE4forEstimate" readonly="true" placeholder="[click me then select from the map]"><br>
                       by <input placeholder="[number]" id="E3toE4" size="5"> degrees
                   </li>
               </ol>
@@ -175,9 +195,7 @@ pre {
         </ol>
         </div>
         <div id="imageContainer">
-          Selecting for: <span id="activeSel"></span><br>
-          Current star: <span id="debug"></span><br>
-
+          Current star: <b><span id="debug"></span></b><br>
           <img src="http://www.aavso.org/cgi-bin/vsp.pl?chartid=14735CA&printable=yes" id="chart">
         </div>
         <div class="clear">&nbsp;</div>
@@ -233,7 +251,7 @@ function onCoordsChanged (radec) {
     var star = PhotmetryTable.searchTree.getClosestStar (radec[0], radec[1]);
     StarsSelection.currentlyHoveredStar = star;
     elem.innerHTML = star.label;
-    activeSel.innerHTML = StarsSelection.activeSelector.id;
+    // activeSel.innerHTML = StarsSelection.activeSelector.id;
 }
 
 PhotmetryTable.onInit = function () { 
@@ -247,8 +265,6 @@ document.getElementById("chartOrientation").onchange = function () {
 
 var selectorField=document.getElementById("selectAforEstimate");
 var selector = StarsSelection.Selector.build(selectorField);
-
-StarsSelection.activeSelector = selector;
 
 selectorField=document.getElementById("selectBforEstimate");
 StarsSelection.Selector.build(selectorField);

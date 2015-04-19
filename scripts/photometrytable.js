@@ -203,7 +203,7 @@ var PhotmetryTable = {
                 var valueStartsAt = str.indexOf (begin) + begin.length;
                 var valueEndsAt =  str.indexOf (end);
                 var valueAsString = str.substring (valueStartsAt, valueEndsAt);
-                return (eval (valueAsString));
+                return eval (valueAsString);
         },
         
         GetStars : function (text) {
