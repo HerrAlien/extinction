@@ -1,4 +1,21 @@
-// JavaScript Document
+/*
+Extinction-O-Meter - an HTML & JavaScript utility to compute atmospheric extinction.
+               
+Copyright 2015  Herr_Alien <garone80@yahoo.com>
+                
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+                
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+                
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see https://www.gnu.org/licenses/agpl.html
+*/
 
 var ExtinctionCoefficient = {
 
@@ -46,19 +63,29 @@ var ExtinctionCoefficient = {
 
     SingleComparison : function (brighterStar, degrees, dimmerStar) {
         return function () {
+            var b = brighterStar;
+            var deg = degrees;
+            var d = dimmerStar;
+            
             return {
-                "bright" : brighterStar,
-                "value" : degrees,
-                "dim" : dimmerStar
+                "bright" : b,
+                "value" : deg,
+                "dim" : d
             };
         }();
     },
 
     PairedComparison : function (brightStar, b2m, midStar, m2d, dimStar) {
         return function () {
+            var b = brighterStar;
+            var deg1 = b2m;
+            var m = midStar;
+            var deg2 = m2d;
+            var d = dimStar;
+            
             return {
-                "first" : ExtinctionCoefficient.SingleComparison (brightStar, b2m, midStar),
-                "second" : ExtinctionCoefficient.SingleComparison (midStar, m2d, dimStar)
+                "first" : ExtinctionCoefficient.SingleComparison (b, deg1, m),
+                "second" : ExtinctionCoefficient.SingleComparison (m, deg2, d)
             };
         }();
     },
