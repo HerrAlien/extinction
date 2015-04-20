@@ -250,7 +250,8 @@ var activeSel = document.getElementById ("activeSel");
 
 function onCoordsChanged (radec) {
     var star = PhotmetryTable.searchTree.getClosestStar (radec[0], radec[1]);
-    StarsSelection.currentlyHoveredStar = star;
+    if (star)
+        StarsSelection.currentlyHoveredStar = star;
     elem.innerHTML = star.label;
     // activeSel.innerHTML = StarsSelection.activeSelector.id;
 }

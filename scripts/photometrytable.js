@@ -27,7 +27,7 @@ var PhotmetryTable = {
         },
         
         getClosestStar : function(raNum, decNum) {
-            var foundStar = { "ra" : raNum, "dec" : decNum, "mag" : 999, "label" : "n/a" };
+            var foundStar = null;
             // this gets filled with the result of the search
             
             var closestStars = PhotmetryTable.searchTree.root.GetStarsAt ([raNum, decNum]);
