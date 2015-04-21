@@ -12,7 +12,7 @@ This README would normally document whatever steps are necessary to get your app
 
 * Summary of set up: make sure you're connected to the Internet
 * Configuration: none
-* Dependencies: none
+* Dependencies: Internet Explorer 8.0 at minimum
 * Database configuration: none
 * How to run tests: N/A
 * Deployment instructions: just run it ...
