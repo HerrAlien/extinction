@@ -52,36 +52,41 @@ var ExtinctionCoefficient = {
     
     getkValue : function (firstSingleComparison, secondSingleComparison) {
             
-        var a = firstSingleComparison.value * (secondSingleComparison.bright.mag - secondSingleComparison.dim.mag);
-        var b = secondSingleComparison.value * (firstSingleComparison.bright.mag - firstSingleComparison.dim.mag);
+        var a = firstSingleComparison.value() * (secondSingleComparison.bright().mag - secondSingleComparison.dim().mag);
+        var b = secondSingleComparison.value() * (firstSingleComparison.bright().mag - firstSingleComparison.dim().mag);
                         
-        var c = secondSingleComparison.value * (firstSingleComparison.bright.airmass - firstSingleComparison.dim.airmass);
-        var d = firstSingleComparison.value * (secondSingleComparison.bright.airmass - secondSingleComparison.dim.airmass);
+        var c = secondSingleComparison.value() * (firstSingleComparison.bright().airmass - firstSingleComparison.dim().airmass);
+        var d = firstSingleComparison.value() * (secondSingleComparison.bright().airmass - secondSingleComparison.dim().airmass);
         return ((a - b) / (c - d));
            
     },
 
-    SingleComparison : function (brighterStar, degrees, dimmerStar) {
+    SingleComparison : function (brighterStarSelector, degreesEditor, dimmerStarSelector) {
         return function () {
-            var b = brighterStar;
-            var deg = degrees;
-            var d = dimmerStar;
+            var b = brighterStarSelector;
+            var deg = degreesEditor;
+            var d = dimmerStarSelector;
             
             return {
-                "bright" : b,
-                "value" : deg,
-                "dim" : d
+                "bright" : function () { return this.ui.brightSelector.get(); },
+                "value" : function () { return eval(this.ui.valueLineEdit.value); } ,
+                "dim" : function () { return this.ui.dimSelector.get(); },
+                "ui" : {
+                    "brightSelector" : b,
+                    "valueLineEdit" : deg,
+                    "dimSelector" : d
+                }
             };
         }();
     },
 
-    PairedComparison : function (brightStar, b2m, midStar, m2d, dimStar) {
+    PairedComparison : function (brighterStarSelector, b2m_editor, midStarSelector, m2d_editor, dimStarSelector) {
         return function () {
-            var b = brighterStar;
-            var deg1 = b2m;
-            var m = midStar;
-            var deg2 = m2d;
-            var d = dimStar;
+            var b = brighterStarSelector;
+            var deg1 = b2m_editor;
+            var m = midStarSelector;
+            var deg2 = m2d_editor;
+            var d = dimStarSelector;
             
             return {
                 "first" : ExtinctionCoefficient.SingleComparison (b, deg1, m),
@@ -120,8 +125,12 @@ var ExtinctionCoefficient = {
             for (; i < comps.length; i++) {
                 function (n) {
                     var pairedComp =  comps[n];
+                    
+                    var bracketCompInput = document.createElement ("input");
+                    bracketCompInput.style.display = "none";
+                    bracketCompInput.value = eval(pairedComp.first.value) + eval(pairedComp.second.value);
                     var bracketComp = ExtinctionCoefficient.SingleComparison (pairedComp.first.bright, 
-                                                                              pairedComp.first.value + pairedComp.second.value, 
+                                                                              bracketCompInput, 
                                                                               pairedComp.second.dim);
                     try {
                         kvals.push (ExtinctionCoefficient.getkValue (pairedComp.first, pairedComp.second));
@@ -137,6 +146,7 @@ var ExtinctionCoefficient = {
                         kvals.push (ExtinctionCoefficient.getkValue (bracketComp, pairedComp.second));
                     } catch (err) { // div by 0 
                     }
+                    delete bracketCompInput;
                 }(i);
             }
             return kvals;
