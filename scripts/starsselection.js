@@ -58,7 +58,8 @@ var StarsSelection = {
                     this.setClassName = function (cn) {
                         data.uiElement.className = cn;
                     }
-
+                    
+                    this.setClassName("selectorItem");
                     var sel = this;
                     this.addEventHandler ("onclick", function () {
                         if (StarsSelection.activeSelector)
