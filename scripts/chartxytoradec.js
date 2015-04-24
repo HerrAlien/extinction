@@ -26,6 +26,7 @@ var ChartXYToRADec = {
     focalLength : 0,
     chartOrientation : 0,
     onCoordsChanged : null,
+    onMouseMove : null,
     fov_mins : 0,
     
     getRADec : function (xy) {
@@ -73,6 +74,9 @@ var ChartXYToRADec = {
         
         if (ChartXYToRADec.onCoordsChanged)
             ChartXYToRADec.onCoordsChanged (ChartXYToRADec.getRADec([event.pageX, event.pageY]));
+        
+        if (ChartXYToRADec.onMouseMove)
+            ChartXYToRADec.onMouseMove (event.pageX, event.pageY);
     },
 
     init : function (centerRADec, fov_mins) {

@@ -21,6 +21,8 @@ var StarsSelection = {
     currentlyHoveredStar : null,
     imageElem : document.getElementById ("chart"),
     activeSelector : null,
+    onStarSelected : null,
+    onSelectionActivated : null,
     
     init : function () {
         StarsSelection.imageElem.onclick = function () {
@@ -30,6 +32,8 @@ var StarsSelection = {
                 StarsSelection.activeSelector.setClassName("selectorItem");
                 StarsSelection.activeSelector = null;
                 StarsSelection.imageElem.className = "normalCursor";
+                if (StarsSelection.onStarSelected)
+                    StarsSelection.onStarSelected();
             }
         }
     },
@@ -69,6 +73,9 @@ var StarsSelection = {
                         StarsSelection.activeSelector = sel;
                         
                         StarsSelection.imageElem.className = "readyToSelect";
+                        
+                        if (StarsSelection.onSelectionActivated)
+                            StarsSelection.onSelectionActivated (sel);
                     });
                 }
             }();

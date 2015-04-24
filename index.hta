@@ -108,6 +108,23 @@ pre {
   color: #AF0000;
 }
 
+#debug {
+    position: absolute;
+    z-index: 99;
+    width: 22px;
+    height: 22px;
+    background-color : #cacaff; 
+    border : solid 2px #8080ff;
+}
+
+.hidden {
+    display: none;
+}
+
+.visible {
+    display: block;
+}
+
 
 </style>
 
@@ -195,7 +212,7 @@ pre {
         </ol>
         </div>
         <div id="imageContainer">
-          Current star: <b><span id="debug"></span></b><br>
+          <b><div id="debug" class="hidden"></div></b><br>
           <!-- <img src="http://www.aavso.org/cgi-bin/vsp.pl?chartid=14564DM&printable=yes" id="chart"> -->
           <img src="resources/14564DM.png" id="chart">
         </div>
@@ -250,15 +267,24 @@ var activeSel = document.getElementById ("activeSel");
 
 function onCoordsChanged (radec) {
     var star = PhotmetryTable.searchTree.getClosestStar (radec[0], radec[1]);
-    if (star)
+    if (star) {
         StarsSelection.currentlyHoveredStar = star;
-    elem.innerHTML = star.label;
+        elem.innerHTML = star.label;
+    }
     // activeSel.innerHTML = StarsSelection.activeSelector.id;
 }
+
+function onMouseMove (x, y) {
+    elem.style.left = x - 5;
+    elem.style.top = y + 25;
+}
+
+elem.onmousemove = onMouseMove;
 
 PhotmetryTable.onInit = function () { 
     ChartXYToRADec.init (PhotmetryTable.searchTree.root.coords, PhotmetryTable.searchTree.root.fov);
     ChartXYToRADec.onCoordsChanged = onCoordsChanged; 
+    ChartXYToRADec.onMouseMove = onMouseMove; 
 };
 
 document.getElementById("chartOrientation").onchange = function () {
@@ -283,7 +309,18 @@ StarsSelection.Selector.build(selectorField);
 selectorField=document.getElementById("selectE4forEstimate");
 StarsSelection.Selector.build(selectorField);
 
+StarsSelection.onStarSelected = function () {
+    elem.className = "hidden";
+}
+
+StarsSelection.onSelectionActivated = function () {
+    elem.className = "visible";
+}
+
 StarsSelection.init();
-PhotmetryTable.init("14727KA", 7);
+PhotmetryTable.AAVSO.config.url = "http://127.0.0.1:8080/resources/14727KA.html";
+
+PhotmetryTable.init("", 7);
+
 
 </script>
