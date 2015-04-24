@@ -222,27 +222,28 @@ var PhotmetryTable = {
                 for (i = 1; i < table.rows.length - 2; i++) {
                     var currentRow = table.rows[i];
                     
-                        var raNum = PhotmetryTable.AAVSO.extractNumericalValue (currentRow.cells[1].innerHTML, "[", "d]");
-                        var decNum = PhotmetryTable.AAVSO.extractNumericalValue (currentRow.cells[2].innerHTML, "[", "d]");
-                        var labelStr = "n/a";
-                        try 
-                        {   
-                            labelStr= PhotmetryTable.AAVSO.extractNumericalValue (currentRow.cells[3].innerHTML, "<B>", "</B>");
-                        } catch (err1) {
-                            labelStr = PhotmetryTable.AAVSO.extractNumericalValue (currentRow.cells[3].innerHTML, "<b>", "</b>");
-                        }
-                        var magNum = 0.1 * eval (labelStr);
+                    var raNum = PhotmetryTable.AAVSO.extractNumericalValue (currentRow.cells[1].innerHTML, "[", "d]");
+                    var decNum = PhotmetryTable.AAVSO.extractNumericalValue (currentRow.cells[2].innerHTML, "[", "d]");
+                    var labelStr = "n/a";
+                    try{   
+                        labelStr= PhotmetryTable.AAVSO.extractNumericalValue (currentRow.cells[3].innerHTML, "<B>", "</B>");
+                    } catch (err1) {
+                        labelStr = PhotmetryTable.AAVSO.extractNumericalValue (currentRow.cells[3].innerHTML, "<b>", "</b>");
+                    }
+                    var magNum = 0.1 * eval (labelStr);
+                    try {
+                        magNum = PhotmetryTable.AAVSO.extractNumericalValue (currentRow.cells[6].innerHTML, "<FONT size=-1>", " (");
+                    } catch (err2) {
                         try {
-                            magNum = PhotmetryTable.AAVSO.extractNumericalValue (currentRow.cells[6].innerHTML, "<FONT size=-1>", " (");
-                        } catch (err2) {
-                            try {
-                                magNum = PhotmetryTable.AAVSO.extractNumericalValue (currentRow.cells[6].innerHTML, "<font size=\"-1\">", " (");
-                            } catch (err3) {
-                            }
+                            magNum = PhotmetryTable.AAVSO.extractNumericalValue (currentRow.cells[6].innerHTML, "<font size=\"-1\">", " (");
+                        } catch (err3) {
                         }
+                    }
                         
+                    if (magNum > -3) {
                         var star = { "ra" : raNum, "dec" : decNum, "mag" : magNum, "label" : labelStr };
                         stars.push ( star );
+                    }
                 }
             
             
