@@ -36,7 +36,7 @@ var ExtinctionCoefficient = {
         ExtinctionCoefficient.values = ExtinctionCoefficient[algo].getKValues();
         
         ExtinctionCoefficient.values.sort ( function (a, b) { return a - b; } );
-        int allowedEntries = Math.floor (ExtinctionCoefficient.values.length * ExtinctionCoefficient.useMedianRatio);
+        var allowedEntries = Math.floor (ExtinctionCoefficient.values.length * ExtinctionCoefficient.useMedianRatio);
         if (allowedEntries) {
             var startSlicingFrom = Math.floor((ExtinctionCoefficient.values.length - allowedEntries)/2)
             ExtinctionCoefficient.values.slice = ExtinctionCoefficient.values.slice (startSlicingFrom, startSlicingFrom + allowedEntries);
@@ -123,7 +123,7 @@ var ExtinctionCoefficient = {
             var comps = ExtinctionCoefficient.comparisons; // avoid long names
             var i = 0;
             for (; i < comps.length; i++) {
-                function (n) {
+                (function (n) {
                     var pairedComp =  comps[n];
                     
                     var bracketCompInput = document.createElement ("input");
@@ -147,7 +147,7 @@ var ExtinctionCoefficient = {
                     } catch (err) { // div by 0 
                     }
                     delete bracketCompInput;
-                }(i);
+                })(i);
             }
             return kvals;
         }
