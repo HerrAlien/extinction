@@ -51,7 +51,7 @@ var StarsSelection = {
                     this.id = data.uiElement.id;
                     this.set = function (st) {
                         data.star = st;
-                        data.uiElement.value = data.star.label + " ["+ data.star.ra + "," + data.star.dec +"]: " + data.star.mag;
+                        data.uiElement.value = data.star.label;
                     }   
                     this.get = function () {
                         return data.star;

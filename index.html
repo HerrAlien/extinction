@@ -147,7 +147,7 @@ pre {
         <div id="wizard">        
         <ol>
           <li>
-            Current JD:  <input placeholder="[JD]" id="JD" size="7">
+            Date & time (JD or yyyy/mm/dd hh:mm:ss):  <input placeholder="[JD or yyyy/mm/dd hh:mm:ss]" id="JD" size="25">
           </li>
           <li>
             Location (0.1 degree accuracy is enough):<br>
@@ -168,11 +168,12 @@ pre {
           </li>
     
           <li>
-              Brightness estimate (A [number] V [number] B)<br>
-              star A: <input class="selectorItem" size="30" id="selectAforEstimate" readonly="true" placeholder="[click me then select from the map]"><br>
-              is brighter than V by <input placeholder="[number]" id="AtoVar" size="5"> degrees,<br>
-              and V is brighter by <input placeholder="[number]" id="VarToB" size="5"> degrees than <br>
-              star B: <input class="selectorItem" size="30" id="selectBforEstimate" readonly="true" placeholder="[click me then select from the map]">
+              Brightness estimate (A (number) V (number) B)<br>
+              A: <input class="selectorItem" size="30" id="selectAforEstimate" readonly="true"> 
+              (<input placeholder="[number]" id="AtoVar" size="3">) 
+              V 
+              (<input placeholder="[number]" id="VarToB" size="3">)
+              B: <input class="selectorItem" size="30" id="selectBforEstimate" readonly="true">
               <hr>
               Without considering extinction, brightness of V is:<br>
               <span id="brightnessNoExtinction">unknown</span>
