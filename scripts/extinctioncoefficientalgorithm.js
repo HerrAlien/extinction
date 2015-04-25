@@ -114,7 +114,8 @@ var ExtinctionCoefficient = {
                     var valid = false;
                     try {
                         this.value();
-                        valid = (null != this.bright() && null != this.dim())
+                        valid = (null != this.bright() && null != this.dim() && 
+                                this.ui.valueLineEdit.value != "");
                     } catch (err) {
                     }
                     return valid;
