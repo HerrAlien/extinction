@@ -19,7 +19,6 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl.html
 
 var ExtinctionCoefficient = {
 
-    values : [],
     comparisons : [],
     
     useMedianRatio : 1.0 / 3.0, 
@@ -28,8 +27,22 @@ var ExtinctionCoefficient = {
     currentAlgorithmID : 0,
 
     updateAirmass : function (_lat, _long, _time){
-        // for each star, compute altitude
-        // then airmass
+        
+        var lst = Computations.LSTFromTimeString (_time, _long);
+        
+        var compIndex = 0;
+        var comps = ExtinctionCoefficient.getValidComparisons();
+        for (compIndex = 0; compIndex < comps.length; compIndex++) {
+            var stars = comps[compIndex].getStars();
+            var starIndex = 0;
+            for (starIndex = 0; starIndex < stars.length; starIndex++) {
+                // for each star, compute altitude
+                var star = stars[starIndex];
+                var alt = Computations.Alt (star.ra, star.dec, lst, _lat, _long);
+                // then airmass
+                star.airmass = Computations.Airmass (alt);
+            }
+        }
     },
     
     getAverageValue : function () {
@@ -38,20 +51,23 @@ var ExtinctionCoefficient = {
             throw "invalid algorithm selected";
         
         var algo = ExtinctionCoefficient.algorithms[ExtinctionCoefficient.currentAlgorithmID];
-        ExtinctionCoefficient.values = ExtinctionCoefficient[algo].getKValues();
+        var values = ExtinctionCoefficient[algo].getKValues();
         
-        ExtinctionCoefficient.values.sort ( function (a, b) { return a - b; } );
-        var allowedEntries = Math.floor (ExtinctionCoefficient.values.length * ExtinctionCoefficient.useMedianRatio);
+        if (values.length == 0)
+            return 0;
+        
+        values.sort ( function (a, b) { return a - b; } );
+        var allowedEntries = Math.floor (values.length * ExtinctionCoefficient.useMedianRatio);
         if (allowedEntries) {
-            var startSlicingFrom = Math.floor((ExtinctionCoefficient.values.length - allowedEntries)/2)
-            ExtinctionCoefficient.values.slice = ExtinctionCoefficient.values.slice (startSlicingFrom, startSlicingFrom + allowedEntries);
+            var startSlicingFrom = Math.floor((values.length - allowedEntries)/2)
+            values = values.slice (startSlicingFrom, startSlicingFrom + allowedEntries);
         }
         var returnedCoeff = 0;
         var i = 0;
-        for (i = 0; i < ExtinctionCoefficient.values.length; i++)
-            returnedCoeff = returnedCoeff + ExtinctionCoefficient.values[i];
+        for (i = 0; i < values.length; i++)
+            returnedCoeff = returnedCoeff + values[i];
             
-        returnedCoeff = returnedCoeff / ExtinctionCoefficient.values.length;
+        returnedCoeff = returnedCoeff / values.length;
         return returnedCoeff;
     },
     
@@ -64,6 +80,18 @@ var ExtinctionCoefficient = {
         var d = firstSingleComparison.value() * (secondSingleComparison.bright().airmass - secondSingleComparison.dim().airmass);
         return ((a - b) / (c - d));
            
+    },
+    
+    getValidComparisons : function () {
+        var initial_comps = ExtinctionCoefficient.comparisons; // avoid long names
+        var comps = [];
+            
+        var i = 0;
+        for (i = 0; i < initial_comps.length; i++)
+            if (initial_comps[i].isValid())
+                comps.push (initial_comps[i]);
+        
+        return comps;
     },
 
     SingleComparison : function (brighterStarSelector, degreesEditor, dimmerStarSelector) {
@@ -80,6 +108,20 @@ var ExtinctionCoefficient = {
                     "brightSelector" : b,
                     "valueLineEdit" : deg,
                     "dimSelector" : d
+                },
+                
+                "isValid" : function () {
+                    var valid = false;
+                    try {
+                        this.value();
+                        valid = (null != this.bright() && null != this.dim())
+                    } catch (err) {
+                    }
+                    return valid;
+                },
+                
+                "getStars" : function () {
+                    return [this.bright(), this.dim()];
                 }
             };
         }();
@@ -95,7 +137,13 @@ var ExtinctionCoefficient = {
             
             return {
                 "first" : ExtinctionCoefficient.SingleComparison (b, deg1, m),
-                "second" : ExtinctionCoefficient.SingleComparison (m, deg2, d)
+                "second" : ExtinctionCoefficient.SingleComparison (m, deg2, d),
+                "isValid" : function () {
+                    return this.first.isValid() && this.second.isValid();
+                },
+                "getStars" : function () {
+                    return ((this.first.getStars()).concat(this.second.getStars()));
+                }
             };
         }();
     },
@@ -105,10 +153,12 @@ var ExtinctionCoefficient = {
         getKValues : function () {
             /* n^2 complexity */
             var kvals = [];
+            var comps = ExtinctionCoefficient.getValidComparisons();
+            
             var firstComparison = 0;
             var secondComparison = 0;
-            var comps = ExtinctionCoefficient.comparisons; // avoid long names
-            for (; firstComparison < comps.length; firstComparison++) {
+            
+            for (; firstComparison < comps.length && comps.length > 1; firstComparison++) {
                 for (secondComparison = firstComparison + 1; secondComparison < comps.length; secondComparison++) {
                     try {
                         kvals.push (ExtinctionCoefficient.getkValue (comps[firstComparison], comps[secondComparison]));
@@ -125,7 +175,7 @@ var ExtinctionCoefficient = {
         getKValues : function () {
             var kvals = [];
             // each paired comparison gives 3 values for k
-            var comps = ExtinctionCoefficient.comparisons; // avoid long names
+            var comps = ExtinctionCoefficient.getValidComparisons(); // avoid long names
             var i = 0;
             for (; i < comps.length; i++) {
                 (function (n) {

@@ -38,9 +38,8 @@ var Computations = {
         return nonNormedLST - 360 * Math.floor (nonNormedLST / 360);
     },
     
-    Alt : function (_ra, _dec, timeStr, _lat, _long) {
-
-        var deg2rad = Math.PI / 180;
+    LSTFromTimeString : function (timeStr, _long) {
+        
         var currentJD = 0;
         try { // assume a JD first
             currentJD = parseFloat (timeStr);
@@ -48,11 +47,18 @@ var Computations = {
             currentJD = Computations.JD (timeStr);
         }
         
-        var lst = Computations.LST (currentJD, _long) * deg2rad;
+       return Computations.LST (currentJD, _long);
+    },
+    
+    Alt : function (_ra, _dec, _lst, _lat, _long) {
+
+        var deg2rad = Math.PI / 180;
+
         var ra = _ra * deg2rad;
         var dec = _dec * deg2rad;
         var lat = _lat * deg2rad;
         var long = _long * deg2rad;
+        var lst = _lst * deg2rad;
 
         return Math.asin (Math.sin (dec) * Math.sin (lat) + Math.cos (dec) * Math.cos (lat) * Math.cos (lst - ra)) * 180 / Math.PI;
     },
