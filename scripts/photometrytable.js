@@ -26,6 +26,13 @@ var PhotmetryTable = {
             maxStarsPerNode : 8
         },
         
+        variableStar : { 
+            "ra" : 0, 
+            "dec" : 0, 
+            "mag" : "unknown", 
+            "label" : "V" 
+        },
+        
         getClosestStar : function(raNum, decNum) {
             var foundStar = null;
             // this gets filled with the result of the search
@@ -265,9 +272,16 @@ var PhotmetryTable = {
                 var structuredData  = PhotmetryTable.AAVSO.GetData (doc);
                 PhotmetryTable.searchTree.init (structuredData, limittingMag);
                 PhotmetryTable.onInit();
+                PhotmetryTable.variableStar.ra = structuredData.centerCoords[0];
+                PhotmetryTable.variableStar.dec = structuredData.centerCoords[1];
             }
         }
         xmlHttpReq.open(PhotmetryTable.AAVSO.config.method, PhotmetryTable.AAVSO.config.url + chartID, true);
         xmlHttpReq.send(null);              
+    },
+    
+    updateAirmass : function (_lat, _long, _time){
+        // for each star, compute altitude
+        // then airmass
     }
 };

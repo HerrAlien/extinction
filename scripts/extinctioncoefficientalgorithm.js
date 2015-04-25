@@ -26,7 +26,12 @@ var ExtinctionCoefficient = {
     
     algorithms : ["Argelander", "Paired"],
     currentAlgorithmID : 0,
-        
+
+    updateAirmass : function (_lat, _long, _time){
+        // for each star, compute altitude
+        // then airmass
+    },
+    
     getAverageValue : function () {
         
         if (ExtinctionCoefficient.currentAlgorithmID < 0 || ExtinctionCoefficient.currentAlgorithmID > ExtinctionCoefficient.algorithms.length)

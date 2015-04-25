@@ -44,7 +44,7 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl.html
     #container {
         margin: 10px;
     text-align: center;
-    min-width: 1000px;
+    min-width: 1200px;
 }
 
 #banner {
@@ -83,7 +83,7 @@ pre {
 #wizard {
     float: left;
     margin: 0px 50px 0px 20px;
-    width: 420px;
+    width: 480px;
     text-align: left;
 }
 
@@ -92,16 +92,16 @@ pre {
 
 .selectorItem, .selectorItemActive {
   cursor: pointer;
-  width: 50px;
+  width: 105px;
 }
 
 .selectorItem {
-  background-color : #dadadf; 
+  background-color : #eaeaef; 
   border : solid 1px #000000;
 }
 
 .selectorItemActive {
-  background-color : #cacaff; 
+  background-color : #eaeaff; 
   border : solid 2px #8080ff;
 }
 
@@ -169,11 +169,11 @@ pre {
     
           <li>
               Brightness estimate (A (number) V (number) B)<br>
-              A: <input class="selectorItem" size="30" id="selectAforEstimate" readonly="true"> 
+              A: <input class="selectorItem" id="selectAforEstimate" readonly="true"> 
               (<input placeholder="[number]" id="AtoVar" size="3">) 
               V 
               (<input placeholder="[number]" id="VarToB" size="3">)
-              B: <input class="selectorItem" size="30" id="selectBforEstimate" readonly="true">
+              B: <input class="selectorItem" id="selectBforEstimate" readonly="true">
               <hr>
               Without considering extinction, brightness of V is:<br>
               <span id="brightnessNoExtinction">unknown</span>

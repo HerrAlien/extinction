@@ -51,7 +51,7 @@ var StarsSelection = {
                     this.id = data.uiElement.id;
                     this.set = function (st) {
                         data.star = st;
-                        data.uiElement.value = data.star.label;
+                        this.setDisplayedString (data.star.label);
                     }   
                     this.get = function () {
                         return data.star;
@@ -62,18 +62,30 @@ var StarsSelection = {
                     this.setClassName = function (cn) {
                         data.uiElement.className = cn;
                     }
+                    this.setPlaceholder = function (p) {
+                        data.uiElement.placeholder = p;
+                    }
+                    this.setDisplayedString = function (s) {
+                        data.uiElement.value = s;
+                    }
                     
                     this.setClassName("selectorItem");
+                    this.setPlaceholder ("click me");
+                    
                     var sel = this;
                     this.addEventHandler ("onclick", function () {
-                        if (StarsSelection.activeSelector)
+                        if (StarsSelection.activeSelector) {
                             StarsSelection.activeSelector.setClassName("selectorItem");
+                            StarsSelection.activeSelector.setPlaceholder ("click me");
+                        }
                             
                         sel.setClassName("selectorItemActive");
-                        StarsSelection.activeSelector = sel;
+                        sel.setDisplayedString("");
+                        sel.setPlaceholder ("click on the chart");
                         
                         StarsSelection.imageElem.className = "readyToSelect";
-                        
+
+                        StarsSelection.activeSelector = sel;
                         if (StarsSelection.onSelectionActivated)
                             StarsSelection.onSelectionActivated (sel);
                     });
