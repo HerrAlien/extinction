@@ -58,11 +58,13 @@ var CorrectorUIManager = {
             CorrectorUIManager.usePaired.checked = false;
             CorrectorUIManager.selectedAlgorithm = 0;
             CorrectorUIManager.ResetHeader();
+            CorrectorUIManager.ClearComparisonsList();
         }
         CorrectorUIManager.usePaired.onclick = function () {
             CorrectorUIManager.useArgelander.checked = false;
             CorrectorUIManager.selectedAlgorithm = 1;
             CorrectorUIManager.ResetHeader();
+            CorrectorUIManager.ClearComparisonsList();
         }
         
         CorrectorUIManager.useArgelander.onclick();
@@ -71,7 +73,7 @@ var CorrectorUIManager = {
     
     ResetHeader : function () {
         var addChild = CorrectorUIManager.Utils.AddChild;
-        CorrectorUIManager.tableHeader.innerHTML = "";
+        CorrectorUIManager.Utils.ClearElement (CorrectorUIManager.tableHeader);
         if (0 == CorrectorUIManager.selectedAlgorithm) {
             var tdbright =  addChild (CorrectorUIManager.tableHeader, "td");
             var tdval =  addChild (CorrectorUIManager.tableHeader, "td");
@@ -105,8 +107,9 @@ var CorrectorUIManager = {
     
     algorithms : ["Argelander", "Paired"],
     
-    RebuildComparisonsList : function () {
-        
+    ClearComparisonsList : function () {
+        ExtinctionCoefficient.comparisons = [];
+        CorrectorUIManager.Utils.ClearElement (CorrectorUIManager.table);
     },
     
     Utils : {
@@ -117,11 +120,12 @@ var CorrectorUIManager = {
             return res;
         },
         
-        AddDeleteLink : function (_row, _tddelete) {
+        AddDeleteLink : function (_row, _tddelete, _comp) {
             var addChild = CorrectorUIManager.Utils.AddChild;
-            (function (r, t) {
+            (function (r, t, c) {
                 var tddelete = t;
                 var deleteAnchor = addChild (tddelete, "a");
+                var comp = c;
                 deleteAnchor.innerHTML = "(x) Delete row";
                 var tr = r;
                 deleteAnchor.onclick = function () {
@@ -136,9 +140,19 @@ var CorrectorUIManager = {
                     CorrectorUIManager.table.removeChild (tr);
                     delete tr;
                 
-                    CorrectorUIManager.RebuildComparisonsList();
+                    var isAt = ExtinctionCoefficient.comparisons.indexOf (comp);
+                    ExtinctionCoefficient.comparisons.splice (isAt, 1);
                 }
-            })(_row, _tddelete);            
+            })(_row, _tddelete, _comp);            
+        },
+        
+        ClearElement : function (elem) {
+            var i = 0; 
+            for (i = 0; i < elem.childNodes.length; i++){
+                elem.removeChild(elem.childNodes[i]);
+                delete elem.childNodes[i];
+            }
+            elem.innerHTML = "";
         }
     },
     
@@ -149,22 +163,20 @@ var CorrectorUIManager = {
             
             var row = addChild (table, "tr");
             var tdbright =  addChild (row, "td");
-            var tdval =  addChild (row, "td");
-            var tddim =  addChild (row, "td");
-            var tddelete =  addChild (row, "td");
-            
             var brightInput = addChild (tdbright, "input");
+            var tdval =  addChild (row, "td");
             var compImput = addChild (tdval, "input");
+            var tddim =  addChild (row, "td");
             var dimInput = addChild (tddim, "input");
+            var tddelete =  addChild (row, "td");
             
             compImput.size=2;
             
             var brightSelector = StarsSelection.Selector.build (brightInput);
             var dimSelector = StarsSelection.Selector.build (dimInput);
             
-            CorrectorUIManager.Utils.AddDeleteLink (row, tddelete);
-            
             var comp = ExtinctionCoefficient.SingleComparison(brightSelector, compImput, dimSelector);
+            CorrectorUIManager.Utils.AddDeleteLink (row, tddelete, comp);
             ExtinctionCoefficient.comparisons.push (comp);
         }
     },
@@ -176,29 +188,27 @@ var CorrectorUIManager = {
             
             var row = addChild (table, "tr");
             var tdbright =  addChild (row, "td");
+            var brightInput = addChild (tdbright, "input");
             var tdval_bm =  addChild (row, "td");
+            var b2m = addChild (tdval_bm, "input");
             var tdmid =  addChild (row, "td");
+            var midImput = addChild (tdmid, "input");
             var tdval_md =  addChild (row, "td");
+            var m2d = addChild (tdval_md, "input");
             var tddim =  addChild (row, "td");
+            var dimInput = addChild (tddim, "input");
             var tddelete =  addChild (row, "td");
             
-            var brightInput = addChild (tdbright, "input");
-            var b2m = addChild (tdval_bm, "input");
-            var midImput = addChild (tdmid, "input");
-            var m2d = addChild (tdval_md, "input");
-            var dimInput = addChild (tddim, "input");
-
             b2m.size = 2;
             m2d.size = 2;
-
             
             var brightSelector = StarsSelection.Selector.build (brightInput);
             var midSelector = StarsSelection.Selector.build (midImput);
             var dimSelector = StarsSelection.Selector.build (dimInput);
             
-            CorrectorUIManager.Utils.AddDeleteLink (row, tddelete);
             
             var comp = ExtinctionCoefficient.PairedComparison(brightSelector, b2m, midImput, m2d, dimSelector);
+            CorrectorUIManager.Utils.AddDeleteLink (row, tddelete, comp);
             ExtinctionCoefficient.comparisons.push (comp);
         }
     }
