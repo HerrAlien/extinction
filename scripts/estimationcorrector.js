@@ -100,6 +100,7 @@ var CorrectorUIManager = {
         var anch = addChild(tdadd, "a");
         anch.innerHTML = "(+) Add row";
         anch.noref="";
+        anch.className = "addAnchor";
         anch.onclick = function () {
             CorrectorUIManager[CorrectorUIManager.algorithms[CorrectorUIManager.selectedAlgorithm]].CreateComparisonUIRow();
         }
@@ -127,6 +128,7 @@ var CorrectorUIManager = {
                 var deleteAnchor = addChild (tddelete, "a");
                 var comp = c;
                 deleteAnchor.innerHTML = "(x) Delete row";
+                deleteAnchor.className = "deleteAnchor";
                 var tr = r;
                 deleteAnchor.onclick = function () {
                     var i = 0; 
