@@ -322,7 +322,7 @@ var CorrectorUIManager = {
         if (extinctionCorrectionRequired)
             document.getElementById ("shouldComputeExtinction").className = "hidden";
         else
-            document.getElementById ("shouldComputeExtinction").className = "visible";
+            document.getElementById ("shouldComputeExtinction").className = "";
         
         // get K:
         //  - this can be a constant
