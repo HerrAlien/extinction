@@ -21,7 +21,9 @@ var ExtinctionCoefficient = {
 
     comparisons : [],
     
-    useMedianRatio : 1.0 / 3.0, 
+    validValuesRange : [0.15 , 1.0],
+    
+    useMedianRatio : 1.0 / 1.0, 
     
     algorithms : ["Argelander", "Paired"],
     currentAlgorithmID : 0,
@@ -71,10 +73,17 @@ var ExtinctionCoefficient = {
         }
         var returnedCoeff = 0;
         var i = 0;
-        for (i = 0; i < values.length; i++)
-            returnedCoeff = returnedCoeff + values[i];
-            
-        returnedCoeff = returnedCoeff / values.length;
+        var usedValues = 0;
+        for (i = 0; i < values.length; i++) {
+            if (values[i] > ExtinctionCoefficient.validValuesRange [0] && values[i] < ExtinctionCoefficient.validValuesRange [1]) {
+                returnedCoeff = returnedCoeff + values[i];
+                usedValues++;
+            }
+        }
+        
+        if (usedValues > 0)
+            returnedCoeff = returnedCoeff / usedValues;
+        
         return returnedCoeff;
     },
     
