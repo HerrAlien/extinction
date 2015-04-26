@@ -94,6 +94,7 @@ var CorrectorUIManager = {
         CorrectorUIManager.useArgelander.onclick = function () {
             CorrectorUIManager.usePaired.checked = false;
             CorrectorUIManager.selectedAlgorithm = 0;
+            ExtinctionCoefficient.currentAlgorithmID = 0;
             CorrectorUIManager.ResetHeader();
             CorrectorUIManager.ClearComparisonsList();
             CorrectorUIManager.onUserInput();
@@ -101,6 +102,7 @@ var CorrectorUIManager = {
         CorrectorUIManager.usePaired.onclick = function () {
             CorrectorUIManager.useArgelander.checked = false;
             CorrectorUIManager.selectedAlgorithm = 1;
+            ExtinctionCoefficient.currentAlgorithmID = 1;
             CorrectorUIManager.ResetHeader();
             CorrectorUIManager.ClearComparisonsList();
             CorrectorUIManager.onUserInput();
@@ -183,6 +185,7 @@ var CorrectorUIManager = {
                 
                     var isAt = ExtinctionCoefficient.comparisons.indexOf (comp);
                     ExtinctionCoefficient.comparisons.splice (isAt, 1);
+                    CorrectorUIManager.onUserInput();
                 }
             })(_row, _tddelete, _comp);            
         },
@@ -277,8 +280,9 @@ var CorrectorUIManager = {
         // this is the main callback ...
         // compute estimate with K = 0
         var K = 0;
+        var variableBrightness = 0;
         try {
-            var variableBrightness = EstimationCorrector.Estimate (K);
+            variableBrightness = EstimationCorrector.Estimate (K);
             document.getElementById("brightnessNoExtinction").innerHTML = Computations.Round (variableBrightness, 2);
         } catch (err) {
         }
@@ -322,10 +326,14 @@ var CorrectorUIManager = {
         
         // get K:
         //  - this can be a constant
-        if (document.getElementById ("useValueForK").checked)
+        if (document.getElementById ("useValueForK").checked) {
+            document.getElementById ("K").readOnly = false;
             K = parseFloat (document.getElementById ("K").value);
-        else {
+        } else {
         //  - or it must be determined from observations
+            document.getElementById ("K").readOnly = true;
+            K = ExtinctionCoefficient.getAverageValue();
+            document.getElementById ("K").value = Computations.Round (K, 2);
         }
         
         try {
