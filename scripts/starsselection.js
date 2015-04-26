@@ -71,6 +71,7 @@ var StarsSelection = {
                     
                     this.setClassName("selectorItem");
                     this.setPlaceholder ("click me");
+                    data.uiElement.readOnly = true;
                     
                     var sel = this;
                     this.addEventHandler ("onclick", function () {
