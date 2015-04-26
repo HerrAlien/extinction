@@ -79,5 +79,24 @@ var Computations = {
         var dotIsAt = nstr.indexOf (".");
         var slicedNum = nstr.slice (0, dotIsAt + decimals + 1);
         return eval (slicedNum);
+    },
+    
+    AverageAndStdDev : function (data) {
+        var res = {"avg" : 0, "stdDev" : 0 };
+        
+        var i = 0;
+        for (i = 0; i < data.length; i++)
+            res.avg = res.avg + data [i];
+        
+        if (data.length > 0)
+            res.avg = res.avg / data.length;
+        
+        var variation = 0;
+        for (i = 0; i < data.length; i++)
+            variation = variation + (data [i] - res.avg) * (data [i] - res.avg);
+        
+        res.stdDev = Math.sqrt (variation);
+        
+        return res;
     }
 };

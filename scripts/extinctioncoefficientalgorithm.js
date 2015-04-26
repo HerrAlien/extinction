@@ -23,8 +23,6 @@ var ExtinctionCoefficient = {
     
     validValuesRange : [0.15 , 1.0],
     
-    useMedianRatio : 1.0 / 1.0, 
-    
     algorithms : ["Argelander", "Paired"],
     currentAlgorithmID : 0,
 
@@ -54,37 +52,26 @@ var ExtinctionCoefficient = {
         star.airmass = Computations.Airmass (alt);
     },
     
-    getAverageValue : function () {
-        
+    rebuildValues : function () {
         if (ExtinctionCoefficient.currentAlgorithmID < 0 || ExtinctionCoefficient.currentAlgorithmID > ExtinctionCoefficient.algorithms.length)
             throw "invalid algorithm selected";
         
         var algo = ExtinctionCoefficient.algorithms[ExtinctionCoefficient.currentAlgorithmID];
-        var values = ExtinctionCoefficient[algo].getKValues();
+        var values_beforeFilter = ExtinctionCoefficient[algo].getKValues();
         
-        if (values.length == 0)
+        if (values_beforeFilter.length == 0)
             return 0;
-        
-        values.sort ( function (a, b) { return a - b; } );
-        var allowedEntries = Math.floor (values.length * ExtinctionCoefficient.useMedianRatio);
-        if (allowedEntries) {
-            var startSlicingFrom = Math.floor((values.length - allowedEntries)/2)
-            values = values.slice (startSlicingFrom, startSlicingFrom + allowedEntries);
-        }
-        var returnedCoeff = 0;
+                
         var i = 0;
-        var usedValues = 0;
-        for (i = 0; i < values.length; i++) {
-            if (values[i] > ExtinctionCoefficient.validValuesRange [0] && values[i] < ExtinctionCoefficient.validValuesRange [1]) {
-                returnedCoeff = returnedCoeff + values[i];
-                usedValues++;
+        var usedValues = [];
+        for (i = 0; i < values_beforeFilter.length; i++) {
+            if (values_beforeFilter[i] > ExtinctionCoefficient.validValuesRange [0] && 
+                values_beforeFilter[i] < ExtinctionCoefficient.validValuesRange [1]) {
+                usedValues.push (values_beforeFilter[i]);
             }
         }
         
-        if (usedValues > 0)
-            returnedCoeff = returnedCoeff / usedValues;
-        
-        return returnedCoeff;
+        return usedValues;
     },
     
     getkValue : function (firstSingleComparison, secondSingleComparison) {

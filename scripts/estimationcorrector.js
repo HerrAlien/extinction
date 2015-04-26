@@ -333,18 +333,32 @@ var CorrectorUIManager = {
             if (document.getElementById ("useValueForK").checked) {
                 document.getElementById ("K").readOnly = false;
                 K = parseFloat (document.getElementById ("K").value);
+                try {
+                    variableBrightness = EstimationCorrector.Estimate (K);
+                } catch (err) {
+                }
+                document.getElementById("brightnessWithExtinction").innerHTML = Computations.Round (variableBrightness, 2);
             } else {
             //  - or it must be determined from observations
                 document.getElementById ("K").readOnly = true;
-                K = ExtinctionCoefficient.getAverageValue();
-                document.getElementById ("K").value = Computations.Round (K, 2);
+                var kvals = ExtinctionCoefficient.rebuildValues();
+                var variableMags  = [];
+                
+                var i = 0;
+                for (i = 0; i < kvals.length; i++) {
+                    variableMags.push (EstimationCorrector.Estimate (kvals[i]));
+                }
+                
+                var kstats = Computations.AverageAndStdDev (kvals);
+                document.getElementById ("K").value = Computations.Round (kstats.avg, 2);
+                
+                var variableMagStats = Computations.AverageAndStdDev (variableMags);
+                document.getElementById("brightnessWithExtinction").innerHTML = Computations.Round (variableMagStats.avg, 2) + 
+                                                                                " (std. dev. " + 
+                                                                                Computations.Round (variableMagStats.stdDev, 2) + 
+                                                                                ")";
             }
             
-            try {
-                variableBrightness = EstimationCorrector.Estimate (K);
-            } catch (err) {
-            }
-            document.getElementById("brightnessWithExtinction").innerHTML = Computations.Round (variableBrightness, 2);
         } catch (err) {
         }
     }
