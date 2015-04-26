@@ -41,12 +41,15 @@ var ExtinctionCoefficient = {
         var stars = comp.getStars();
         var starIndex = 0;
         for (starIndex = 0; starIndex < stars.length; starIndex++) {
-            // for each star, compute altitude
-            var star = stars[starIndex];
-            var alt = Computations.Alt (star.ra, star.dec, lst, _lat, _long);
-            // then airmass
-            star.airmass = Computations.Airmass (alt);
+            ExtinctionCoefficient.updateAirmassForStar (stars[starIndex], _lat, _long, lst);
         }
+    },
+    
+    updateAirmassForStar : function (star,  _lat, _long, lst) {
+        // for each star, compute altitude
+        var alt = Computations.Alt (star.ra, star.dec, lst, _lat, _long);
+        // then airmass
+        star.airmass = Computations.Airmass (alt);
     },
     
     getAverageValue : function () {

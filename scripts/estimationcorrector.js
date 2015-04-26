@@ -94,6 +94,21 @@ var CorrectorUIManager = {
         
         CorrectorUIManager.useArgelander.onclick();
         CorrectorUIManager.useArgelander.checked = true;
+        
+        StarsSelection.onStarSelected = function (star) {
+            // hide the div showing the hovered star
+            document.getElementById ("debug").className = "hidden";
+
+            var latitude = eval (document.getElementById ("lat").value);
+            var longitude = eval (document.getElementById ("long").value);
+            var timeString = document.getElementById ("dateTime").value;
+            
+            var lst = Computations.LSTFromTimeString (timeString, longitude);
+            ExtinctionCoefficient.updateAirmassForStar (star, latitude, longitude, lst);
+            
+            // now redo displayed values
+            CorrectorUIManager.onUserInput();
+        }
     },
     
     ResetHeader : function () {
@@ -240,14 +255,8 @@ var CorrectorUIManager = {
         }
     },
     
-    onUserInput : function () {
-        // this is the main callback ...
-        // compute estimate with K = 0
-        var K = 0;
-        var variableBrightness = EstimationCorrector.Estimate (K);
-        document.getElementById("brightnessNoExtinction").innerHTML = Computations.Round (variableBrightness, 2);
-        // get the time string and location
-        //  - if no valid values, return
+    onLocationOrTimeChanged : function () {
+        // update all airmasses
         var latitude = eval (document.getElementById ("lat").value);
         var longitude = eval (document.getElementById ("long").value);
         var timeString = document.getElementById ("dateTime").value;
@@ -258,6 +267,16 @@ var CorrectorUIManager = {
         // display the airmasses
         
         ExtinctionCoefficient.updateAirmass (latitude, longitude, timeString);
+        // then call the user input callbavck
+        CorrectorUIManager.onUserInput();
+    },
+    
+    onUserInput : function () {
+        // this is the main callback ...
+        // compute estimate with K = 0
+        var K = 0;
+        var variableBrightness = EstimationCorrector.Estimate (K);
+        document.getElementById("brightnessNoExtinction").innerHTML = Computations.Round (variableBrightness, 2);
         // get K:
         //  - this can be a constant
         //  - or it must be determined from observations

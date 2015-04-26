@@ -41,10 +41,10 @@ var Computations = {
     LSTFromTimeString : function (timeStr, _long) {
         
         var currentJD = 0;
-        try { // assume a JD first
-            currentJD = parseFloat (timeStr);
-        } catch (err) {
+        if (timeStr.indexOf ("/") > 0 || timeStr.indexOf (":") > 0) { // assume a JD first
             currentJD = Computations.JD (timeStr);
+        } else {
+            currentJD = parseFloat (timeStr);
         }
         
        return Computations.LST (currentJD, _long);

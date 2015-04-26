@@ -33,7 +33,7 @@ var StarsSelection = {
                 StarsSelection.activeSelector = null;
                 StarsSelection.imageElem.className = "normalCursor";
                 if (StarsSelection.onStarSelected)
-                    StarsSelection.onStarSelected();
+                    StarsSelection.onStarSelected(StarsSelection.currentlyHoveredStar);
             }
         }
     },
