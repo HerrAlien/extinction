@@ -44,7 +44,8 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl.html
     #container {
         margin: 10px;
     text-align: center;
-    min-width: 1000px;
+    min-width: 1240px;
+    width: 1240px;
 }
 
 #banner {
@@ -82,8 +83,8 @@ pre {
 
 #wizard {
     float: left;
-    margin: 0px 50px 0px 20px;
-    width: 420px;
+    margin: 0px 10px 0px 10px;
+    width: 580px;
     text-align: left;
 }
 
@@ -92,16 +93,16 @@ pre {
 
 .selectorItem, .selectorItemActive {
   cursor: pointer;
-  width: 50px;
+  width: 105px;
 }
 
 .selectorItem {
-  background-color : #dadadf; 
+  background-color : #eaeaef; 
   border : solid 1px #000000;
 }
 
 .selectorItemActive {
-  background-color : #cacaff; 
+  background-color : #eaeaff; 
   border : solid 2px #8080ff;
 }
 
@@ -130,6 +131,17 @@ pre {
     display: block;
 }
 
+.addAnchor, .deleteAnchor {
+    font-weight: bold;
+}
+
+.addAnchor {
+    color: #208820;
+}
+
+.deleteAnchor {
+    color: #882020;
+}
 
 </style>
 
@@ -147,7 +159,7 @@ pre {
         <div id="wizard">        
         <ol>
           <li>
-            Date & time (JD or yyyy/mm/dd hh:mm:ss):  <input placeholder="[JD or yyyy/mm/dd hh:mm:ss]" id="JD" size="25">
+            Date & time (JD or yyyy/mm/dd hh:mm:ss):  <input placeholder="[JD or yyyy/mm/dd hh:mm:ss]" id="dateTime" size="25">
           </li>
           <li>
             Location (0.1 degree accuracy is enough):<br>
@@ -169,11 +181,11 @@ pre {
     
           <li>
               Brightness estimate (A (number) V (number) B)<br>
-              A: <input class="selectorItem" size="30" id="selectAforEstimate" readonly="true"> 
+              A: <input class="selectorItem" id="selectAforEstimate" readonly="true"> 
               (<input placeholder="[number]" id="AtoVar" size="3">) 
               V 
               (<input placeholder="[number]" id="VarToB" size="3">)
-              B: <input class="selectorItem" size="30" id="selectBforEstimate" readonly="true">
+              B: <input class="selectorItem" id="selectBforEstimate" readonly="true">
               <hr>
               Without considering extinction, brightness of V is:<br>
               <span id="brightnessNoExtinction">unknown</span>
@@ -255,6 +267,7 @@ pre {
 <script src="scripts/starsselection.js"></script>
 <script src="scripts/estimationcorrector.js"></script>
 <script src="scripts/extinctioncoefficientalgorithm.js"></script>
+<script src="scripts/computations.js"></script>
 
 <script>
 
@@ -281,21 +294,20 @@ PhotmetryTable.onInit = function () {
     ChartXYToRADec.init (PhotmetryTable.searchTree.root.coords, PhotmetryTable.searchTree.root.fov);
     ChartXYToRADec.onCoordsChanged = onCoordsChanged; 
     ChartXYToRADec.onMouseMove = onMouseMove; 
+    
+    EstimationCorrector.init();
 };
 
 document.getElementById("chartOrientation").onchange = function () {
     ChartXYToRADec.chartOrientation = this.value;
 }
 
-var selectorField=document.getElementById("selectAforEstimate");
-var selector = StarsSelection.Selector.build(selectorField);
 
-selectorField=document.getElementById("selectBforEstimate");
-StarsSelection.Selector.build(selectorField);
+document.getElementById("dateTime").oninput = CorrectorUIManager.onLocationOrTimeChanged;
+document.getElementById("lat").oninput = CorrectorUIManager.onLocationOrTimeChanged;
+document.getElementById("long").oninput = CorrectorUIManager.onLocationOrTimeChanged;
+document.getElementById("K").oninput = CorrectorUIManager.onLocationOrTimeChanged;
 
-StarsSelection.onStarSelected = function () {
-    elem.className = "hidden";
-}
 
 StarsSelection.onSelectionActivated = function () {
     elem.className = "visible";

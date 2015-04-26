@@ -261,85 +261,91 @@ var CorrectorUIManager = {
     },
     
     onLocationOrTimeChanged : function () {
-        // update all airmasses
-        var latitude = eval (document.getElementById ("lat").value);
-        var longitude = eval (document.getElementById ("long").value);
-        var timeString = document.getElementById ("dateTime").value;
-        var lst = Computations.LSTFromTimeString (timeString, longitude);
-        
-        // update the variable comparison aimass,
-        ExtinctionCoefficient.updateAirmassForComparison(EstimationCorrector.pairedComparison, latitude, longitude, lst);
-        // display the airmasses
-        
-        ExtinctionCoefficient.updateAirmass (latitude, longitude, timeString);
-        // then call the user input callbavck
-        CorrectorUIManager.onUserInput();
+        try {
+            // update all airmasses
+            var latitude = eval (document.getElementById ("lat").value);
+            var longitude = eval (document.getElementById ("long").value);
+            var timeString = document.getElementById ("dateTime").value;
+            var lst = Computations.LSTFromTimeString (timeString, longitude);
+            
+            // update the variable comparison aimass,
+            ExtinctionCoefficient.updateAirmassForComparison(EstimationCorrector.pairedComparison, latitude, longitude, lst);
+            // display the airmasses
+            
+            ExtinctionCoefficient.updateAirmass (latitude, longitude, timeString);
+            // then call the user input callbavck
+            CorrectorUIManager.onUserInput();
+        } catch (err) {
+        }
     },
     
     onUserInput : function () {
-        // this is the main callback ...
-        // compute estimate with K = 0
-        var K = 0;
-        var variableBrightness = 0;
         try {
-            variableBrightness = EstimationCorrector.Estimate (K);
-            document.getElementById("brightnessNoExtinction").innerHTML = Computations.Round (variableBrightness, 2);
-        } catch (err) {
-        }
-        
-        // update airmass of V - it never gets selected by the user
-        EstimationCorrector.updateAirmassFromInput (PhotmetryTable.variableStar);
-        
-        // display airmasses
-        var airmassA = "unknown";
-        var airmassB = "unknown";
-        var airmassV = "unknown";
-        try {
-            airmassA =  EstimationCorrector.pairedComparison.first.bright().airmass;
-        } catch (err) {
-            airmassA = "unknown";
-        }
+            // this is the main callback ...
+            // compute estimate with K = 0
+            var K = 0;
+            var variableBrightness = 0;
+            try {
+                variableBrightness = EstimationCorrector.Estimate (K);
+                document.getElementById("brightnessNoExtinction").innerHTML = Computations.Round (variableBrightness, 2);
+            } catch (err) {
+            }
+            
+            // update airmass of V - it never gets selected by the user
+            EstimationCorrector.updateAirmassFromInput (PhotmetryTable.variableStar);
+            
+            // display airmasses
+            var airmassA = "unknown";
+            var airmassB = "unknown";
+            var airmassV = "unknown";
+            try {
+                airmassA =  EstimationCorrector.pairedComparison.first.bright().airmass;
+            } catch (err) {
+                airmassA = "unknown";
+            }
 
-        try {
-            airmassB = EstimationCorrector.pairedComparison.second.dim().airmass;
-        } catch (err) {
-            airmassB = "unknown";
-        }
+            try {
+                airmassB = EstimationCorrector.pairedComparison.second.dim().airmass;
+            } catch (err) {
+                airmassB = "unknown";
+            }
 
-        try {
-            airmassV = EstimationCorrector.pairedComparison.first.dim().airmass;
+            try {
+                airmassV = EstimationCorrector.pairedComparison.first.dim().airmass;
+            } catch (err) {
+                airmassV = "unknown";
+            }
+            
+            document.getElementById ("airmassA").innerHTML = Computations.Round (airmassA, 3);
+            document.getElementById ("airmassB").innerHTML = Computations.Round (airmassB, 3);
+            document.getElementById ("airmassV").innerHTML = Computations.Round (airmassV, 3);
+            
+            var extinctionCorrectionRequired = Math.abs (airmassA - airmassB) > 0.2 ||
+                                               Math.abs (airmassA - airmassV) > 0.2 ||
+                                               Math.abs (airmassV - airmassB) > 0.2;
+            if (extinctionCorrectionRequired)
+                document.getElementById ("shouldComputeExtinction").className = "hidden";
+            else
+                document.getElementById ("shouldComputeExtinction").className = "";
+            
+            // get K:
+            //  - this can be a constant
+            if (document.getElementById ("useValueForK").checked) {
+                document.getElementById ("K").readOnly = false;
+                K = parseFloat (document.getElementById ("K").value);
+            } else {
+            //  - or it must be determined from observations
+                document.getElementById ("K").readOnly = true;
+                K = ExtinctionCoefficient.getAverageValue();
+                document.getElementById ("K").value = Computations.Round (K, 2);
+            }
+            
+            try {
+                variableBrightness = EstimationCorrector.Estimate (K);
+            } catch (err) {
+            }
+            document.getElementById("brightnessWithExtinction").innerHTML = Computations.Round (variableBrightness, 2);
         } catch (err) {
-            airmassV = "unknown";
         }
-        
-        document.getElementById ("airmassA").innerHTML = Computations.Round (airmassA, 3);
-        document.getElementById ("airmassB").innerHTML = Computations.Round (airmassB, 3);
-        document.getElementById ("airmassV").innerHTML = Computations.Round (airmassV, 3);
-        
-        var extinctionCorrectionRequired = Math.abs (airmassA - airmassB) > 0.2 ||
-                                           Math.abs (airmassA - airmassV) > 0.2 ||
-                                           Math.abs (airmassV - airmassB) > 0.2;
-        if (extinctionCorrectionRequired)
-            document.getElementById ("shouldComputeExtinction").className = "hidden";
-        else
-            document.getElementById ("shouldComputeExtinction").className = "";
-        
-        // get K:
-        //  - this can be a constant
-        if (document.getElementById ("useValueForK").checked) {
-            document.getElementById ("K").readOnly = false;
-            K = parseFloat (document.getElementById ("K").value);
-        } else {
-        //  - or it must be determined from observations
-            document.getElementById ("K").readOnly = true;
-            K = ExtinctionCoefficient.getAverageValue();
-            document.getElementById ("K").value = Computations.Round (K, 2);
-        }
-        
-        try {
-            variableBrightness = EstimationCorrector.Estimate (K);
-        } catch (err) {
-        }
-        document.getElementById("brightnessWithExtinction").innerHTML = Computations.Round (variableBrightness, 2);
     }
 };
