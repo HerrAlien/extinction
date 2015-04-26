@@ -303,6 +303,12 @@ document.getElementById("chartOrientation").onchange = function () {
 }
 
 
+document.getElementById("dateTime").oninput = CorrectorUIManager.onLocationOrTimeChanged;
+document.getElementById("lat").oninput = CorrectorUIManager.onLocationOrTimeChanged;
+document.getElementById("long").oninput = CorrectorUIManager.onLocationOrTimeChanged;
+document.getElementById("K").oninput = CorrectorUIManager.onLocationOrTimeChanged;
+
+
 StarsSelection.onSelectionActivated = function () {
     elem.className = "visible";
     elem.innerHTML = "";

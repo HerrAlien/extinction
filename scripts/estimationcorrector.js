@@ -50,6 +50,7 @@ var EstimationCorrector = {
         var selectorFieldV = CorrectorUIManager.Utils.AddChild (document.documentElement, "input");
         var selectorV = StarsSelection.Selector.build (selectorFieldV);
         selectorV.set (PhotmetryTable.variableStar); // we get the other two from user input
+        
         // we don't display it
         selectorFieldV.className = "hidden";
         
@@ -57,6 +58,15 @@ var EstimationCorrector = {
         var v2b = document.getElementById ("VarToB");
         
         EstimationCorrector.pairedComparison = ExtinctionCoefficient.PairedComparison (selectorA, a2v, selectorV, v2b, selectorB);
+    },
+    
+    updateAirmassFromInput : function (star) {
+        var latitude = eval (document.getElementById ("lat").value);
+        var longitude = eval (document.getElementById ("long").value);
+        var timeString = document.getElementById ("dateTime").value;
+            
+        var lst = Computations.LSTFromTimeString (timeString, longitude);
+        ExtinctionCoefficient.updateAirmassForStar (star, latitude, longitude, lst);        
     }
 };
 
@@ -74,9 +84,11 @@ var CorrectorUIManager = {
     init : function () {
         CorrectorUIManager.useValueForK.onclick = function () {
             CorrectorUIManager.computeK.checked = false;
+            CorrectorUIManager.onUserInput();
         }
         CorrectorUIManager.computeK.onclick = function () {
             CorrectorUIManager.useValueForK.checked = false;
+            CorrectorUIManager.onUserInput();
         }
         
         CorrectorUIManager.useArgelander.onclick = function () {
@@ -84,31 +96,18 @@ var CorrectorUIManager = {
             CorrectorUIManager.selectedAlgorithm = 0;
             CorrectorUIManager.ResetHeader();
             CorrectorUIManager.ClearComparisonsList();
+            CorrectorUIManager.onUserInput();
         }
         CorrectorUIManager.usePaired.onclick = function () {
             CorrectorUIManager.useArgelander.checked = false;
             CorrectorUIManager.selectedAlgorithm = 1;
             CorrectorUIManager.ResetHeader();
             CorrectorUIManager.ClearComparisonsList();
+            CorrectorUIManager.onUserInput();
         }
         
         CorrectorUIManager.useArgelander.onclick();
         CorrectorUIManager.useArgelander.checked = true;
-        
-        StarsSelection.onStarSelected = function (star) {
-            // hide the div showing the hovered star
-            document.getElementById ("debug").className = "hidden";
-
-            var latitude = eval (document.getElementById ("lat").value);
-            var longitude = eval (document.getElementById ("long").value);
-            var timeString = document.getElementById ("dateTime").value;
-            
-            var lst = Computations.LSTFromTimeString (timeString, longitude);
-            ExtinctionCoefficient.updateAirmassForStar (star, latitude, longitude, lst);
-            
-            // now redo displayed values
-            CorrectorUIManager.onUserInput();
-        }
     },
     
     ResetHeader : function () {
@@ -216,6 +215,7 @@ var CorrectorUIManager = {
             
             var brightSelector = StarsSelection.Selector.build (brightInput);
             var dimSelector = StarsSelection.Selector.build (dimInput);
+            compImput.oninput = CorrectorUIManager.onUserInput;
             
             var comp = ExtinctionCoefficient.SingleComparison(brightSelector, compImput, dimSelector);
             CorrectorUIManager.Utils.AddDeleteLink (row, tddelete, comp);
@@ -248,6 +248,8 @@ var CorrectorUIManager = {
             var midSelector = StarsSelection.Selector.build (midImput);
             var dimSelector = StarsSelection.Selector.build (dimInput);
             
+            b2m.oninput = CorrectorUIManager.onUserInput;
+            m2d.oninput = CorrectorUIManager.onUserInput;
             
             var comp = ExtinctionCoefficient.PairedComparison(brightSelector, b2m, midSelector, m2d, dimSelector);
             CorrectorUIManager.Utils.AddDeleteLink (row, tddelete, comp);
@@ -275,13 +277,61 @@ var CorrectorUIManager = {
         // this is the main callback ...
         // compute estimate with K = 0
         var K = 0;
-        var variableBrightness = EstimationCorrector.Estimate (K);
-        document.getElementById("brightnessNoExtinction").innerHTML = Computations.Round (variableBrightness, 2);
+        try {
+            var variableBrightness = EstimationCorrector.Estimate (K);
+            document.getElementById("brightnessNoExtinction").innerHTML = Computations.Round (variableBrightness, 2);
+        } catch (err) {
+        }
+        
+        // update airmass of V - it never gets selected by the user
+        EstimationCorrector.updateAirmassFromInput (PhotmetryTable.variableStar);
+        
+        // display airmasses
+        var airmassA = "unknown";
+        var airmassB = "unknown";
+        var airmassV = "unknown";
+        try {
+            airmassA =  EstimationCorrector.pairedComparison.first.bright().airmass;
+        } catch (err) {
+            airmassA = "unknown";
+        }
+
+        try {
+            airmassB = EstimationCorrector.pairedComparison.second.dim().airmass;
+        } catch (err) {
+            airmassB = "unknown";
+        }
+
+        try {
+            airmassV = EstimationCorrector.pairedComparison.first.dim().airmass;
+        } catch (err) {
+            airmassV = "unknown";
+        }
+        
+        document.getElementById ("airmassA").innerHTML = Computations.Round (airmassA, 3);
+        document.getElementById ("airmassB").innerHTML = Computations.Round (airmassB, 3);
+        document.getElementById ("airmassV").innerHTML = Computations.Round (airmassV, 3);
+        
+        var extinctionCorrectionRequired = Math.abs (airmassA - airmassB) > 0.2 ||
+                                           Math.abs (airmassA - airmassV) > 0.2 ||
+                                           Math.abs (airmassV - airmassB) > 0.2;
+        if (extinctionCorrectionRequired)
+            document.getElementById ("shouldComputeExtinction").className = "hidden";
+        else
+            document.getElementById ("shouldComputeExtinction").className = "visible";
+        
         // get K:
         //  - this can be a constant
+        if (document.getElementById ("useValueForK").checked)
+            K = parseFloat (document.getElementById ("K").value);
+        else {
         //  - or it must be determined from observations
-        //      - in this case, update airmass for all comparisons
-        variableBrightness = EstimationCorrector.Estimate (K);
-        document.getElementById("brightnessWithExtinction").innerHTML = variableBrightness;
+        }
+        
+        try {
+            variableBrightness = EstimationCorrector.Estimate (K);
+        } catch (err) {
+        }
+        document.getElementById("brightnessWithExtinction").innerHTML = Computations.Round (variableBrightness, 2);
     }
 };

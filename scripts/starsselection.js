@@ -32,6 +32,14 @@ var StarsSelection = {
                 StarsSelection.activeSelector.setClassName("selectorItem");
                 StarsSelection.activeSelector = null;
                 StarsSelection.imageElem.className = "normalCursor";
+                
+                // hide the div showing the hovered star
+                document.getElementById ("debug").className = "hidden";
+
+                EstimationCorrector.updateAirmassFromInput (StarsSelection.currentlyHoveredStar);
+                // now redo displayed values
+                CorrectorUIManager.onUserInput();
+                                
                 if (StarsSelection.onStarSelected)
                     StarsSelection.onStarSelected(StarsSelection.currentlyHoveredStar);
             }
