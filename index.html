@@ -159,7 +159,7 @@ pre {
         <div id="wizard">        
         <ol>
           <li>
-            Date & time (JD or yyyy/mm/dd hh:mm:ss):  <input placeholder="[JD or yyyy/mm/dd hh:mm:ss]" id="JD" size="25">
+            Date & time (JD or yyyy/mm/dd hh:mm:ss):  <input placeholder="[JD or yyyy/mm/dd hh:mm:ss]" id="dateTime" size="25">
           </li>
           <li>
             Location (0.1 degree accuracy is enough):<br>
@@ -267,6 +267,7 @@ pre {
 <script src="scripts/starsselection.js"></script>
 <script src="scripts/estimationcorrector.js"></script>
 <script src="scripts/extinctioncoefficientalgorithm.js"></script>
+<script src="scripts/computations.js"></script>
 
 <script>
 
@@ -293,17 +294,14 @@ PhotmetryTable.onInit = function () {
     ChartXYToRADec.init (PhotmetryTable.searchTree.root.coords, PhotmetryTable.searchTree.root.fov);
     ChartXYToRADec.onCoordsChanged = onCoordsChanged; 
     ChartXYToRADec.onMouseMove = onMouseMove; 
+    
+    EstimationCorrector.init();
 };
 
 document.getElementById("chartOrientation").onchange = function () {
     ChartXYToRADec.chartOrientation = this.value;
 }
 
-var selectorField=document.getElementById("selectAforEstimate");
-var selector = StarsSelection.Selector.build(selectorField);
-
-selectorField=document.getElementById("selectBforEstimate");
-StarsSelection.Selector.build(selectorField);
 
 StarsSelection.onStarSelected = function () {
     elem.className = "hidden";

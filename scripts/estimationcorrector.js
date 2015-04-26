@@ -18,7 +18,11 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl.html
 */
 
 var EstimationCorrector = {
-    Estimate : function (pairedComparison, k){
+    
+    pairedComparison : null,
+    
+    Estimate : function (k){
+        var pairedComparison = EstimationCorrector.pairedComparison;
         var bright = pairedComparison.first.bright();
         var b2v = pairedComparison.first.value();
         var variable = pairedComparison.first.dim(); // or second.bright () ...
@@ -31,8 +35,29 @@ var EstimationCorrector = {
         
         if (b2v == 0 && v2d == 0)
             return brightMag;
+        
         return brightMag + b2v * (dimMag - brightMag) / (b2v + v2d);
-    }    
+    },
+    
+    init : function () {
+        var selectorFieldA = document.getElementById ("selectAforEstimate");
+        var selectorA = StarsSelection.Selector.build (selectorFieldA);
+
+        var selectorFieldB = document.getElementById ("selectBforEstimate");
+        var selectorB = StarsSelection.Selector.build (selectorFieldB);
+
+        // create the hidden selector for the variable
+        var selectorFieldV = CorrectorUIManager.Utils.AddChild (document.documentElement, "input");
+        var selectorV = StarsSelection.Selector.build (selectorFieldV);
+        selectorV.set (PhotmetryTable.variableStar); // we get the other two from user input
+        // we don't display it
+        selectorFieldV.className = "hidden";
+        
+        var a2v = document.getElementById ("AtoVar");
+        var v2b = document.getElementById ("VarToB");
+        
+        EstimationCorrector.pairedComparison = ExtinctionCoefficient.PairedComparison (selectorA, a2v, selectorV, v2b, selectorB);
+    }
 };
 
 var CorrectorUIManager = {
@@ -209,9 +234,35 @@ var CorrectorUIManager = {
             var dimSelector = StarsSelection.Selector.build (dimInput);
             
             
-            var comp = ExtinctionCoefficient.PairedComparison(brightSelector, b2m, midImput, m2d, dimSelector);
+            var comp = ExtinctionCoefficient.PairedComparison(brightSelector, b2m, midSelector, m2d, dimSelector);
             CorrectorUIManager.Utils.AddDeleteLink (row, tddelete, comp);
             ExtinctionCoefficient.comparisons.push (comp);
         }
+    },
+    
+    onUserInput : function () {
+        // this is the main callback ...
+        // compute estimate with K = 0
+        var K = 0;
+        var variableBrightness = EstimationCorrector.Estimate (K);
+        document.getElementById("brightnessNoExtinction").innerHTML = Computations.Round (variableBrightness, 2);
+        // get the time string and location
+        //  - if no valid values, return
+        var latitude = eval (document.getElementById ("lat").value);
+        var longitude = eval (document.getElementById ("long").value);
+        var timeString = document.getElementById ("dateTime").value;
+        var lst = Computations.LSTFromTimeString (timeString, longitude);
+        
+        // update the variable comparison aimass,
+        ExtinctionCoefficient.updateAirmassForComparison(EstimationCorrector.pairedComparison, latitude, longitude, lst);
+        // display the airmasses
+        
+        ExtinctionCoefficient.updateAirmass (latitude, longitude, timeString);
+        // get K:
+        //  - this can be a constant
+        //  - or it must be determined from observations
+        //      - in this case, update airmass for all comparisons
+        variableBrightness = EstimationCorrector.Estimate (K);
+        document.getElementById("brightnessWithExtinction").innerHTML = variableBrightness;
     }
 };

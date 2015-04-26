@@ -33,15 +33,19 @@ var ExtinctionCoefficient = {
         var compIndex = 0;
         var comps = ExtinctionCoefficient.getValidComparisons();
         for (compIndex = 0; compIndex < comps.length; compIndex++) {
-            var stars = comps[compIndex].getStars();
-            var starIndex = 0;
-            for (starIndex = 0; starIndex < stars.length; starIndex++) {
-                // for each star, compute altitude
-                var star = stars[starIndex];
-                var alt = Computations.Alt (star.ra, star.dec, lst, _lat, _long);
-                // then airmass
-                star.airmass = Computations.Airmass (alt);
-            }
+            ExtinctionCoefficient.updateAirmassForComparison(comps[compIndex], _lat, _long, lst);
+        }
+    },
+    
+    updateAirmassForComparison : function (comp, _lat, _long, lst) {
+        var stars = comp.getStars();
+        var starIndex = 0;
+        for (starIndex = 0; starIndex < stars.length; starIndex++) {
+            // for each star, compute altitude
+            var star = stars[starIndex];
+            var alt = Computations.Alt (star.ra, star.dec, lst, _lat, _long);
+            // then airmass
+            star.airmass = Computations.Airmass (alt);
         }
     },
     
@@ -99,6 +103,8 @@ var ExtinctionCoefficient = {
             var b = brighterStarSelector;
             var deg = degreesEditor;
             var d = dimmerStarSelector;
+            
+            deg.oninput = function () { CorrectorUIManager.onUserInput() };
             
             return {
                 "bright" : function () { return this.ui.brightSelector.get(); },

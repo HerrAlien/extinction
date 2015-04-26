@@ -68,5 +68,16 @@ var Computations = {
 
         return (1.002432 * Math.pow (cos_zt, 2) + 0.148386 * cos_zt + 0.0096467) / 
                (Math.pow (cos_zt, 3) + 0.149864 * Math.pow(cos_zt, 2) + 0.0102963 * cos_zt + 0.000303978);
+    },
+    
+    Round : function (num, decimals) {
+        var _10PoweredByDecimals = Math.pow(10, decimals);
+        var n = Math.floor (num * _10PoweredByDecimals + 0.5);
+        n = n / _10PoweredByDecimals;
+        var nstr = n + "0000000000000000000000000";
+        // locate the decimal point
+        var dotIsAt = nstr.indexOf (".");
+        var slicedNum = nstr.slice (0, dotIsAt + decimals + 1);
+        return eval (slicedNum);
     }
 };

@@ -19,18 +19,19 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl.html
 
 var PhotmetryTable = {
     
+    variableStar : { 
+        "ra" : 0, 
+        "dec" : 0, 
+        "mag" : "unknown", 
+        "label" : "V",
+        "airmass" : 1
+    },
+
     searchTree : {        
         root : null,
         
         settings : {
             maxStarsPerNode : 8
-        },
-        
-        variableStar : { 
-            "ra" : 0, 
-            "dec" : 0, 
-            "mag" : "unknown", 
-            "label" : "V" 
         },
         
         getClosestStar : function(raNum, decNum) {
@@ -248,7 +249,7 @@ var PhotmetryTable = {
                     }
                         
                     if (magNum > -3) {
-                        var star = { "ra" : raNum, "dec" : decNum, "mag" : magNum, "label" : labelStr };
+                        var star = { "ra" : raNum, "dec" : decNum, "mag" : magNum, "label" : labelStr, "airmass" : 1 };
                         stars.push ( star );
                     }
                 }
@@ -270,10 +271,13 @@ var PhotmetryTable = {
             if(xmlHttpReq.readyState == 4) {
                 var doc =  xmlHttpReq.responseText;
                 var structuredData  = PhotmetryTable.AAVSO.GetData (doc);
+                
                 PhotmetryTable.searchTree.init (structuredData, limittingMag);
-                PhotmetryTable.onInit();
+                
                 PhotmetryTable.variableStar.ra = structuredData.centerCoords[0];
                 PhotmetryTable.variableStar.dec = structuredData.centerCoords[1];
+                
+                PhotmetryTable.onInit();
             }
         }
         xmlHttpReq.open(PhotmetryTable.AAVSO.config.method, PhotmetryTable.AAVSO.config.url + chartID, true);
