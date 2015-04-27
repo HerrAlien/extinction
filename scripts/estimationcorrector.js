@@ -95,21 +95,56 @@ var CorrectorUIManager = {
             CorrectorUIManager.usePaired.checked = false;
             CorrectorUIManager.selectedAlgorithm = 0;
             ExtinctionCoefficient.currentAlgorithmID = 0;
-            CorrectorUIManager.ResetHeader();
             CorrectorUIManager.ClearComparisonsList();
+            CorrectorUIManager.ResetHeader();
             CorrectorUIManager.onUserInput();
         }
         CorrectorUIManager.usePaired.onclick = function () {
             CorrectorUIManager.useArgelander.checked = false;
             CorrectorUIManager.selectedAlgorithm = 1;
             ExtinctionCoefficient.currentAlgorithmID = 1;
-            CorrectorUIManager.ResetHeader();
             CorrectorUIManager.ClearComparisonsList();
+            CorrectorUIManager.ResetHeader();
             CorrectorUIManager.onUserInput();
         }
         
         CorrectorUIManager.useArgelander.onclick();
         CorrectorUIManager.useArgelander.checked = true;
+        
+        var currentDate = new Date();
+        
+        var month = currentDate.getMonth() + 1;
+        if (month < 10)
+            month = "0" + month;
+        
+        var day = currentDate.getUTCDate();
+        if (day < 10)
+            day = "0" + day;
+        
+        var h = currentDate.getUTCHours();
+        if (h < 10)
+            h = "0" + h;
+        
+        var m = currentDate.getUTCMinutes();
+        if (m < 10)
+            m = "0" + m;
+
+        var s = currentDate.getUTCSeconds();
+        if (s < 10)
+            s = "0" + s;
+
+        document.getElementById("dateTime").value = currentDate.getUTCFullYear() + "/" + month + "/" + day +
+                                                    " " + h + ":" + m + ":" + s;
+        
+        document.getElementById("geolocation").onclick = function () {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition (function (position) {
+                    document.getElementById("lat").value = position.coords.latitude;
+                    document.getElementById("long").value = position.coords.longitude;
+                    CorrectorUIManager.onLocationOrTimeChanged();
+                });
+            }
+        }
     },
     
     ResetHeader : function () {
@@ -145,6 +180,11 @@ var CorrectorUIManager = {
         anch.onclick = function () {
             CorrectorUIManager[CorrectorUIManager.algorithms[CorrectorUIManager.selectedAlgorithm]].CreateComparisonUIRow();
         }
+        
+        anch.onclick(); // one compariso is enough for pairs
+        if (0 == CorrectorUIManager.selectedAlgorithm)
+            anch.onclick(); // but we need at least two comparisons if using Argelander degrees
+
     },
     
     algorithms : ["Argelander", "Paired"],
@@ -267,13 +307,23 @@ var CorrectorUIManager = {
             var longitude = eval (document.getElementById ("long").value);
             var timeString = document.getElementById ("dateTime").value;
             var lst = Computations.LSTFromTimeString (timeString, longitude);
+        } catch (err) {
+        }
             
+        try {
             // update the variable comparison aimass,
             ExtinctionCoefficient.updateAirmassForComparison(EstimationCorrector.pairedComparison, latitude, longitude, lst);
             // display the airmasses
+        } catch (err) {
+        }
             
+        try {
             ExtinctionCoefficient.updateAirmass (latitude, longitude, timeString);
             // then call the user input callbavck
+        } catch (err) {
+        }
+        
+        try {
             CorrectorUIManager.onUserInput();
         } catch (err) {
         }
@@ -350,7 +400,7 @@ var CorrectorUIManager = {
                 }
                 
                 var kstats = Computations.AverageAndStdDev (kvals);
-                document.getElementById ("K").value = Computations.Round (kstats.avg, 2);
+                document.getElementById ("K").value = Computations.Round (kstats.avg, 4);
                 
                 var variableMagStats = Computations.AverageAndStdDev (variableMags);
                 document.getElementById("brightnessWithExtinction").innerHTML = Computations.Round (variableMagStats.avg, 2) + 

@@ -159,11 +159,11 @@ pre {
         <div id="wizard">        
         <ol>
           <li>
-            Date & time (JD or yyyy/mm/dd hh:mm:ss):  <input placeholder="[JD or yyyy/mm/dd hh:mm:ss]" id="dateTime" size="25">
+            Date & time (JD or UTC yyyy/mm/dd hh:mm:ss):  <input placeholder="[JD or yyyy/mm/dd hh:mm:ss]" id="dateTime" size="25">
           </li>
           <li>
-            Location (0.1 degree accuracy is enough):<br>
-            latitude: <input placeholder="[degrees]" id="lat" size="7">, longitude: <input placeholder="[degrees]" id="long" size="7">
+            Location (0.5 degree accuracy is enough):<br>
+            latitude: <input placeholder="[degrees]" id="lat" size="7">, longitude: <input placeholder="[degrees]" id="long" size="7"> (or <a class="addAnchor" nohref id="geolocation">get from Geolocation</a>)
           </li>
 
           <li>
@@ -320,5 +320,7 @@ PhotmetryTable.AAVSO.config.url = "http://127.0.0.1:8080/resources/14727KA.html"
 PhotmetryTable.init("", 7);
 
 CorrectorUIManager.init();
+
+
 
 </script>
