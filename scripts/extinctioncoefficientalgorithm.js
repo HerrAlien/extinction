@@ -49,6 +49,8 @@ var ExtinctionCoefficient = {
         // for each star, compute altitude
         var alt = Computations.Alt (star.ra, star.dec, lst, _lat, _long);
         // then airmass
+        if (isNaN (alt))
+            return;
         star.airmass = Computations.Airmass (alt);
     },
     

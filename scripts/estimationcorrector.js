@@ -345,8 +345,11 @@ var CorrectorUIManager = {
             } catch (err) {
             }
             
-            // update airmass of V - it never gets selected by the user
-            EstimationCorrector.updateAirmassFromInput (PhotmetryTable.variableStar);
+            try {
+                // update airmass of V - it never gets selected by the user
+                EstimationCorrector.updateAirmassFromInput (PhotmetryTable.variableStar);
+            } catch (err) {
+            }
             
             // display airmasses
             var airmassA = "unknown";

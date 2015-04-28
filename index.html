@@ -119,7 +119,7 @@ pre {
     color: #5050C0;
 }
 
-#extinctionEstimatesHeader {
+#extinctionEstimatesHeader, .header {
     background-color : #dadadf; 
 }
 
@@ -181,11 +181,27 @@ pre {
     
           <li>
               Brightness estimate (A (number) V (number) B)<br>
-              A: <input class="selectorItem" id="selectAforEstimate" readonly="true"> 
-              (<input placeholder="[number]" id="AtoVar" size="3">) 
-              V 
-              (<input placeholder="[number]" id="VarToB" size="3">)
-              B: <input class="selectorItem" id="selectBforEstimate" readonly="true">
+              <table>
+                <tr class="header">
+                    <td>Bright star</td>
+                    <td>degrees</td>
+                    <td>Variable</td>
+                    <td>degrees</td>
+                    <td>Dim star</td>
+                    <td><a nohref id="addEstimateLink" class="addAnchor">(+) Add row</a></td>
+                </tr>
+                <tr>
+                  <td><input class="selectorItem" id="selectAforEstimate" readonly="true"></td>
+                  <td><input placeholder="[number]" id="AtoVar" size="3"></td> 
+                  <td>V</td>
+                  <td><input placeholder="[number]" id="VarToB" size="3"></td>
+                  <td><input class="selectorItem" id="selectBforEstimate" readonly="true"></td>
+                </tr>
+                
+                <tbody id="extraEstimates">
+                </tbody>
+                
+              </table>
               <hr>
               Without considering extinction, brightness of V is:<br>
               <span id="brightnessNoExtinction">unknown</span>
@@ -308,6 +324,8 @@ document.getElementById("lat").oninput = CorrectorUIManager.onLocationOrTimeChan
 document.getElementById("long").oninput = CorrectorUIManager.onLocationOrTimeChanged;
 document.getElementById("K").oninput = CorrectorUIManager.onLocationOrTimeChanged;
 
+document.getElementById("AtoVar").oninput = CorrectorUIManager.onUserInput;
+document.getElementById("VarToB").oninput = CorrectorUIManager.onUserInput;
 
 StarsSelection.onSelectionActivated = function () {
     elem.className = "visible";

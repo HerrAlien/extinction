@@ -71,10 +71,13 @@ var Computations = {
     },
     
     Round : function (num, decimals) {
+        if (num == 0)
+            return 0;
+        
         var _10PoweredByDecimals = Math.pow(10, decimals);
-        var n = Math.floor (num * _10PoweredByDecimals + 0.5);
+        var n = Math.floor (num * _10PoweredByDecimals + 0.5) + 0.0000000001;
         n = n / _10PoweredByDecimals;
-        var nstr = n + "0000000000000000000000000";
+        var nstr = n + "";
         // locate the decimal point
         var dotIsAt = nstr.indexOf (".");
         var slicedNum = nstr.slice (0, dotIsAt + decimals + 1);
