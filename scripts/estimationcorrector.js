@@ -178,12 +178,12 @@ var CorrectorUIManager = {
         anch.noref="";
         anch.className = "addAnchor";
         anch.onclick = function () {
-            CorrectorUIManager[CorrectorUIManager.algorithms[CorrectorUIManager.selectedAlgorithm]].CreateComparisonUIRow();
+                CorrectorUIManager[CorrectorUIManager.algorithms[CorrectorUIManager.selectedAlgorithm]].CreateComparisonUIRow(true);
         }
         
-        anch.onclick(); // one compariso is enough for pairs
+        CorrectorUIManager[CorrectorUIManager.algorithms[CorrectorUIManager.selectedAlgorithm]].CreateComparisonUIRow(false); // one compariso is enough for pairs
         if (0 == CorrectorUIManager.selectedAlgorithm)
-            anch.onclick(); // but we need at least two comparisons if using Argelander degrees
+            CorrectorUIManager[CorrectorUIManager.algorithms[CorrectorUIManager.selectedAlgorithm]].CreateComparisonUIRow(false); // two, for Argelander
 
     },
     
@@ -241,7 +241,7 @@ var CorrectorUIManager = {
     },
     
     Argelander : {
-        CreateComparisonUIRow : function () {
+        CreateComparisonUIRow : function (addDeleteLink) {
             var table = CorrectorUIManager.table;
             var addChild = CorrectorUIManager.Utils.AddChild;
             
@@ -261,13 +261,14 @@ var CorrectorUIManager = {
             compImput.oninput = CorrectorUIManager.onUserInput;
             
             var comp = ExtinctionCoefficient.SingleComparison(brightSelector, compImput, dimSelector);
-            CorrectorUIManager.Utils.AddDeleteLink (row, tddelete, comp);
+            if (addDeleteLink)
+                CorrectorUIManager.Utils.AddDeleteLink (row, tddelete, comp);
             ExtinctionCoefficient.comparisons.push (comp);
         }
     },
     
     Paired : {
-        CreateComparisonUIRow : function () {
+        CreateComparisonUIRow : function (addDeleteLink) {
             var table = CorrectorUIManager.table;
             var addChild = CorrectorUIManager.Utils.AddChild;
             
@@ -295,7 +296,10 @@ var CorrectorUIManager = {
             m2d.oninput = CorrectorUIManager.onUserInput;
             
             var comp = ExtinctionCoefficient.PairedComparison(brightSelector, b2m, midSelector, m2d, dimSelector);
-            CorrectorUIManager.Utils.AddDeleteLink (row, tddelete, comp);
+
+            if (addDeleteLink)
+                CorrectorUIManager.Utils.AddDeleteLink (row, tddelete, comp);
+
             ExtinctionCoefficient.comparisons.push (comp);
         }
     },
