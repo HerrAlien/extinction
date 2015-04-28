@@ -142,7 +142,7 @@ var CorrectorUIManager = {
                     document.getElementById("lat").value = position.coords.latitude;
                     document.getElementById("long").value = position.coords.longitude;
                     CorrectorUIManager.onLocationOrTimeChanged();
-                });
+               }, function (){}, { enableHighAccuracy: true, maximumAge : 30000, timeout : 27000 });
             }
         }
     },
