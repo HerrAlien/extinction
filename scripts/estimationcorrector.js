@@ -19,24 +19,31 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl.html
 
 var EstimationCorrector = {
     
-    pairedComparison : null,
+    pairedComparisons : [],
     
     Estimate : function (k){
-        var pairedComparison = EstimationCorrector.pairedComparison;
-        var bright = pairedComparison.first.bright();
-        var b2v = pairedComparison.first.value();
-        var variable = pairedComparison.first.dim(); // or second.bright () ...
-        var v2d = pairedComparison.second.value();
-        var dim = pairedComparison.second.dim(); 
         
-        // provide corrections for the difference airmass
-        var brightMag = bright.mag + k * (bright.airmass - variable.airmass);
-        var dimMag = dim.mag + k * (dim.airmass - variable.airmass);
+        var i = 0;
+        var values = [];
+        for (i = 0; i < EstimationCorrector.pairedComparisons.length; i++) {
+            var pairedComparison = EstimationCorrector.pairedComparisons[i];
+            var bright = pairedComparison.first.bright();
+            var b2v = pairedComparison.first.value();
+            var variable = pairedComparison.first.dim(); // or second.bright () ...
+            var v2d = pairedComparison.second.value();
+            var dim = pairedComparison.second.dim(); 
+            
+            // provide corrections for the difference airmass
+            var brightMag = bright.mag + k * (bright.airmass - variable.airmass);
+            var dimMag = dim.mag + k * (dim.airmass - variable.airmass);
+            
+            if (b2v == 0 && v2d == 0)
+                values.push(brightMag);
+            else
+                values.push (brightMag + b2v * (dimMag - brightMag) / (b2v + v2d));
+        }
         
-        if (b2v == 0 && v2d == 0)
-            return brightMag;
-        
-        return brightMag + b2v * (dimMag - brightMag) / (b2v + v2d);
+        return values;
     },
     
     init : function () {
@@ -57,7 +64,7 @@ var EstimationCorrector = {
         var a2v = document.getElementById ("AtoVar");
         var v2b = document.getElementById ("VarToB");
         
-        EstimationCorrector.pairedComparison = ExtinctionCoefficient.PairedComparison (selectorA, a2v, selectorV, v2b, selectorB);
+        EstimationCorrector.pairedComparisons.push(ExtinctionCoefficient.PairedComparison (selectorA, a2v, selectorV, v2b, selectorB));
     },
     
     updateAirmassFromInput : function (star) {
@@ -316,7 +323,7 @@ var CorrectorUIManager = {
             
         try {
             // update the variable comparison aimass,
-            ExtinctionCoefficient.updateAirmassForComparison(EstimationCorrector.pairedComparison, latitude, longitude, lst);
+            ExtinctionCoefficient.updateAirmassForComparison(EstimationCorrector.pairedComparisons[0], latitude, longitude, lst);
             // display the airmasses
         } catch (err) {
         }
@@ -340,8 +347,12 @@ var CorrectorUIManager = {
             var K = 0;
             var variableBrightness = 0;
             try {
-                variableBrightness = EstimationCorrector.Estimate (K);
-                document.getElementById("brightnessNoExtinction").innerHTML = Computations.Round (variableBrightness, 2);
+                var variableBrightnessArr = EstimationCorrector.Estimate (K);
+                var variableMagStats = Computations.AverageAndStdDev (variableBrightnessArr);
+                document.getElementById("brightnessNoExtinction").innerHTML = Computations.Round (variableMagStats.avg, 2) + 
+                                                                                " (std. dev. " + 
+                                                                                Computations.Round (variableMagStats.stdDev, 2) + 
+                                                                                ")";
             } catch (err) {
             }
             
@@ -356,19 +367,19 @@ var CorrectorUIManager = {
             var airmassB = "unknown";
             var airmassV = "unknown";
             try {
-                airmassA =  EstimationCorrector.pairedComparison.first.bright().airmass;
+                airmassA =  EstimationCorrector.pairedComparisons[0].first.bright().airmass;
             } catch (err) {
                 airmassA = "unknown";
             }
 
             try {
-                airmassB = EstimationCorrector.pairedComparison.second.dim().airmass;
+                airmassB = EstimationCorrector.pairedComparisons[0].second.dim().airmass;
             } catch (err) {
                 airmassB = "unknown";
             }
 
             try {
-                airmassV = EstimationCorrector.pairedComparison.first.dim().airmass;
+                airmassV = EstimationCorrector.pairedComparisons[0].first.dim().airmass;
             } catch (err) {
                 airmassV = "unknown";
             }
@@ -390,11 +401,17 @@ var CorrectorUIManager = {
             if (document.getElementById ("useValueForK").checked) {
                 document.getElementById ("K").readOnly = false;
                 K = parseFloat (document.getElementById ("K").value);
+                var variableBrightnessArr = [];
                 try {
-                    variableBrightness = EstimationCorrector.Estimate (K);
+                    variableBrightnessArr = EstimationCorrector.Estimate (K);
                 } catch (err) {
                 }
-                document.getElementById("brightnessWithExtinction").innerHTML = Computations.Round (variableBrightness, 2);
+
+                var variableMagStats = Computations.AverageAndStdDev (variableBrightnessArr);
+                document.getElementById("brightnessWithExtinction").innerHTML = Computations.Round (variableMagStats.avg, 2) + 
+                                                                                " (std. dev. " + 
+                                                                                Computations.Round (variableMagStats.stdDev, 2) + 
+                                                                                ")";
             } else {
             //  - or it must be determined from observations
                 document.getElementById ("K").readOnly = true;
@@ -403,7 +420,7 @@ var CorrectorUIManager = {
                 
                 var i = 0;
                 for (i = 0; i < kvals.length; i++) {
-                    variableMags.push (EstimationCorrector.Estimate (kvals[i]));
+                    variableMags = variableMags.concat (EstimationCorrector.Estimate (kvals[i]));
                 }
                 
                 var kstats = Computations.AverageAndStdDev (kvals);
