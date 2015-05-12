@@ -76,8 +76,19 @@ var ExtinctionCoefficient = {
         return usedValues;
     },
     
+    getkValueFromSingleComparison : function (comparison) {
+        return Math.abs(comparison.bright().mag - comparison.dim().mag) / 
+               Math.abs(comparison.bright().airmass - comparison.dim().airmass);
+    },
+    
     getkValue : function (firstSingleComparison, secondSingleComparison) {
-            
+        
+        if (firstSingleComparison.value() == 0)
+            return ExtinctionCoefficient.getkValueFromSingleComparison (firstSingleComparison);
+        
+        if (secondSingleComparison.value() == 0) 
+            return ExtinctionCoefficient.getkValueFromSingleComparison (secondSingleComparison);
+        
         var a = firstSingleComparison.value() * (secondSingleComparison.bright().mag - secondSingleComparison.dim().mag);
         var b = secondSingleComparison.value() * (firstSingleComparison.bright().mag - firstSingleComparison.dim().mag);
                         
@@ -166,7 +177,11 @@ var ExtinctionCoefficient = {
             var firstComparison = 0;
             var secondComparison = 0;
             
-            for (; firstComparison < comps.length && comps.length > 1; firstComparison++) {
+            for (; firstComparison < comps.length; firstComparison++) {
+                if (comps[firstComparison].value() == 0) {
+                    kvals.push (ExtinctionCoefficient.getkValueFromSingleComparison (comps[firstComparison]));
+                    continue;
+                }
                 for (secondComparison = firstComparison + 1; secondComparison < comps.length; secondComparison++) {
                     try {
                         kvals.push (ExtinctionCoefficient.getkValue (comps[firstComparison], comps[secondComparison]));
