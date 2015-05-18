@@ -104,8 +104,13 @@ var CorrectorUIManager = {
             var table = CorrectorUIManager.extraEstimatesTable;
             var createdObj = CorrectorUIManager.Utils.AddPairedComparison (table);
             CorrectorUIManager.Utils.AddDeleteLink (createdObj.row, createdObj.tddelete, createdObj.comp, EstimationCorrector.pairedComparisons);
+
+            createdObj.midSelector.set (PhotmetryTable.variableStar);
             createdObj.midSelector.setClassName ("hidden");
+
             EstimationCorrector.pairedComparisons.push (createdObj.comp);
+            var createdSpan = CorrectorUIManager.Utils.AddChild (createdObj.tdmid, "span");
+            createdSpan.innerHTML = "V";
         }
         
         CorrectorUIManager.useArgelander.onclick = function () {
@@ -266,8 +271,11 @@ var CorrectorUIManager = {
             var dimInput = addChild (tddim, "input");
             var tddelete =  addChild (row, "td");
             
-            b2m.size = 2;
-            m2d.size = 2;
+            b2m.size = 3;
+            m2d.size = 3;
+            
+            b2m.placeholder = "[number]";
+            m2d.placeholder = "[number]";
             
             var brightSelector = StarsSelection.Selector.build (brightInput);
             var midSelector = StarsSelection.Selector.build (midImput);
@@ -295,11 +303,12 @@ var CorrectorUIManager = {
             var dimInput = addChild (tddim, "input");
             var tddelete =  addChild (row, "td");
             
-            compImput.size=2;
+            compImput.size = 3;
             
             var brightSelector = StarsSelection.Selector.build (brightInput);
             var dimSelector = StarsSelection.Selector.build (dimInput);
             compImput.oninput = CorrectorUIManager.onUserInput;
+            compImput.placeholder = "[number]";
             
             var comp = ExtinctionCoefficient.SingleComparison(brightSelector, compImput, dimSelector);
             if (addDeleteLink)
