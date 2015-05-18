@@ -249,7 +249,7 @@ var CorrectorUIManager = {
                 
                     // var isAt = ExtinctionCoefficient.comparisons.indexOf (comp);
                     var isAt = arr.indexOf (comp);
-                    ExtinctionCoefficient.comparisons.splice (isAt, 1);
+                    arr.splice (isAt, 1);
                     CorrectorUIManager.onUserInput();
                 }
             })(_row, _tddelete, _comp, _arrayToRemoveComparisonFrom);            
