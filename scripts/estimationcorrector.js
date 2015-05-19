@@ -47,24 +47,8 @@ var EstimationCorrector = {
     },
     
     init : function () {
-        var selectorFieldA = document.getElementById ("selectAforEstimate");
-        var selectorA = StarsSelection.Selector.build (selectorFieldA);
-
-        var selectorFieldB = document.getElementById ("selectBforEstimate");
-        var selectorB = StarsSelection.Selector.build (selectorFieldB);
-
-        // create the hidden selector for the variable
-        var selectorFieldV = CorrectorUIManager.Utils.AddChild (document.documentElement, "input");
-        var selectorV = StarsSelection.Selector.build (selectorFieldV);
-        selectorV.set (PhotmetryTable.variableStar); // we get the other two from user input
-        
-        // we don't display it
-        selectorFieldV.className = "hidden";
-        
-        var a2v = document.getElementById ("AtoVar");
-        var v2b = document.getElementById ("VarToB");
-        
-        EstimationCorrector.pairedComparisons.push(ExtinctionCoefficient.PairedComparison (selectorA, a2v, selectorV, v2b, selectorB));
+        pairedComparisons = [];
+        EstimationCorrector.addNewComparison (false);
     },
     
     updateAirmassFromInput : function (star) {
@@ -74,6 +58,20 @@ var EstimationCorrector = {
             
         var lst = Computations.LSTFromTimeString (timeString, longitude);
         ExtinctionCoefficient.updateAirmassForStar (star, latitude, longitude, lst);        
+    },
+    
+    addNewComparison : function (addDeleteLink) {
+        var table = CorrectorUIManager.extraEstimatesTable;
+        var createdObj = CorrectorUIManager.Utils.AddPairedComparison (table);
+        if (addDeleteLink)
+            CorrectorUIManager.Utils.AddDeleteLink (createdObj.row, createdObj.tddelete, createdObj.comp, EstimationCorrector.pairedComparisons);
+
+        createdObj.midSelector.set (PhotmetryTable.variableStar);
+        createdObj.midSelector.setClassName ("hidden");
+
+        EstimationCorrector.pairedComparisons.push (createdObj.comp);
+        var createdSpan = CorrectorUIManager.Utils.AddChild (createdObj.tdmid, "span");
+        createdSpan.innerHTML = "V";
     }
 };
 
@@ -101,16 +99,7 @@ var CorrectorUIManager = {
             CorrectorUIManager.onUserInput();
         }
         CorrectorUIManager.addVariableEstimateLink.onclick = function () {
-            var table = CorrectorUIManager.extraEstimatesTable;
-            var createdObj = CorrectorUIManager.Utils.AddPairedComparison (table);
-            CorrectorUIManager.Utils.AddDeleteLink (createdObj.row, createdObj.tddelete, createdObj.comp, EstimationCorrector.pairedComparisons);
-
-            createdObj.midSelector.set (PhotmetryTable.variableStar);
-            createdObj.midSelector.setClassName ("hidden");
-
-            EstimationCorrector.pairedComparisons.push (createdObj.comp);
-            var createdSpan = CorrectorUIManager.Utils.AddChild (createdObj.tdmid, "span");
-            createdSpan.innerHTML = "V";
+            EstimationCorrector.addNewComparison (true);
         }
         
         CorrectorUIManager.useArgelander.onclick = function () {

@@ -190,14 +190,6 @@ pre {
                     <td>Dim star</td>
                     <td><a nohref id="addEstimateLink" class="addAnchor">(+) Add row</a></td>
                 </tr>
-                <tr>
-                  <td><input class="selectorItem" id="selectAforEstimate" readonly="true"></td>
-                  <td><input placeholder="[number]" id="AtoVar" size="3"></td> 
-                  <td>V</td>
-                  <td><input placeholder="[number]" id="VarToB" size="3"></td>
-                  <td><input class="selectorItem" id="selectBforEstimate" readonly="true"></td>
-                </tr>
-                
                 <tbody id="extraEstimates">
                 </tbody>
                 
@@ -323,9 +315,6 @@ document.getElementById("dateTime").oninput = CorrectorUIManager.onLocationOrTim
 document.getElementById("lat").oninput = CorrectorUIManager.onLocationOrTimeChanged;
 document.getElementById("long").oninput = CorrectorUIManager.onLocationOrTimeChanged;
 document.getElementById("K").oninput = CorrectorUIManager.onLocationOrTimeChanged;
-
-document.getElementById("AtoVar").oninput = CorrectorUIManager.onUserInput;
-document.getElementById("VarToB").oninput = CorrectorUIManager.onUserInput;
 
 StarsSelection.onSelectionActivated = function () {
     elem.className = "visible";
