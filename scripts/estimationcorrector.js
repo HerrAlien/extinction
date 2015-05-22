@@ -168,7 +168,7 @@ var CorrectorUIManager = {
 
             tdbright.innerHTML = "Bright star"; 
             tddim.innerHTML = "Dim star"; 
-            tdval.innerHTML = "degrees"; 
+            tdval.innerHTML = "steps"; 
         } else {
             var tdbright =  addChild (CorrectorUIManager.tableHeader, "td");
             var tdval_bm =  addChild (CorrectorUIManager.tableHeader, "td");
@@ -177,9 +177,9 @@ var CorrectorUIManager = {
             var tddim =  addChild (CorrectorUIManager.tableHeader, "td");
 
             tdbright.innerHTML = "Bright star"; 
-            tdval_bm.innerHTML = "degrees"; 
+            tdval_bm.innerHTML = "steps"; 
             tddim.innerHTML = "Dim star"; 
-            tdval_md.innerHTML = "degrees"; 
+            tdval_md.innerHTML = "steps"; 
             tdmid.innerHTML = "Middle star"; 
         }
 
