@@ -169,6 +169,7 @@ pre {
           <li>
               Chart and AAVSO photometry table:<br>
               photometry table ID: <input placeholder="[table ID]" id="tableID" size="7"><br>
+              name of variable star: <input placeholder="[name of star]" id="variableStarName" size="10"><br>
               limitting magnitude: <input placeholder="[number]" id="mag" size="7">
               FOV [arc minutes]: <input placeholder="[number]" id="fov" size="7"><br>
          chart orientation: 
@@ -182,7 +183,7 @@ pre {
           </li>
     
           <li>
-              Brightness estimate (A (steps) V (steps) B)<br>
+              Brightness estimate (A (brightness steps) V (brightness steps) B)<br>
               <table>
                 <tr class="header">
                     <td>Bright star</td>
@@ -304,8 +305,10 @@ PhotmetryTable.onInit = function () {
     ChartXYToRADec.init (PhotmetryTable.searchTree.root.coords, PhotmetryTable.searchTree.root.fov);
     ChartXYToRADec.onCoordsChanged = onCoordsChanged; 
     ChartXYToRADec.onMouseMove = onMouseMove; 
-    
     EstimationCorrector.init();
+    
+    /* now clean up the chart */
+    /* and build a new one */
 };
 
 document.getElementById("chartOrientation").onchange = function () {

@@ -171,6 +171,12 @@ var PhotmetryTable = {
             method: "GET"
         },
         
+        configFromStarName : { // 
+            url : "http://www.aavso.org/cgi-bin/vsp.pl?ccdtable=on",
+            method: "GET",
+            params : ["name", "fov"]
+        },
+        
         GetData : function (text) {
             var data = {
                 centerCoords : [0, 0],
@@ -282,6 +288,10 @@ var PhotmetryTable = {
         }
         xmlHttpReq.open(PhotmetryTable.AAVSO.config.method, PhotmetryTable.AAVSO.config.url + chartID, true);
         xmlHttpReq.send(null);              
+    },
+    
+    initFromStarName : function (starName, limitingMag) {
+        
     },
     
     updateAirmass : function (_lat, _long, _time){
