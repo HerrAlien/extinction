@@ -72,6 +72,15 @@ var EstimationCorrector = {
         EstimationCorrector.pairedComparisons.push (createdObj.comp);
         var createdSpan = CorrectorUIManager.Utils.AddChild (createdObj.tdmid, "span");
         createdSpan.innerHTML = "V";
+    },
+    
+    update : function () {
+        var i = 0;
+        for (i = 0; i < EstimationCorrector.pairedComparisons.length; i++) {
+            var pairedComparison = EstimationCorrector.pairedComparisons[i];
+            pairedComparison.updateUI();
+        }
+    
     }
 };
 
@@ -328,7 +337,11 @@ var CorrectorUIManager = {
             
         try {
             // update the variable comparison aimass,
-            ExtinctionCoefficient.updateAirmassForComparison(EstimationCorrector.pairedComparisons[0], latitude, longitude, lst);
+            var comps = EstimationCorrector.pairedComparisons;
+            var i = 0;
+            for (i = 0; i < comps.length; i++) {
+                ExtinctionCoefficient.updateAirmassForComparison(comps[i], latitude, longitude, lst);
+            }
             // display the airmasses
         } catch (err) {
         }
@@ -338,6 +351,9 @@ var CorrectorUIManager = {
             // then call the user input callbavck
         } catch (err) {
         }
+        
+        EstimationCorrector.update();
+        ExtinctionCoefficient.updateUI();
         
         try {
             CorrectorUIManager.onUserInput();
@@ -389,8 +405,6 @@ var CorrectorUIManager = {
                 airmassV = "unknown";
             }
             
-            document.getElementById ("airmassA").innerHTML = Computations.Round (airmassA, 3);
-            document.getElementById ("airmassB").innerHTML = Computations.Round (airmassB, 3);
             document.getElementById ("airmassV").innerHTML = Computations.Round (airmassV, 3);
             
             var extinctionCorrectionRequired = Math.abs (airmassA - airmassB) > 0.2 ||

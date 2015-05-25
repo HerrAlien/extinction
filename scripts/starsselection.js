@@ -57,8 +57,10 @@ var StarsSelection = {
                     var data = privateData;
                     this.id = data.uiElement.id;
                     this.set = function (st) {
+                        if (!st)
+                            return;
                         data.star = st;
-                        this.setDisplayedString (data.star.label + " airmass " + Computations.Round(data.star.airmass, 3));
+                        this.setDisplayedString (data.star.label + "  ( X = " + Computations.Round(data.star.airmass, 3) + " )");
                     }   
                     this.get = function () {
                         return data.star;
