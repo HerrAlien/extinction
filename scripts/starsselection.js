@@ -27,16 +27,15 @@ var StarsSelection = {
     init : function () {
         StarsSelection.imageElem.onclick = function () {
             if (StarsSelection.activeSelector) {
-                StarsSelection.activeSelector.set(StarsSelection.currentlyHoveredStar);
-                
-                StarsSelection.activeSelector.setClassName("selectorItem");
-                StarsSelection.activeSelector = null;
-                StarsSelection.imageElem.className = "normalCursor";
-                
                 // hide the div showing the hovered star
                 document.getElementById ("debug").className = "hidden";
 
                 EstimationCorrector.updateAirmassFromInput (StarsSelection.currentlyHoveredStar);
+                StarsSelection.activeSelector.set(StarsSelection.currentlyHoveredStar);
+                StarsSelection.activeSelector.setClassName("selectorItem");
+                StarsSelection.activeSelector = null;
+                StarsSelection.imageElem.className = "normalCursor";
+
                 // now redo displayed values
                 CorrectorUIManager.onUserInput();
                                 
@@ -59,7 +58,7 @@ var StarsSelection = {
                     this.id = data.uiElement.id;
                     this.set = function (st) {
                         data.star = st;
-                        this.setDisplayedString (data.star.label);
+                        this.setDisplayedString (data.star.label + " airmass " + Computations.Round(data.star.airmass, 3));
                     }   
                     this.get = function () {
                         return data.star;
@@ -75,6 +74,10 @@ var StarsSelection = {
                     }
                     this.setDisplayedString = function (s) {
                         data.uiElement.value = s;
+                    }
+                    
+                    this.update = function () {
+                        this.set(data.star);
                     }
                     
                     this.setClassName("selectorItem");
