@@ -31,13 +31,15 @@ var ExtinctionCoefficient = {
         var lst = Computations.LSTFromTimeString (_time, _long);
         
         var compIndex = 0;
-        var comps = ExtinctionCoefficient.getValidComparisons();
+        var comps = ExtinctionCoefficient.comparisons;
         for (compIndex = 0; compIndex < comps.length; compIndex++) {
             ExtinctionCoefficient.updateAirmassForComparison(comps[compIndex], _lat, _long, lst);
         }
     },
     
     updateAirmassForComparison : function (comp, _lat, _long, lst) {
+        if (!comp)
+            return;
         var stars = comp.getStars();
         var starIndex = 0;
         for (starIndex = 0; starIndex < stars.length; starIndex++) {
@@ -46,6 +48,8 @@ var ExtinctionCoefficient = {
     },
     
     updateAirmassForStar : function (star,  _lat, _long, lst) {
+        if (!star)
+            return;
         // for each star, compute altitude
         var alt = Computations.Alt (star.ra, star.dec, lst, _lat, _long);
         // then airmass
@@ -141,6 +145,11 @@ var ExtinctionCoefficient = {
                 
                 "getStars" : function () {
                     return [this.bright(), this.dim()];
+                },
+                
+                "updateUI" : function () {
+                    this.ui.brightSelector.update();
+                    this.ui.dimSelector.update();
                 }
             };
         }();
@@ -162,6 +171,10 @@ var ExtinctionCoefficient = {
                 },
                 "getStars" : function () {
                     return ((this.first.getStars()).concat(this.second.getStars()));
+                },
+                "updateUI" : function () {
+                    this.first.updateUI();
+                    this.second.updateUI();
                 }
             };
         }();
@@ -228,6 +241,14 @@ var ExtinctionCoefficient = {
                 })(i);
             }
             return kvals;
+        }
+    },
+    
+    updateUI : function () {
+        var i = 0;
+        var comps = ExtinctionCoefficient.comparisons; // avoid long names
+        for (; i < comps.length; i++) {
+            comps[i].updateUI();
         }
     }
 
