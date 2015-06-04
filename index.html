@@ -276,60 +276,7 @@ pre {
 <script src="scripts/estimationcorrector.js"></script>
 <script src="scripts/extinctioncoefficientalgorithm.js"></script>
 <script src="scripts/computations.js"></script>
-
-<script>
-
-var elem = document.getElementById ("debug");
-var activeSel = document.getElementById ("activeSel");
-
-function onCoordsChanged (radec) {
-    var star = PhotmetryTable.searchTree.getClosestStar (radec[0], radec[1]);
-    if (star) {
-        StarsSelection.currentlyHoveredStar = star;
-        elem.innerHTML = star.label;
-    }
-    // activeSel.innerHTML = StarsSelection.activeSelector.id;
-}
-
-function onMouseMove (x, y) {
-    elem.style.left = x - 5;
-    elem.style.top = y + 25;
-}
-
-elem.onmousemove = onMouseMove;
-
-PhotmetryTable.onInit = function () { 
-    ChartXYToRADec.init (PhotmetryTable.searchTree.root.coords, PhotmetryTable.searchTree.root.fov);
-    ChartXYToRADec.onCoordsChanged = onCoordsChanged; 
-    ChartXYToRADec.onMouseMove = onMouseMove; 
-    EstimationCorrector.init();
+<script src="scripts/initialize.js"></script>
     
     /* now clean up the chart */
     /* and build a new one */
-};
-
-document.getElementById("chartOrientation").onchange = function () {
-    ChartXYToRADec.chartOrientation = this.value;
-}
-
-
-document.getElementById("dateTime").oninput = CorrectorUIManager.onLocationOrTimeChanged;
-document.getElementById("lat").oninput = CorrectorUIManager.onLocationOrTimeChanged;
-document.getElementById("long").oninput = CorrectorUIManager.onLocationOrTimeChanged;
-document.getElementById("K").oninput = CorrectorUIManager.onLocationOrTimeChanged;
-
-StarsSelection.onSelectionActivated = function () {
-    elem.className = "visible";
-    elem.innerHTML = "";
-}
-
-StarsSelection.init();
-PhotmetryTable.AAVSO.config.url = "http://127.0.0.1:8080/resources/14727KA.html";
-
-PhotmetryTable.init("", 7);
-
-CorrectorUIManager.init();
-
-
-
-</script>
