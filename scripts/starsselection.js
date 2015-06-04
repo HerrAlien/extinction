@@ -23,13 +23,14 @@ var StarsSelection = {
     activeSelector : null,
     onStarSelected : null,
     onSelectionActivated : null,
+	
+	preselectionElem : document.getElementById ("debug"),
     
     init : function () {
         StarsSelection.imageElem.onclick = function () {
             if (StarsSelection.activeSelector) {
                 // hide the div showing the hovered star
-                document.getElementById ("debug").className = "hidden";
-
+                StarsSelection.preselectionElem.className = "hidden";
                 EstimationCorrector.updateAirmassFromInput (StarsSelection.currentlyHoveredStar);
                 StarsSelection.activeSelector.set(StarsSelection.currentlyHoveredStar);
                 StarsSelection.activeSelector.setClassName("selectorItem");
@@ -43,8 +44,20 @@ var StarsSelection = {
                     StarsSelection.onStarSelected(StarsSelection.currentlyHoveredStar);
             }
         }
+		
+		StarsSelection.preselectionElem.onmousemove = function (x, y) {
+			    StarsSelection.preselectionElem.style.left = x - 5;
+				StarsSelection.preselectionElem.style.top = y + 25;
+		}
     },
     
+	setSurrentlyHoveredStar : function (star) {
+		if (star) {
+			StarsSelection.currentlyHoveredStar = star;
+			StarsSelection.preselectionElem.innerHTML = star.label;
+		}
+	},
+	
     Selector : {
         build : function (inputElement) {
             return function () {
@@ -100,6 +113,10 @@ var StarsSelection = {
                         StarsSelection.imageElem.className = "readyToSelect";
 
                         StarsSelection.activeSelector = sel;
+						
+						StarsSelection.preselectionElem.className = "visible";
+						StarsSelection.preselectionElem.innerHTML = "";
+						
                         if (StarsSelection.onSelectionActivated)
                             StarsSelection.onSelectionActivated (sel);
                     });
