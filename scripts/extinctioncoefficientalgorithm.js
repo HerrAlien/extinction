@@ -124,7 +124,7 @@ var ExtinctionCoefficient = {
             
             return {
                 "bright" : function () { return this.ui.brightSelector.get(); },
-                "value" : function () { return eval(this.ui.valueLineEdit.value); } ,
+                "value" : function () { return Computations.evalNum(this.ui.valueLineEdit.value); } ,
                 "dim" : function () { return this.ui.dimSelector.get(); },
                 "ui" : {
                     "brightSelector" : b,
@@ -219,7 +219,7 @@ var ExtinctionCoefficient = {
                     
                     var bracketCompInput = document.createElement ("input");
                     bracketCompInput.style.display = "none";
-                    bracketCompInput.value = eval(pairedComp.first.value) + eval(pairedComp.second.value);
+                    bracketCompInput.value = Computations.evalNum(pairedComp.first.value) + Computations.evalNum(pairedComp.second.value);
                     var bracketComp = ExtinctionCoefficient.SingleComparison (pairedComp.first.bright, 
                                                                               bracketCompInput, 
                                                                               pairedComp.second.dim);

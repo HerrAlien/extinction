@@ -22,130 +22,8 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl.html
 <head>
     <title>Extinction-O-Meter</title>
     <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE11" />
-<style>
 
-    #donate {
-        border: solid 1px #000000;
-        font-family : "Arial";
-
-        font-size: 14pt;
-        padding: 5px;
-        background-color : #dadadf;
-    }
-        
-    #donate a {
-        cursor: pointer;
-    }
-    
-    #submitButton {
-        display: none;
-    }
-    
-    #container {
-        margin: 10px;
-    text-align: center;
-    min-width: 1240px;
-    width: 1240px;
-}
-
-#banner {
-    margin: 0px auto 50px auto;
-    width: 800px;
-    text-align: center;
-    border: solid 2px #000000;
-    font-family : "Arial";
-    font-size : 24pt;
-    background-color : #dadadf;
-    padding: 20px;
-}
-    
-#chart {
-    width: 600px;
-    height: 750px;
-}
-
-a, .readyToSelect {
-	cursor: pointer;
-}
-
-.normalCursor {
-	cursor: default;
-}
-
-
-.clear {
-    clear: both;
-}
-
-pre {
-    text-align: left;
-}
-
-#wizard {
-    float: left;
-    margin: 0px 10px 0px 10px;
-    width: 580px;
-    text-align: left;
-}
-
-#imageContainer{
-}
-
-.selectorItem, .selectorItemActive {
-  cursor: pointer;
-  width: 105px;
-}
-
-.selectorItem {
-  background-color : #eaeaef; 
-  border : solid 1px #000000;
-}
-
-.selectorItemActive {
-  background-color : #eaeaff; 
-  border : solid 2px #8080ff;
-}
-
-#brightnessNoExtinction {
-  color: #AF0000;
-}
-
-#debug {
-    position: absolute;
-    z-index: 99;
-    width: 22px;
-    height: 22px;
-    background-color : rgba(255, 255, 255, 0.7); 
-    color: #5050C0;
-}
-
-#extinctionEstimatesHeader {
-    background-color : #dadadf; 
-}
-
-.hidden {
-    display: none;
-}
-
-.visible {
-    display: block;
-}
-
-.addAnchor, .deleteAnchor {
-    font-weight: bold;
-}
-
-.addAnchor {
-    color: #208820;
-}
-
-.deleteAnchor {
-    color: #882020;
-}
-
-</style>
-
-<script src="scripts/photometrytable.js"></script>
+<link rel="stylesheet" type="text/css" href="style/default.css"  />
 
 </head>
 
@@ -167,34 +45,42 @@ pre {
           </li>
 
           <li>
-              AAVSO chart and photometry table:<br>
-              chart ID: <input placeholder="[chart ID]" id="chartID" size="7"><br>
-         photometry table ID: <input placeholder="[table ID]" id="tableID" size="7"><br>
-         limitting magnitude: <input placeholder="[number]" id="mag" size="7"><br>
+              Chart and AAVSO photometry table:<br>
+              photometry table ID: <input placeholder="[table ID]" id="tableID" size="7"><br>
+              name of variable star: <input placeholder="[name of star]" id="variableStarName" size="10"><br>
+              limitting magnitude: <input placeholder="[number]" id="mag" size="7">
+              FOV [arc minutes]: <input placeholder="[number]" id="fov" size="7"><br>
          chart orientation: 
          <select id="chartOrientation" value="0"> 
         <option value="0">North up, West to the right (binoculars & terestrial instruments)</option>
         <option value="1">South up, East to the right (Newtons, refractors & SCTs)</option>
         <option value="2">North up, East to the right (refractors & SCTs with diagonals)</option>
          </select>
+         <br>
+                <input type="button" value="Update Chart" id="updateChart">
           </li>
     
           <li>
-              Brightness estimate (A (number) V (number) B)<br>
-              A: <input class="selectorItem" id="selectAforEstimate" readonly="true"> 
-              (<input placeholder="[number]" id="AtoVar" size="3">) 
-              V 
-              (<input placeholder="[number]" id="VarToB" size="3">)
-              B: <input class="selectorItem" id="selectBforEstimate" readonly="true">
+              Brightness estimate (A (brightness steps) V (brightness steps) B)<br>
+              <table>
+                <tr class="header">
+                    <td>Bright star</td>
+                    <td>steps</td>
+                    <td>Variable</td>
+                    <td>steps</td>
+                    <td>Dim star</td>
+                    <td><a nohref id="addEstimateLink" class="addAnchor">(+) Add row</a></td>
+                </tr>
+                <tbody id="extraEstimates">
+                </tbody>
+                
+              </table>
               <hr>
               Without considering extinction, brightness of V is:<br>
               <span id="brightnessNoExtinction">unknown</span>
-              <hr>
-              Air mass for comparison star A is <span id="airmassA">unknown</span><br>
-              Air mass for comparison star B is <span id="airmassB">unknown</span><br>
-              Air mass for variable star V is <span id="airmassV">unknown</span><br>
+              <br>Air mass for variable star V is <span id="airmassV">unknown</span><br>
               <br>
-              For the values above, you should <span id="shouldComputeExtinction">not need to</span> corect for extinction.
+              For the airmass values above, you should <span id="shouldComputeExtinction">not need to</span> corect for extinction.
               <hr>
           </li>
           
@@ -263,64 +149,10 @@ pre {
 
 </html>
 
+<script src="scripts/photometrytable.js"></script>
 <script src="scripts/chartxytoradec.js"></script>
 <script src="scripts/starsselection.js"></script>
 <script src="scripts/estimationcorrector.js"></script>
 <script src="scripts/extinctioncoefficientalgorithm.js"></script>
 <script src="scripts/computations.js"></script>
-
-<script>
-
-var elem = document.getElementById ("debug");
-var activeSel = document.getElementById ("activeSel");
-
-function onCoordsChanged (radec) {
-    var star = PhotmetryTable.searchTree.getClosestStar (radec[0], radec[1]);
-    if (star) {
-        StarsSelection.currentlyHoveredStar = star;
-        elem.innerHTML = star.label;
-    }
-    // activeSel.innerHTML = StarsSelection.activeSelector.id;
-}
-
-function onMouseMove (x, y) {
-    elem.style.left = x - 5;
-    elem.style.top = y + 25;
-}
-
-elem.onmousemove = onMouseMove;
-
-PhotmetryTable.onInit = function () { 
-    ChartXYToRADec.init (PhotmetryTable.searchTree.root.coords, PhotmetryTable.searchTree.root.fov);
-    ChartXYToRADec.onCoordsChanged = onCoordsChanged; 
-    ChartXYToRADec.onMouseMove = onMouseMove; 
-    
-    EstimationCorrector.init();
-};
-
-document.getElementById("chartOrientation").onchange = function () {
-    ChartXYToRADec.chartOrientation = this.value;
-}
-
-
-document.getElementById("dateTime").oninput = CorrectorUIManager.onLocationOrTimeChanged;
-document.getElementById("lat").oninput = CorrectorUIManager.onLocationOrTimeChanged;
-document.getElementById("long").oninput = CorrectorUIManager.onLocationOrTimeChanged;
-document.getElementById("K").oninput = CorrectorUIManager.onLocationOrTimeChanged;
-
-
-StarsSelection.onSelectionActivated = function () {
-    elem.className = "visible";
-    elem.innerHTML = "";
-}
-
-StarsSelection.init();
-PhotmetryTable.AAVSO.config.url = "http://127.0.0.1:8080/resources/14727KA.html";
-
-PhotmetryTable.init("", 7);
-
-CorrectorUIManager.init();
-
-
-
-</script>
+<script src="scripts/initialize.js"></script>
