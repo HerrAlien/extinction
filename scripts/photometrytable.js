@@ -174,7 +174,8 @@ var PhotmetryTable = {
         configFromStarName : { // 
             url : "http://www.aavso.org/cgi-bin/vsp.pl?ccdtable=on",
             method: "GET",
-            params : ["name", "fov"]
+            params : ["name" /* name of the variable star */,
+                      "fov"  /* field of view for the field, arcmins */]
         },
         
         GetData : function (text) {
