@@ -1,0 +1,13 @@
+{
+    "manifest_version" : 2,
+    "name" : "MyUberApp",
+    "version": "1", // version is a string?
+    "icons" : {
+        }, // no icons so far
+    "permissions" : ["<all_urls>"], // does this mean no permissions?
+    "app" : { // so, app is described by an object ... somewhat like icons
+        "background" : {
+            "scripts" : ["chromeapp.js"] // does this mean each script here runs in its own thread?
+        }
+    }
+}
