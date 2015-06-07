@@ -23,6 +23,7 @@ var SVGChart = {
     fov : 0,
     ra : 0,
     dec : 0,
+    chartOrientation : 0,
     limittingMag : 0,
     namespace: "http://www.w3.org/2000/svg",
     image : document.getElementById("svgimage"),
@@ -61,8 +62,16 @@ var SVGChart = {
     
     drawStar : function (_elementToDrawTo, _star) {
         // compute the coordinates, in pixels
+        var coords = SVGChart.radec2xy (_star.ra, _star.dec);
         // compute the radius
+        var radius = 1 * Math.pow (1.5, SVGChart.limittingMag - _star.mag);
         // create a circle element, and that position, using that radius, filled black.
+        var circleElem = _elementToDrawTo.ownerDocument.createElementNS (SVGChart.namespace, "circle");
+        _elementToDrawTo.appendChild (circleElem);
+        circleElem.x = coords[0];
+        circleElem.y = coords [1];
+        circleElem.r = radius;
+        circleElem.fill = "black";
     },
     
     updateComparisonLabels : function (_stars) {
@@ -82,6 +91,15 @@ var SVGChart = {
     radec2xy : function (ra, dec) {
         var dra_rad = (ra - SVGChart.ra) * Math.PI / 180;
         var ddec_rad = (dec - SVGChart.dec) * Math.PI / 180;
-        return [SVGChart.focalLength * Math.tan (dra_rad), SVGChart.focalLength * Math.tan (ddec_rad)];
+        
+        var signX = 1;
+        if (SVGChart.chartOrientation != 0)
+            signX = -1;
+        
+        var signY = 1;
+        if (SVGChart.chartOrientation == 1)
+            signY = -1;
+
+        return [signX * SVGChart.focalLength * Math.tan (dra_rad), signY * SVGChart.focalLength * Math.tan (ddec_rad)];
     }
 };
