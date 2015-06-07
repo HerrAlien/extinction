@@ -17,10 +17,9 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see https://www.gnu.org/licenses/agpl.html
 */
 
-
-
 PhotmetryTable.onInit = function () { 
-    ChartXYToRADec.init (PhotmetryTable.searchTree.root.coords, PhotmetryTable.searchTree.root.fov);
+    var root = PhotmetryTable.searchTree.root;
+    ChartXYToRADec.init (root.coords, root.fov);
     ChartXYToRADec.onCoordsChanged = function (radec) {
 		var star = PhotmetryTable.searchTree.getClosestStar (radec[0], radec[1]);
 		StarsSelection.setSurrentlyHoveredStar(star);
@@ -28,6 +27,8 @@ PhotmetryTable.onInit = function () {
 
     ChartXYToRADec.onMouseMove = StarsSelection.preselectionElem.onmousemove;     
     EstimationCorrector.init();
+    
+    Hipparcos.init(root.coords[0], root.coords[1], root.fov, root.mag );
 };
 
 document.getElementById("chartOrientation").onchange = function () {

@@ -28,10 +28,22 @@ var Hipparcos = {
         columnDelimiter : "|"
     },
     
-    stars : [],
+    config_debug : {
+        method: "GET",
+        url : "http://127.0.0.1:8080/resources/hip.htm"
+    },
+    
+    chart : {
+        stars : [],
+        config : { "ra" : 0, "dec" : 0, "fov" : 0, "mag" : 0 }
+    },
     
     init : function (ra_deg, dec_deg, fov_arcmin, maglim) {
         var xmlHttpReq = new XMLHttpRequest();
+        Hipparcos.chart.config.ra = ra_deg;
+        Hipparcos.chart.config.dec = dec_deg;
+        Hipparcos.chart.config.fov = fov_arcmin;
+        Hipparcos.chart.config.mag = maglim;
         xmlHttpReq.onreadystatechange = function() {
             if(xmlHttpReq.readyState == 4) {
                 var doc =  xmlHttpReq.responseText;
@@ -39,6 +51,10 @@ var Hipparcos = {
                 Hipparcos.onInit();
             }
         }
+        Hipparcos.sendRequest_debug (xmlHttpReq, ra_deg, dec_deg, fov_arcmin, maglim);
+    },
+    
+    sendRequest : function (xmlHttpReq, ra_deg, dec_deg, fov_arcmin, maglim) {
         xmlHttpReq.open(Hipparcos.config.method, 
                         Hipparcos.config.url + "?" +
                         Hipparcos.config.params[0] + "=" + ra_deg + "&" +
@@ -48,15 +64,22 @@ var Hipparcos = {
         xmlHttpReq.send(null); 
     },
     
+    sendRequest_debug : function (xmlHttpReq) {
+        xmlHttpReq.open(Hipparcos.config_debug.method, 
+                        Hipparcos.config_debug.url, 
+                        true);
+        xmlHttpReq.send(null); 
+    },
+
     onInit : function () {
         
     },
     
     ParseStarsFromText : function (text) {
-        var stars = Hipparcos.stars;
+        var stars = Hipparcos.chart.stars;
         stars = [];
         // first, locate the tycho section ("Tycho Catalogue Data")
-        var tycoBeginsAt = text.indexOf ("Tycho Catalogue Data");
+        var tycoBeginsAt = text.indexOf ("<h3>Tycho Catalogue  Data</h3>");
         var tychoText = text.substring(tycoBeginsAt);
         // the line starts with a "T|"; the T is at column 0.
         var lineBeginsAt = tychoText.indexOf("T|");
@@ -64,39 +87,43 @@ var Hipparcos = {
             tychoText = tychoText.substring(lineBeginsAt);
             var i = 0;
             var starToAdd = { "ra" : 0, "dec" : 0, "mag" : 0, "label" : null, "airmass" : 1 };
-            for (i = 0; i < 10; i++) {
-                var column = Hipparcos.extractColumn (tychoText);
-                tychoText = column.remaining;
-                //  columns of interest: 
-                switch (i) {
-                    case 1: starToAdd.label = column.value; break;
-                    //   * T5: V-band magnitude of the star
-                    case 5: starToAdd.mag = column.value; break;
-                    //   * T8: RA in degrees
-                    case 8: starToAdd.ra = column.value; break;
-                    //   * T9: DEC in degrees
-                    case 9: starToAdd.dec = column.value; break;
+            try {
+                for (i = 0; i < 10; i++) {
+                    var column = Hipparcos.extractColumn (tychoText);
+                    tychoText = column.remaining;
+                    //  columns of interest: 
+                    if ((i == 5 || i == 8 || i == 9) && column.empty)
+                        throw "empty column for index " + i;
+                    switch (i) {
+                        case 1: starToAdd.label = column.value; break;
+                        //   * T5: V-band magnitude of the star
+                        case 5: starToAdd.mag = column.value; break;
+                        //   * T8: RA in degrees
+                        case 8: starToAdd.ra = column.value; break;
+                        //   * T9: DEC in degrees
+                        case 9: starToAdd.dec = column.value; break;
+                    }
                 }
+                stars.push (starToAdd);
+            } catch (err) {
             }
-            stars.push (starToAdd);
             // the line starts with a "T|"; the T is at column 0.
-            lineBeginsAt = parsedText.indexOf("T|");
+            lineBeginsAt = tychoText.indexOf("T|");
         } while (lineBeginsAt > 0);
         
         return stars;
     },
     
     extractColumn : function (str) {
-        var res = {"value" : 0, "remaining": null };
-        var beginsAt = str.indexOf (Hipparcos.config.columnDelimiter) +
-                        Hipparcos.config.columnDelimiter.length;
-        var valStr = str.substring (beginsAt);
-        var endsAt = valStr.indexOf (Hipparcos.config.columnDelimiter);
-        res.remaining = valStr;
+        var res = {"value" : 0, "remaining": null, "empty" : false };
+        var endsAt = str.indexOf (Hipparcos.config.columnDelimiter);
+        var valStr = str.substring (0, endsAt).trim();
+        res.empty = 0 == valStr.length;
+        res.remaining = str.substring (endsAt + Hipparcos.config.columnDelimiter.length);            
         try {
-            res.value = Computations.evalNum (valStr.substring(0, endsAt));
+            res.value = Computations.evalNum (valStr);
         } catch (err) {
-            res.value = valStr.substring(0, endsAt);
+            res.value = valStr;
         }
         return res;
     }    

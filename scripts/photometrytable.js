@@ -72,6 +72,7 @@ var PhotmetryTable = {
                     this.coords = _coords;
                     this.fov = _fov;
                     this.stars = [];
+                    this.mag = mag;
                 
                     this.HasCoords = function (radec) {
                         var hc_halfFOVDeg = 0.5 / 60 * this.fov; 
