@@ -81,7 +81,7 @@ var Computations = {
         // locate the decimal point
         var dotIsAt = nstr.indexOf (".");
         var slicedNum = nstr.slice (0, dotIsAt + decimals + 1);
-        return eval (slicedNum);
+        return Computations.evalNum (slicedNum);
     },
     
     AverageAndStdDev : function (data) {
@@ -101,5 +101,11 @@ var Computations = {
         res.stdDev = Math.sqrt (variation);
         
         return res;
-    }
+    },
+	
+	evalNum : function (thingToEval) {
+		if (isNaN(thingToEval))
+			throw (thingToEval + " is not a number!");
+		return thingToEval * 1;
+	}
 };

@@ -186,7 +186,7 @@ var PhotmetryTable = {
         
         GetFOV : function (text) {
             var fovBegins = text.indexOf ("within ") + 7; // length of string
-            return 2 * 60 * eval (text.substr (fovBegins, 7));
+            return 2 * 60 * Computations.evalNum (text.substr (fovBegins, 7));
         },
         
         GetCoords : function (text) {
@@ -196,13 +196,13 @@ var PhotmetryTable = {
             var numberStartsAt = truncatedText.indexOf (" (") + 2;
             var numberEndsAt = truncatedText.indexOf (")</font>");
             var raStr = truncatedText.substring (numberStartsAt, numberEndsAt);
-            var ra = eval (raStr);
+            var ra = Computations.evalNum (raStr);
             
             var decText = truncatedText.substring (numberEndsAt + 1);
             numberStartsAt = decText.indexOf (" (") + 2;
             numberEndsAt = decText.indexOf (")</font>");
             var decStr = decText.substring (numberStartsAt, numberEndsAt);
-            var dec = eval (decStr);
+            var dec = Computations.evalNum (decStr);
             
             return [ra, dec];
         },
@@ -211,7 +211,7 @@ var PhotmetryTable = {
                 var valueStartsAt = str.indexOf (begin) + begin.length;
                 var valueEndsAt =  str.indexOf (end);
                 var valueAsString = str.substring (valueStartsAt, valueEndsAt);
-                return eval (valueAsString);
+                return Computations.evalNum (valueAsString);
                 
         },
         
@@ -238,7 +238,7 @@ var PhotmetryTable = {
                     } catch (err1) {
                         labelStr = PhotmetryTable.AAVSO.extractNumericalValue (currentRow.cells[3].innerHTML, "<b>", "</b>");
                     }
-                    var magNum = 0.1 * eval (labelStr);
+                    var magNum = 0.1 * Computations.evalNum (labelStr);
                     try {
                         magNum = PhotmetryTable.AAVSO.extractNumericalValue (currentRow.cells[6].innerHTML, "<FONT size=-1>", " (");
                     } catch (err2) {

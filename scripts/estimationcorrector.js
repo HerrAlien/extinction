@@ -52,8 +52,8 @@ var EstimationCorrector = {
     },
     
     updateAirmassFromInput : function (star) {
-        var latitude = eval (document.getElementById ("lat").value);
-        var longitude = eval (document.getElementById ("long").value);
+        var latitude = Computations.evalNum (document.getElementById ("lat").value);
+        var longitude = Computations.evalNum (document.getElementById ("long").value);
         var timeString = document.getElementById ("dateTime").value;
             
         var lst = Computations.LSTFromTimeString (timeString, longitude);
@@ -169,7 +169,7 @@ var CorrectorUIManager = {
     
     ResetHeader : function () {
         var addChild = CorrectorUIManager.Utils.AddChild;
-        CorrectorUIManager.tableHeader.innerHTML = "";
+        CorrectorUIManager.Utils.ClearDOM(CorrectorUIManager.tableHeader);
         if (0 == CorrectorUIManager.selectedAlgorithm) {
             var tdbright =  addChild (CorrectorUIManager.tableHeader, "td");
             var tdval =  addChild (CorrectorUIManager.tableHeader, "td");
@@ -211,10 +211,15 @@ var CorrectorUIManager = {
     
     ClearComparisonsList : function () {
         ExtinctionCoefficient.comparisons = [];
-        CorrectorUIManager.table.innerHTML = "";
+        CorrectorUIManager.Utils.ClearDOM (CorrectorUIManager.table);
     },
     
     Utils : {
+        ClearDOM : function (elem) {
+            while (elem && elem.hasChildNodes())
+                elem.removeChild(elem.firstChild);
+        },
+        
         AddChild : function (parentElem, tag) {
             var doc = parentElem.ownerDocument;
             var res = doc.createElement (tag);
@@ -235,13 +240,7 @@ var CorrectorUIManager = {
                 var tr = r;
                 deleteAnchor.onclick = function () {
                     var i = 0; 
-                    for (; i < tr.children.length; i++) {
-                        var chidInputs = tr.children [i].children;
-                        var j = 0;
-                        for (; j < chidInputs.length; j++)
-                            delete chidInputs[j];
-                        delete tr.children[i];
-                    }
+                    CorrectorUIManager.Utils.ClearDOM (tr);
                     tr.parentElement.removeChild (tr);
                     delete tr;
                 
@@ -328,8 +327,8 @@ var CorrectorUIManager = {
     onLocationOrTimeChanged : function () {
         try {
             // update all airmasses
-            var latitude = eval (document.getElementById ("lat").value);
-            var longitude = eval (document.getElementById ("long").value);
+            var latitude = Computations.evalNum (document.getElementById ("lat").value);
+            var longitude = Computations.evalNum (document.getElementById ("long").value);
             var timeString = document.getElementById ("dateTime").value;
             var lst = Computations.LSTFromTimeString (timeString, longitude);
         } catch (err) {
