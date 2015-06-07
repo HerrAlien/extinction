@@ -105,9 +105,12 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl.html
         </div>
         <div id="imageContainer">
           <b><div id="debug" class="hidden"></div></b><br>
-          <!-- <img src="http://www.aavso.org/cgi-bin/vsp.pl?chartid=14564DM&printable=yes" id="chart"> -->
-          <img src="resources/14564DM.png" id="chart">
-        </div>
+            <svg id="viewPort" width="540" height="540" viewBox="0 0 540 540" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+                <g id="svgimage">
+                    
+                </g>
+            </svg>
+          </div>
         <div class="clear">&nbsp;</div>
       </div>
         
@@ -156,4 +159,5 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl.html
 <script src="scripts/extinctioncoefficientalgorithm.js"></script>
 <script src="scripts/computations.js"></script>
 <script src="scripts/hipparcos.js"></script>
+<script src="scripts/svgchart.js"></script>
 <script src="scripts/initialize.js"></script>

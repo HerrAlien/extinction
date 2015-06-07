@@ -18,7 +18,7 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl.html
 */
 
 var SVGChart = {
-    size : 720,
+    size : 540,
     focalLength : 0,
     fov : 0,
     ra : 0,
@@ -31,9 +31,9 @@ var SVGChart = {
     starsDOM : null,
     labelsDOM : null,
     
-    init : function (ra, dec, _fov_arcmin) {
+    init : function (ra, dec, _fov_arcmin, _mag) {
         // clear it up first
-        while (SVGChart.image.hasChildren())
+        while (SVGChart.image.hasChildNodes())
             SVGChart.image.removeChild (SVGChart.image.firstChild);
         
         SVGChart.starsDOM = SVGChart.image.ownerDocument.createElementNS (SVGChart.namespace, "g");
@@ -45,6 +45,7 @@ var SVGChart = {
         SVGChart.ra = ra;
         SVGChart.dec = dec;
         SVGChart.fov = _fov_arcmin;
+        SVGChart.limittingMag = _mag;
         // knowing the size, now compute the focal length
         // w/2 = FL * tan (fov/2) => FL = w / 2 * tan (fov/2)
         SVGChart.focalLength = SVGChart.size / (2 * Math.tan ((_fov_arcmin / (2 * 60)) * Math.PI / 180));
@@ -56,7 +57,7 @@ var SVGChart = {
         
         var i = 0;
         for (i = 0; i < _stars.length; i++) {
-            SVGChart.drawStar (_stars[i]);
+            SVGChart.drawStar (SVGChart.starsDOM, _stars[i]);
         }
     },
     
@@ -64,20 +65,20 @@ var SVGChart = {
         // compute the coordinates, in pixels
         var coords = SVGChart.radec2xy (_star.ra, _star.dec);
         // compute the radius
-        var radius = 1 * Math.pow (1.5, SVGChart.limittingMag - _star.mag);
+        var radius = 0.625 * Math.pow (1.35, SVGChart.limittingMag - _star.mag);
         // create a circle element, and that position, using that radius, filled black.
         var circleElem = _elementToDrawTo.ownerDocument.createElementNS (SVGChart.namespace, "circle");
         _elementToDrawTo.appendChild (circleElem);
-        circleElem.x = coords[0];
-        circleElem.y = coords [1];
-        circleElem.r = radius;
-        circleElem.fill = "black";
+        circleElem.setAttribute ("cx", coords[0]);
+        circleElem.setAttribute ("cy", coords [1]);
+        circleElem.setAttribute ("r", radius);
+        circleElem.setAttribute ("fill", "black");
     },
     
     updateComparisonLabels : function (_stars) {
         var i = 0;
         for (i = 0; i < _stars.length; i++) {
-            SVGChart.drawLabel (_stars[i]);
+            SVGChart.drawLabel (SVGChart.labelsDOM, _stars[i]);
         }
     },
     
@@ -100,6 +101,7 @@ var SVGChart = {
         if (SVGChart.chartOrientation == 1)
             signY = -1;
 
-        return [signX * SVGChart.focalLength * Math.tan (dra_rad), signY * SVGChart.focalLength * Math.tan (ddec_rad)];
+        return [SVGChart.size / 2 + signX * SVGChart.focalLength * Math.tan (dra_rad), 
+                SVGChart.size / 2 + signY * SVGChart.focalLength * Math.tan (ddec_rad)];
     }
 };

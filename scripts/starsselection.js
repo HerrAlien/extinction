@@ -27,7 +27,7 @@ var StarsSelection = {
 	preselectionElem : document.getElementById ("debug"),
     
     init : function () {
-        StarsSelection.imageElem.onclick = function () {
+        /*StarsSelection.imageElem.onclick = function () {
             if (StarsSelection.activeSelector) {
                 // hide the div showing the hovered star
                 StarsSelection.preselectionElem.className = "hidden";
@@ -43,7 +43,7 @@ var StarsSelection = {
                 if (StarsSelection.onStarSelected)
                     StarsSelection.onStarSelected(StarsSelection.currentlyHoveredStar);
             }
-        }
+        } */
 		
 		StarsSelection.preselectionElem.onmousemove = function (x, y) {
 			    StarsSelection.preselectionElem.style.left = x - 5;
@@ -122,12 +122,6 @@ var StarsSelection = {
                     });
                 }
             }();
-        },
-        
-        buildIntoDOM : function (parentElement) {
-            var createdInput = parentElement.ownerDocument.createElement ("input");
-            parentElement.appendChild (createdInput);
-            return Selector.build (createdInput);
         }
     }
 };

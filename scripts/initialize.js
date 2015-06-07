@@ -28,7 +28,9 @@ PhotmetryTable.onInit = function () {
     ChartXYToRADec.onMouseMove = StarsSelection.preselectionElem.onmousemove;     
     EstimationCorrector.init();
     
-    Hipparcos.init(root.coords[0], root.coords[1], root.fov, root.mag );
+    Hipparcos.init(root.coords[0], root.coords[1], root.fov / (2 * 60), root.mag );
+//    RA:200 DEC:20 Tolerance:10 Threshold Magnitude 9
+    SVGChart.init (root.coords[0], root.coords[1], root.fov, root.mag);
 };
 
 document.getElementById("chartOrientation").onchange = function () {
@@ -47,4 +49,6 @@ PhotmetryTable.AAVSO.config.url = "http://127.0.0.1:8080/resources/14727KA.html"
 PhotmetryTable.init("", 7);
 
 CorrectorUIManager.init();
-
+Hipparcos.onInit = function () {
+    SVGChart.updateStars (Hipparcos.chart.stars);    
+}

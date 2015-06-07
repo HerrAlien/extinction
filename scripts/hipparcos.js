@@ -76,8 +76,7 @@ var Hipparcos = {
     },
     
     ParseStarsFromText : function (text) {
-        var stars = Hipparcos.chart.stars;
-        stars = [];
+        var stars = [];
         // first, locate the tycho section ("Tycho Catalogue Data")
         var tycoBeginsAt = text.indexOf ("<h3>Tycho Catalogue  Data</h3>");
         var tychoText = text.substring(tycoBeginsAt);
@@ -111,6 +110,7 @@ var Hipparcos = {
             lineBeginsAt = tychoText.indexOf("T|");
         } while (lineBeginsAt > 0);
         
+        Hipparcos.chart.stars = stars;
         return stars;
     },
     
