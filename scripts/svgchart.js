@@ -111,12 +111,17 @@ var SVGChart = {
 		textDOM.textContent = _star.label;
 		textDOM.style["fontSize"] = "11px";
 		textDOM.style["fontFamily"] = "Arial";
-		textDOM.style["cursor"] = "pointer";
-		
         // ... TODO: correct for collisions
         // set the cursor as pointer (style wise)
+		textDOM.style["cursor"] = "pointer";		
         // associate a function for the onclick event
-    },
+		textDOM.onclick = (function (_s) {
+			var comparisonStar = _s;
+			return function () {
+				StarsSelection.setSelectedStar (comparisonStar);
+			}
+		})(_star);
+	},
     
     radec2xy : function (ra, dec) {
         var dra_rad = (ra - SVGChart.ra) * Math.PI / 180;

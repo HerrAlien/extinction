@@ -18,19 +18,11 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl.html
 */
 
 PhotmetryTable.onInit = function () { 
-    var root = PhotmetryTable.searchTree.root;
-    ChartXYToRADec.init (root.coords, root.fov);
-    ChartXYToRADec.onCoordsChanged = function (radec) {
-		var star = PhotmetryTable.searchTree.getClosestStar (radec[0], radec[1]);
-		StarsSelection.setSurrentlyHoveredStar(star);
-	} 
-
-    ChartXYToRADec.onMouseMove = StarsSelection.preselectionElem.onmousemove;     
+    var root = PhotmetryTable.searchTree.root;     
     EstimationCorrector.init();
-    
     Hipparcos.init(root.coords[0], root.coords[1], root.fov, root.mag );
-//    RA:200 DEC:20 Tolerance:10 Threshold Magnitude 9
-    SVGChart.init (root.coords[0], root.coords[1], 1.2 * root.fov, root.mag);
+    SVGChart.init (root.coords[0], root.coords[1], root.fov, root.mag);
+	SVGChart.updateComparisonLabels (PhotmetryTable.comparisonStars);
 };
 
 document.getElementById("chartOrientation").onchange = function () {
@@ -52,7 +44,6 @@ StarsSelection.init();
 CorrectorUIManager.init();
 Hipparcos.onInit = function () {
     SVGChart.updateStars (Hipparcos.chart.stars);   	
-	SVGChart.updateComparisonLabels (PhotmetryTable.comparisonStars);
 }
 
 document.getElementById("updateChart").onclick = function () {
