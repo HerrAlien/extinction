@@ -27,30 +27,29 @@ var StarsSelection = {
 	preselectionElem : document.getElementById ("debug"),
     
     init : function () {
-        /*StarsSelection.imageElem.onclick = function () {
-            if (StarsSelection.activeSelector) {
-                // hide the div showing the hovered star
-                StarsSelection.preselectionElem.className = "hidden";
-                EstimationCorrector.updateAirmassFromInput (StarsSelection.currentlyHoveredStar);
-                StarsSelection.activeSelector.set(StarsSelection.currentlyHoveredStar);
-                StarsSelection.activeSelector.setClassName("selectorItem");
-                StarsSelection.activeSelector = null;
-                StarsSelection.imageElem.className = "normalCursor";
-
-                // now redo displayed values
-                CorrectorUIManager.onUserInput();
-                                
-                if (StarsSelection.onStarSelected)
-                    StarsSelection.onStarSelected(StarsSelection.currentlyHoveredStar);
-            }
-        } */
-		
+        
 		StarsSelection.preselectionElem.onmousemove = function (x, y) {
 			    StarsSelection.preselectionElem.style.left = x - 5;
 				StarsSelection.preselectionElem.style.top = y + 25;
 		}
     },
     
+	setSelectedStar : function (currentlyHoveredStar) {
+            if (StarsSelection.activeSelector) {
+                // hide the div showing the hovered star
+                EstimationCorrector.updateAirmassFromInput (currentlyHoveredStar);
+                StarsSelection.activeSelector.set(currentlyHoveredStar);
+                StarsSelection.activeSelector.setClassName("selectorItem");
+                StarsSelection.activeSelector = null;
+
+                // now redo displayed values
+                CorrectorUIManager.onUserInput();
+                                
+                if (StarsSelection.onStarSelected)
+                    StarsSelection.onStarSelected(currentlyHoveredStar);
+			}
+	},
+	
 	setSurrentlyHoveredStar : function (star) {
 		if (star) {
 			StarsSelection.currentlyHoveredStar = star;
@@ -110,8 +109,6 @@ var StarsSelection = {
                         sel.setDisplayedString("");
                         sel.setPlaceholder ("click on the chart");
                         
-                        StarsSelection.imageElem.className = "readyToSelect";
-
                         StarsSelection.activeSelector = sel;
 						
 						StarsSelection.preselectionElem.className = "visible";
