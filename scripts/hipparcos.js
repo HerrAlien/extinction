@@ -51,7 +51,7 @@ var Hipparcos = {
                 Hipparcos.onInit();
             }
         }
-        Hipparcos.sendRequest_debug (xmlHttpReq, ra_deg, dec_deg, fov_arcmin, maglim);
+        Hipparcos.sendRequest (xmlHttpReq, ra_deg, dec_deg, fov_arcmin, maglim);
     },
     
     sendRequest : function (xmlHttpReq, ra_deg, dec_deg, fov_arcmin, maglim) {
@@ -59,7 +59,7 @@ var Hipparcos = {
                         Hipparcos.config.url + "?" +
                         Hipparcos.config.params[0] + "=" + ra_deg + "&" +
                         Hipparcos.config.params[1] + "=" + dec_deg + "&" +
-                        Hipparcos.config.params[2] + "=" + fov_arcmin / 120 + "&" +
+                        Hipparcos.config.params[2] + "=" + fov_arcmin / 120.0 + "&" +
                         Hipparcos.config.params[3] + "=" + maglim , true);
         xmlHttpReq.send(null); 
     },
