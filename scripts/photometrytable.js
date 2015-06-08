@@ -26,6 +26,8 @@ var PhotmetryTable = {
         "label" : "V",
         "airmass" : 1
     },
+	
+	comparisonStars : [],
 
     searchTree : {        
         root : null,
@@ -72,6 +74,7 @@ var PhotmetryTable = {
                     this.coords = _coords;
                     this.fov = _fov;
                     this.stars = [];
+                    this.mag = mag;
                 
                     this.HasCoords = function (radec) {
                         var hc_halfFOVDeg = 0.5 / 60 * this.fov; 
@@ -171,6 +174,13 @@ var PhotmetryTable = {
             method: "GET"
         },
         
+        configFromStarName : { // 
+            url : "http://www.aavso.org/cgi-bin/vsp.pl?ccdtable=on",
+            method: "GET",
+            params : ["name" /* name of the variable star */,
+                      "fov"  /* field of view for the field, arcmins */]
+        },
+        
         GetData : function (text) {
             var data = {
                 centerCoords : [0, 0],
@@ -268,9 +278,28 @@ var PhotmetryTable = {
     init : function (chartID, limittingMag) {
         var xmlHttpReq = new XMLHttpRequest();
         xmlHttpReq.onreadystatechange = function() {
+			PhotmetryTable.onDataRetrieved (this, limittingMag);
+		}
+        xmlHttpReq.open(PhotmetryTable.AAVSO.config.method, PhotmetryTable.AAVSO.config.url + chartID, true);
+        xmlHttpReq.send(null);              
+    },
+    
+    initFromStarName : function (starName, fov, limitingMag) {
+        var xmlHttpReq = new XMLHttpRequest();
+        xmlHttpReq.onreadystatechange = function() {
+				PhotmetryTable.onDataRetrieved (this, limitingMag);
+			}
+		var cfg = PhotmetryTable.AAVSO.configFromStarName;
+        xmlHttpReq.open(cfg.method, cfg.url + cfg.params[0] + "=" + starName + 
+						"&" + cfg.params[1] + "=" + fov, true);
+        xmlHttpReq.send(null);   
+    },
+    
+	onDataRetrieved : function (xmlHttpReq, limittingMag) {
             if(xmlHttpReq.readyState == 4) {
                 var doc =  xmlHttpReq.responseText;
                 var structuredData  = PhotmetryTable.AAVSO.GetData (doc);
+				PhotmetryTable.comparisonStars = structuredData.stars;
                 
                 PhotmetryTable.searchTree.init (structuredData, limittingMag);
                 
@@ -278,12 +307,9 @@ var PhotmetryTable = {
                 PhotmetryTable.variableStar.dec = structuredData.centerCoords[1];
                 
                 PhotmetryTable.onInit();
-            }
-        }
-        xmlHttpReq.open(PhotmetryTable.AAVSO.config.method, PhotmetryTable.AAVSO.config.url + chartID, true);
-        xmlHttpReq.send(null);              
-    },
-    
+			}
+	},
+	
     updateAirmass : function (_lat, _long, _time){
         // for each star, compute altitude
         // then airmass
