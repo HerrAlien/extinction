@@ -22,7 +22,6 @@ PhotmetryTable.onInit = function () {
     EstimationCorrector.init();
     Hipparcos.init(root.coords[0], root.coords[1], root.fov, root.mag );
     SVGChart.init (root.coords[0], root.coords[1], root.fov, root.mag);
-	SVGChart.updateComparisonLabels (PhotmetryTable.comparisonStars);
 };
 
 document.getElementById("chartOrientation").onchange = function () {
@@ -44,6 +43,7 @@ StarsSelection.init();
 CorrectorUIManager.init();
 Hipparcos.onInit = function () {
     SVGChart.updateStars (Hipparcos.chart.stars);   	
+	SVGChart.updateComparisonLabels (PhotmetryTable.comparisonStars);
 }
 
 document.getElementById("updateChart").onclick = function () {
