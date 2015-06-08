@@ -17,21 +17,18 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see https://www.gnu.org/licenses/agpl.html
 */
 
-
-
 PhotmetryTable.onInit = function () { 
-    ChartXYToRADec.init (PhotmetryTable.searchTree.root.coords, PhotmetryTable.searchTree.root.fov);
-    ChartXYToRADec.onCoordsChanged = function (radec) {
-		var star = PhotmetryTable.searchTree.getClosestStar (radec[0], radec[1]);
-		StarsSelection.setSurrentlyHoveredStar(star);
-	} 
-
-    ChartXYToRADec.onMouseMove = StarsSelection.preselectionElem.onmousemove;     
+    var root = PhotmetryTable.searchTree.root;     
     EstimationCorrector.init();
+    Hipparcos.init(root.coords[0], root.coords[1], root.fov, root.mag );
+    SVGChart.init (root.coords[0], root.coords[1], root.fov, root.mag);
 };
 
 document.getElementById("chartOrientation").onchange = function () {
     ChartXYToRADec.chartOrientation = this.value;
+	SVGChart.chartOrientation = this.value;
+	SVGChart.redrawStars();
+	SVGChart.redrawLabels();	
 }
 
 
@@ -41,9 +38,18 @@ document.getElementById("long").oninput = CorrectorUIManager.onLocationOrTimeCha
 document.getElementById("K").oninput = CorrectorUIManager.onLocationOrTimeChanged;
 
 StarsSelection.init();
-PhotmetryTable.AAVSO.config.url = "http://127.0.0.1:8080/resources/14727KA.html";
-
-PhotmetryTable.init("", 7);
+// PhotmetryTable.AAVSO.config.url = "http://127.0.0.1:8080/resources/14727KA.html";
 
 CorrectorUIManager.init();
+Hipparcos.onInit = function () {
+    SVGChart.updateStars (Hipparcos.chart.stars);   	
+	SVGChart.updateComparisonLabels (PhotmetryTable.comparisonStars);
+}
 
+document.getElementById("updateChart").onclick = function () {
+	var starName = document.getElementById("variableStarName").value;
+	var fov = document.getElementById("fov").value;
+	var limittingMag = document.getElementById("mag").value;
+
+	PhotmetryTable.initFromStarName (starName, fov, limittingMag);
+}

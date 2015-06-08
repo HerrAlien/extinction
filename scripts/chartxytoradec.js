@@ -82,6 +82,6 @@ var ChartXYToRADec = {
     init : function (centerRADec, fov_mins) {
         ChartXYToRADec.centerRADecCoords = centerRADec;
         ChartXYToRADec.fov_mins = fov_mins;
-        ChartXYToRADec.imageElem.onmousemove = function (e) { ChartXYToRADec.handleMouseMovement(e); }
+//        ChartXYToRADec.imageElem.onmousemove = function (e) { ChartXYToRADec.handleMouseMovement(e); }
     }
 };
