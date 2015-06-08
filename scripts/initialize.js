@@ -28,10 +28,9 @@ PhotmetryTable.onInit = function () {
     ChartXYToRADec.onMouseMove = StarsSelection.preselectionElem.onmousemove;     
     EstimationCorrector.init();
     
-    Hipparcos.init(root.coords[0], root.coords[1], root.fov / (2 * 60), root.mag );
+    Hipparcos.init(root.coords[0], root.coords[1], root.fov, root.mag );
 //    RA:200 DEC:20 Tolerance:10 Threshold Magnitude 9
     SVGChart.init (root.coords[0], root.coords[1], 1.2 * root.fov, root.mag);
-	SVGChart.updateComparisonLabels (PhotmetryTable.comparisonStars);
 };
 
 document.getElementById("chartOrientation").onchange = function () {
@@ -53,6 +52,7 @@ StarsSelection.init();
 CorrectorUIManager.init();
 Hipparcos.onInit = function () {
     SVGChart.updateStars (Hipparcos.chart.stars);   	
+	SVGChart.updateComparisonLabels (PhotmetryTable.comparisonStars);
 }
 
 document.getElementById("updateChart").onclick = function () {

@@ -101,8 +101,8 @@ var SVGChart = {
 			return;
         // compute coordinates, in pixels
 		var coords = SVGChart.radec2xy (_star.ra, _star.dec);
-		coords[0] += 1 + SVGChart.limittingMag - _star.mag;
-		coords[1] += 7 + SVGChart.limittingMag - _star.mag;
+		coords[0] += 3;
+		coords[1] += 7;
 		
 		var textDOM = _elementToDrawTo.ownerDocument.createElementNS (SVGChart.namespace, "text");
 		_elementToDrawTo.appendChild(textDOM);

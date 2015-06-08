@@ -290,7 +290,7 @@ var PhotmetryTable = {
 				PhotmetryTable.onDataRetrieved (this, limitingMag);
 			}
 		var cfg = PhotmetryTable.AAVSO.configFromStarName;
-        xmlHttpReq.open(cfg.method, cfg.url + cfg.params[0] + "=" + starName + 
+        xmlHttpReq.open(cfg.method, cfg.url + "&" + cfg.params[0] + "=" + starName + 
 						"&" + cfg.params[1] + "=" + fov, true);
         xmlHttpReq.send(null);   
     },
