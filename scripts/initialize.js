@@ -48,11 +48,17 @@ document.getElementById("long").oninput = CorrectorUIManager.onLocationOrTimeCha
 document.getElementById("K").oninput = CorrectorUIManager.onLocationOrTimeChanged;
 
 StarsSelection.init();
-PhotmetryTable.AAVSO.config.url = "http://127.0.0.1:8080/resources/14727KA.html";
-
-PhotmetryTable.init("", 7);
+// PhotmetryTable.AAVSO.config.url = "http://127.0.0.1:8080/resources/14727KA.html";
 
 CorrectorUIManager.init();
 Hipparcos.onInit = function () {
     SVGChart.updateStars (Hipparcos.chart.stars);   	
+}
+
+document.getElementById("updateChart").onclick = function () {
+	var starName = document.getElementById("variableStarName").value;
+	var fov = document.getElementById("fov").value;
+	var limittingMag = document.getElementById("mag").value;
+
+	PhotmetryTable.initFromStarName (starName, fov, limittingMag);
 }

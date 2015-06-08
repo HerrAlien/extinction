@@ -278,6 +278,24 @@ var PhotmetryTable = {
     init : function (chartID, limittingMag) {
         var xmlHttpReq = new XMLHttpRequest();
         xmlHttpReq.onreadystatechange = function() {
+			PhotmetryTable.onDataRetrieved (this, limittingMag);
+		}
+        xmlHttpReq.open(PhotmetryTable.AAVSO.config.method, PhotmetryTable.AAVSO.config.url + chartID, true);
+        xmlHttpReq.send(null);              
+    },
+    
+    initFromStarName : function (starName, fov, limitingMag) {
+        var xmlHttpReq = new XMLHttpRequest();
+        xmlHttpReq.onreadystatechange = function() {
+				PhotmetryTable.onDataRetrieved (this, limitingMag);
+			}
+		var cfg = PhotmetryTable.AAVSO.configFromStarName;
+        xmlHttpReq.open(cfg.method, cfg.url + cfg.params[0] + "=" + starName + 
+						"&" + cfg.params[1] + "=" + fov, true);
+        xmlHttpReq.send(null);   
+    },
+    
+	onDataRetrieved : function (xmlHttpReq, limittingMag) {
             if(xmlHttpReq.readyState == 4) {
                 var doc =  xmlHttpReq.responseText;
                 var structuredData  = PhotmetryTable.AAVSO.GetData (doc);
@@ -289,16 +307,9 @@ var PhotmetryTable = {
                 PhotmetryTable.variableStar.dec = structuredData.centerCoords[1];
                 
                 PhotmetryTable.onInit();
-            }
-        }
-        xmlHttpReq.open(PhotmetryTable.AAVSO.config.method, PhotmetryTable.AAVSO.config.url + chartID, true);
-        xmlHttpReq.send(null);              
-    },
-    
-    initFromStarName : function (starName, limitingMag) {
-        
-    },
-    
+			}
+	},
+	
     updateAirmass : function (_lat, _long, _time){
         // for each star, compute altitude
         // then airmass
