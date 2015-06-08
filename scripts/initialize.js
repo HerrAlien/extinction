@@ -30,11 +30,15 @@ PhotmetryTable.onInit = function () {
     
     Hipparcos.init(root.coords[0], root.coords[1], root.fov / (2 * 60), root.mag );
 //    RA:200 DEC:20 Tolerance:10 Threshold Magnitude 9
-    SVGChart.init (root.coords[0], root.coords[1], root.fov, root.mag);
+    SVGChart.init (root.coords[0], root.coords[1], 1.2 * root.fov, root.mag);
+	SVGChart.updateComparisonLabels (PhotmetryTable.comparisonStars);
 };
 
 document.getElementById("chartOrientation").onchange = function () {
     ChartXYToRADec.chartOrientation = this.value;
+	SVGChart.chartOrientation = this.value;
+	SVGChart.redrawStars();
+	SVGChart.redrawLabels();	
 }
 
 
@@ -50,5 +54,5 @@ PhotmetryTable.init("", 7);
 
 CorrectorUIManager.init();
 Hipparcos.onInit = function () {
-    SVGChart.updateStars (Hipparcos.chart.stars);    
+    SVGChart.updateStars (Hipparcos.chart.stars);   	
 }

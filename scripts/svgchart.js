@@ -18,7 +18,7 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl.html
 */
 
 var SVGChart = {
-    size : 540,
+    size : 600,
     focalLength : 0,
     fov : 0,
     ra : 0,
@@ -28,6 +28,7 @@ var SVGChart = {
     namespace: "http://www.w3.org/2000/svg",
     image : document.getElementById("svgimage"),
     stars: [], // to be used later, when checking for collisions against the labels.
+	labels : [],
     starsDOM : null,
     labelsDOM : null,
     
@@ -52,20 +53,25 @@ var SVGChart = {
     },
     
     updateStars : function (_stars) {
-        SVGChart.stars = [];
-        SVGChart.stars.concat (_stars);
-        
-        var i = 0;
-        for (i = 0; i < _stars.length; i++) {
-            SVGChart.drawStar (SVGChart.starsDOM, _stars[i]);
-        }
+        SVGChart.stars = _stars;
+        SVGChart.redrawStars();
     },
+	
+	redrawStars : function () {
+		while (SVGChart.starsDOM.hasChildNodes())
+            SVGChart.starsDOM.removeChild (SVGChart.starsDOM.firstChild);
+		
+        var i = 0;
+        for (i = 0; i < SVGChart.stars.length; i++) {
+            SVGChart.drawStar (SVGChart.starsDOM, SVGChart.stars[i]);
+        }
+	},
     
     drawStar : function (_elementToDrawTo, _star) {
         // compute the coordinates, in pixels
         var coords = SVGChart.radec2xy (_star.ra, _star.dec);
         // compute the radius
-        var radius = 0.625 * Math.pow (1.35, SVGChart.limittingMag - _star.mag);
+        var radius = 1 * Math.pow (1.35, SVGChart.limittingMag - _star.mag);
         // create a circle element, and that position, using that radius, filled black.
         var circleElem = _elementToDrawTo.ownerDocument.createElementNS (SVGChart.namespace, "circle");
         _elementToDrawTo.appendChild (circleElem);
@@ -76,14 +82,36 @@ var SVGChart = {
     },
     
     updateComparisonLabels : function (_stars) {
-        var i = 0;
-        for (i = 0; i < _stars.length; i++) {
-            SVGChart.drawLabel (SVGChart.labelsDOM, _stars[i]);
-        }
-    },
+		SVGChart.labels = _stars;
+		SVGChart.redrawLabels();
+	},
     
+	redrawLabels : function () {
+		while (SVGChart.labelsDOM.hasChildNodes())
+            SVGChart.labelsDOM.removeChild (SVGChart.labelsDOM.firstChild);
+		
+		var i = 0;
+        for (i = 0; i < SVGChart.labels.length; i++) {
+            SVGChart.drawLabel (SVGChart.labelsDOM, SVGChart.labels[i]);
+        }
+	},
+	
     drawLabel : function (_elementToDrawTo, _star) {
+		if (_star.mag > SVGChart.limittingMag)
+			return;
         // compute coordinates, in pixels
+		var coords = SVGChart.radec2xy (_star.ra, _star.dec);
+		coords[0] += 5;
+		coords[1] += 7;
+		
+		var textDOM = _elementToDrawTo.ownerDocument.createElementNS (SVGChart.namespace, "text");
+		_elementToDrawTo.appendChild(textDOM);
+		textDOM.setAttribute("x", coords[0]);
+		textDOM.setAttribute("y", coords[1]);
+		textDOM.textContent = _star.label;
+		textDOM.style["fontSize"] = "11px";
+		textDOM.style["fontFamily"] = "Arial";
+		
         // ... TODO: correct for collisions
         // set the cursor as pointer (style wise)
         // associate a function for the onclick event
@@ -101,7 +129,7 @@ var SVGChart = {
         if (SVGChart.chartOrientation == 1)
             signY = -1;
 
-        return [SVGChart.size / 2 + signX * SVGChart.focalLength * Math.tan (dra_rad), 
-                SVGChart.size / 2 + signY * SVGChart.focalLength * Math.tan (ddec_rad)];
+        return [SVGChart.size / 2 - signX * SVGChart.focalLength * Math.tan (dra_rad), 
+                SVGChart.size / 2 - signY * SVGChart.focalLength * Math.tan (ddec_rad)];
     }
 };

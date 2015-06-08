@@ -26,6 +26,8 @@ var PhotmetryTable = {
         "label" : "V",
         "airmass" : 1
     },
+	
+	comparisonStars : [],
 
     searchTree : {        
         root : null,
@@ -279,6 +281,7 @@ var PhotmetryTable = {
             if(xmlHttpReq.readyState == 4) {
                 var doc =  xmlHttpReq.responseText;
                 var structuredData  = PhotmetryTable.AAVSO.GetData (doc);
+				PhotmetryTable.comparisonStars = structuredData.stars;
                 
                 PhotmetryTable.searchTree.init (structuredData, limittingMag);
                 
