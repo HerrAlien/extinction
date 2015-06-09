@@ -48,6 +48,11 @@ var EstimationCorrector = {
     
     init : function () {
         pairedComparisons = [];
+		// empty the table ...
+		var table = CorrectorUIManager.extraEstimatesTable;
+		while (table.hasChildNodes())
+			table.removeChild (table.firstChild);
+		
         EstimationCorrector.addNewComparison (false);
     },
     
