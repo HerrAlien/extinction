@@ -45,11 +45,11 @@ var SVGChart = {
         // save the data
         SVGChart.ra = ra;
         SVGChart.dec = dec;
-        SVGChart.fov = _fov_arcmin;
+        SVGChart.fov = _fov_arcmin / 60.0;
         SVGChart.limittingMag = _mag;
         // knowing the size, now compute the focal length
         // w/2 = FL * tan (fov/2) => FL = w / 2 * tan (fov/2)
-        SVGChart.focalLength = SVGChart.size / (2 * Math.tan ((_fov_arcmin / (2 * 60)) * Math.PI / 180));
+        SVGChart.focalLength = SVGChart.size / (2 * Math.tan (SVGChart.fov * Math.PI / 360));
     },
     
     updateStars : function (_stars) {
@@ -68,6 +68,8 @@ var SVGChart = {
 	},
     
     drawStar : function (_elementToDrawTo, _star) {
+		if (!SVGChart.isStarVisible(_star))
+			return;
         // compute the coordinates, in pixels
         var coords = SVGChart.radec2xy (_star.ra, _star.dec);
         // compute the radius
@@ -97,8 +99,9 @@ var SVGChart = {
 	},
 	
     drawLabel : function (_elementToDrawTo, _star) {
-		if (_star.mag > SVGChart.limittingMag)
+		if (!SVGChart.isStarVisible(_star))
 			return;
+		
         // compute coordinates, in pixels
 		var coords = SVGChart.radec2xy (_star.ra, _star.dec);
 		coords[0] += 3;
@@ -121,6 +124,15 @@ var SVGChart = {
 				StarsSelection.setSelectedStar (comparisonStar);
 			}
 		})(_star);
+	},
+	
+	isStarVisible : function (_star) {
+		var halfFov = SVGChart.fov / 2;
+		return (_star.mag <= SVGChart.limittingMag) &&
+			   (_star.ra >= SVGChart.ra - halfFov) && 
+			   (_star.ra <= SVGChart.ra + halfFov) && 
+			   (_star.dec >= SVGChart.dec - halfFov) && 
+			   (_star.dec <= SVGChart.dec + halfFov); 
 	},
     
     radec2xy : function (ra, dec) {

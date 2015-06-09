@@ -47,13 +47,20 @@ var EstimationCorrector = {
     },
     
     init : function () {
+		// reset estimates
         pairedComparisons = [];
-		// empty the table ...
+		// empty the table of estimates ...
 		var table = CorrectorUIManager.extraEstimatesTable;
 		while (table.hasChildNodes())
 			table.removeChild (table.firstChild);
-		
+		// add the first estimate
         EstimationCorrector.addNewComparison (false);
+
+		// reset the estimates for extinction
+		CorrectorUIManager.ClearComparisonsList();
+        CorrectorUIManager.ResetHeader();	
+		CorrectorUIManager.useArgelander.onclick();
+        CorrectorUIManager.useArgelander.checked = true;
     },
     
     updateAirmassFromInput : function (star) {
