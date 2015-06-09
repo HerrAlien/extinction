@@ -22,12 +22,15 @@ PhotmetryTable.onInit = function () {
     EstimationCorrector.init();
     Hipparcos.init(root.coords[0], root.coords[1], root.fov, root.mag );
     SVGChart.init (root.coords[0], root.coords[1], root.fov, root.mag);
-};
+	SVGChart.drawBorder ();
+}
 
 document.getElementById("chartOrientation").onchange = function () {
     ChartXYToRADec.chartOrientation = this.value;
 	SVGChart.chartOrientation = this.value;
+	SVGChart.drawBorder ();
 	SVGChart.redrawStars();
+	SVGChart.drawCenterMark();
 	SVGChart.redrawLabels();	
 }
 
@@ -38,11 +41,11 @@ document.getElementById("long").oninput = CorrectorUIManager.onLocationOrTimeCha
 document.getElementById("K").oninput = CorrectorUIManager.onLocationOrTimeChanged;
 
 StarsSelection.init();
-// PhotmetryTable.AAVSO.config.url = "http://127.0.0.1:8080/resources/14727KA.html";
 
 CorrectorUIManager.init();
 Hipparcos.onInit = function () {
     SVGChart.updateStars (Hipparcos.chart.stars);   	
+	SVGChart.drawCenterMark();
 	SVGChart.updateComparisonLabels (PhotmetryTable.comparisonStars);
 }
 

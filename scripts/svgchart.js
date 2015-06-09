@@ -31,17 +31,17 @@ var SVGChart = {
 	labels : [],
     starsDOM : null,
     labelsDOM : null,
+	borderDOM : null,
     
     init : function (ra, dec, _fov_arcmin, _mag) {
         // clear it up first
         while (SVGChart.image.hasChildNodes())
             SVGChart.image.removeChild (SVGChart.image.firstChild);
-        
-        SVGChart.starsDOM = SVGChart.image.ownerDocument.createElementNS (SVGChart.namespace, "g");
-        SVGChart.labelsDOM = SVGChart.image.ownerDocument.createElementNS (SVGChart.namespace, "g");
-        SVGChart.image.appendChild (SVGChart.starsDOM);
-        SVGChart.image.appendChild (SVGChart.labelsDOM);
-        
+
+		SVGChart.starsDOM = null;
+		SVGChart.labelsDOM = null;
+		SVGChart.borderDOM = null;
+	
         // save the data
         SVGChart.ra = ra;
         SVGChart.dec = dec;
@@ -58,8 +58,10 @@ var SVGChart = {
     },
 	
 	redrawStars : function () {
-		while (SVGChart.starsDOM.hasChildNodes())
-            SVGChart.starsDOM.removeChild (SVGChart.starsDOM.firstChild);
+		if (SVGChart.starsDOM)
+			SVGChart.image.removeChild (SVGChart.starsDOM);
+        SVGChart.starsDOM = SVGChart.image.ownerDocument.createElementNS (SVGChart.namespace, "g");
+        SVGChart.image.appendChild (SVGChart.starsDOM);
 		
         var i = 0;
         for (i = 0; i < SVGChart.stars.length; i++) {
@@ -89,9 +91,11 @@ var SVGChart = {
 	},
     
 	redrawLabels : function () {
-		while (SVGChart.labelsDOM.hasChildNodes())
-            SVGChart.labelsDOM.removeChild (SVGChart.labelsDOM.firstChild);
-		
+		if (SVGChart.labelsDOM)
+			SVGChart.image.removeChild (SVGChart.labelsDOM);
+        SVGChart.labelsDOM = SVGChart.image.ownerDocument.createElementNS (SVGChart.namespace, "g");
+        SVGChart.image.appendChild (SVGChart.labelsDOM);		
+
 		var i = 0;
         for (i = 0; i < SVGChart.labels.length; i++) {
             SVGChart.drawLabel (SVGChart.labelsDOM, SVGChart.labels[i]);
@@ -149,5 +153,104 @@ var SVGChart = {
 
         return [SVGChart.size / 2 - signX * SVGChart.focalLength * Math.tan (dra_rad), 
                 SVGChart.size / 2 - signY * SVGChart.focalLength * Math.tan (ddec_rad)];
-    }
+    },
+	
+	drawCenterMark : function () {
+		var center = SVGChart.size / 2;
+		var offset = 7;
+		var line = SVGChart.image.ownerDocument.createElementNS(SVGChart.namespace, "line");
+		SVGChart.image.appendChild (line);
+        line.setAttribute ("x1", center - offset);
+        line.setAttribute ("y1", center);
+        line.setAttribute ("x2", center + offset);
+        line.setAttribute ("y2", center);
+        line.setAttribute ("stroke", "black");
+        line.setAttribute ("stroke-width", 1);
+
+		line = SVGChart.image.ownerDocument.createElementNS(SVGChart.namespace, "line");
+		SVGChart.image.appendChild (line);
+        line.setAttribute ("x1", center);
+        line.setAttribute ("y1", center - offset);
+        line.setAttribute ("x2", center);
+        line.setAttribute ("y2", center + offset);
+        line.setAttribute ("stroke", "black");
+        line.setAttribute ("stroke-width", 1);
+		
+		var circleElem = SVGChart.image.ownerDocument.createElementNS (SVGChart.namespace, "circle");
+        SVGChart.image.appendChild (circleElem);
+        circleElem.setAttribute ("cx", SVGChart.size / 2);
+        circleElem.setAttribute ("cy", SVGChart.size / 2);
+        circleElem.setAttribute ("r", 3);
+        circleElem.setAttribute ("fill", "white");
+        circleElem.setAttribute ("stroke", "black");
+        circleElem.setAttribute ("stroke-width", 1);
+	},
+	
+	drawBorder : function () {
+		
+		if (SVGChart.borderDOM)
+			SVGChart.image.removeChild (SVGChart.borderDOM);
+		SVGChart.borderDOM = SVGChart.image.ownerDocument.createElementNS (SVGChart.namespace, "g");
+		SVGChart.image.appendChild (SVGChart.borderDOM);
+		var targetDOM = SVGChart.borderDOM;
+		
+		var half = SVGChart.size / 2;
+		var margin = 1;
+		var border = targetDOM.ownerDocument.createElementNS(SVGChart.namespace, "rect");
+		targetDOM.appendChild (border);
+		
+		border.setAttribute ("x", margin);
+		border.setAttribute ("y", margin);
+		
+		border.setAttribute ("width", SVGChart.size - 2 * margin);
+		border.setAttribute ("height", SVGChart.size - 2 * margin);
+		
+		border.setAttribute ("stroke", "black");
+		border.setAttribute ("stroke-width",  margin );
+		
+		border.setAttribute ("fill-opacity",  0);
+		
+		// now, draw NEWS ...
+		var textSize = 10;
+		var x = half;
+		var y = 0;
+		if (SVGChart.chartOrientation == 1)
+			y = SVGChart.size - textSize;
+        SVGChart.drawCoordinateMarker ("N", x, y, textSize);
+		
+		y = half;
+		x = 0;
+		if (SVGChart.chartOrientation != 0)
+			x = SVGChart.size - textSize;
+        SVGChart.drawCoordinateMarker ("E", x, y, textSize);
+
+		x = SVGChart.size - textSize;
+		if (SVGChart.chartOrientation != 0)
+			x = 0;
+        SVGChart.drawCoordinateMarker ("W", x, y, textSize);
+
+		x = half;
+		y = SVGChart.size - textSize;
+		if (SVGChart.chartOrientation == 1)
+			y = 0;
+        SVGChart.drawCoordinateMarker ("S", x, y, textSize);
+	},
+	
+	drawCoordinateMarker : function (textToPlace, posx, posy, size) {
+		var targetDOM = SVGChart.borderDOM;
+		var bg = targetDOM.ownerDocument.createElementNS(SVGChart.namespace, "rect");
+		targetDOM.appendChild (bg);
+		bg.setAttribute ("fill", "white");
+		bg.setAttribute ("x", posx);
+		bg.setAttribute ("y", posy);
+		bg.setAttribute ("width", size);
+		bg.setAttribute ("height", size);
+		var txt = targetDOM.ownerDocument.createElementNS(SVGChart.namespace, "text");
+		targetDOM.appendChild (txt);
+		txt.setAttribute("x", posx + 1);
+		txt.setAttribute("y", posy + 3 + size/2);
+		txt.textContent = textToPlace;
+		txt.style["fontSize"] = (size - 1) + "px";
+		txt.style["fontFamily"] = "Arial";
+	}
 };
