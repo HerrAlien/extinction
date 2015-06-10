@@ -32,15 +32,18 @@ var SVGChart = {
     starsDOM : null,
     labelsDOM : null,
 	borderDOM : null,
+	centerMarkDOM : null,
     
     init : function (ra, dec, _fov_arcmin, _mag) {
         // clear it up first
         while (SVGChart.image.hasChildNodes())
             SVGChart.image.removeChild (SVGChart.image.firstChild);
 
+		// clean up any left over references
 		SVGChart.starsDOM = null;
 		SVGChart.labelsDOM = null;
 		SVGChart.borderDOM = null;
+		SVGChart.centerMarkDOM = null;
 	
         // save the data
         SVGChart.ra = ra;
@@ -156,10 +159,16 @@ var SVGChart = {
     },
 	
 	drawCenterMark : function () {
+		if (SVGChart.centerMarkDOM)
+			SVGChart.image.removeChild (SVGChart.centerMarkDOM);
+        SVGChart.centerMarkDOM = SVGChart.image.ownerDocument.createElementNS (SVGChart.namespace, "g");
+        SVGChart.image.appendChild (SVGChart.centerMarkDOM);	
+		var parentDOM = SVGChart.centerMarkDOM;
+
 		var center = SVGChart.size / 2;
 		var offset = 7;
-		var line = SVGChart.image.ownerDocument.createElementNS(SVGChart.namespace, "line");
-		SVGChart.image.appendChild (line);
+		var line = parentDOM.ownerDocument.createElementNS(SVGChart.namespace, "line");
+		parentDOM.appendChild (line);
         line.setAttribute ("x1", center - offset);
         line.setAttribute ("y1", center);
         line.setAttribute ("x2", center + offset);
@@ -167,8 +176,8 @@ var SVGChart = {
         line.setAttribute ("stroke", "black");
         line.setAttribute ("stroke-width", 1);
 
-		line = SVGChart.image.ownerDocument.createElementNS(SVGChart.namespace, "line");
-		SVGChart.image.appendChild (line);
+		line = parentDOM.ownerDocument.createElementNS(SVGChart.namespace, "line");
+		parentDOM.appendChild (line);
         line.setAttribute ("x1", center);
         line.setAttribute ("y1", center - offset);
         line.setAttribute ("x2", center);
@@ -176,8 +185,8 @@ var SVGChart = {
         line.setAttribute ("stroke", "black");
         line.setAttribute ("stroke-width", 1);
 		
-		var circleElem = SVGChart.image.ownerDocument.createElementNS (SVGChart.namespace, "circle");
-        SVGChart.image.appendChild (circleElem);
+		var circleElem = parentDOM.ownerDocument.createElementNS (SVGChart.namespace, "circle");
+        parentDOM.appendChild (circleElem);
         circleElem.setAttribute ("cx", SVGChart.size / 2);
         circleElem.setAttribute ("cy", SVGChart.size / 2);
         circleElem.setAttribute ("r", 3);
