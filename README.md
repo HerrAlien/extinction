@@ -4,15 +4,15 @@ This README would normally document whatever steps are necessary to get your app
 
 ### What is this repository for? ###
 
-* The repo is for an utility that makes computation of atmospheric extinction easier
-* Version 0.3
+* The repo is for an utility that makes computation of atmospheric extinction easier, using the procedure described [here](https://docs.google.com/document/d/18RcrzoP0-Xy8_-xsWbnwWAj2m1lAL5WrHUm5S-Neu7Y/edit?usp=sharing)
+* Version 0.9
 * [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
 
 ### How do I get set up? ###
 
 * Summary of set up: make sure you're connected to the Internet
 * Configuration: none
-* Dependencies: Internet Explorer 8.0 at minimum
+* Dependencies: Google Chrome
 * Database configuration: none
 * How to run tests: N/A
 * Deployment instructions: just run it ...
