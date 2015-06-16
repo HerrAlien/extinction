@@ -45,15 +45,18 @@ html, body {
     width: 1240px;
 }
 
+#banner, #poweredBy div, #license {
+    background-color : #dadadf;
+    border: solid 2px #000000;
+    font-family : "Arial";
+}
+
 #banner {
     margin: 0px auto 50px auto;
     width: 800px;
-    text-align: center;
-    border: solid 2px #000000;
-    font-family : "Arial";
     font-size : 24pt;
-    background-color : #dadadf;
     padding: 20px;
+    text-align: center;
 }
     
 #chart {
@@ -138,4 +141,29 @@ pre {
 
 .deleteAnchor {
     color: #882020;
+}
+
+#poweredBy, #license {
+	text-align: left;
+	width: 640px;
+}
+
+#license  {
+	padding: 5px;
+}
+
+#poweredBy div {
+float: left;
+margin: 5px 20px 5px 20px;
+padding: 5px;
+text-align: center;
+}
+
+#poweredBy div img {
+	height: 64px; 
+}
+
+#poweredBy div a{
+	text-decoration: none;
+	font-family: "Arial";
 }
