@@ -35,6 +35,7 @@ var ChartController = {
         }
         
         ui.updateChartButton.onclick = function () {
+			Log.message ("Retrieving photometry table from AAVSO ...");
             // TODO: call the photometry table methods
             if (ui.variableStarElem.readOnly)
                 PhotmetryTable.init (ui.chartIDElem.value, ui.limittingMagnitudeElem.value);

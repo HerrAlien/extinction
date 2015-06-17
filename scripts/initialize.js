@@ -17,9 +17,18 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see https://www.gnu.org/licenses/agpl.html
 */
 
+var Log = {
+	domElem : document.getElementById("debug"),
+	message : function (text) {
+		Log.domElem.innerHTML = text;
+	}
+};
+
 PhotmetryTable.onInit = function () { 
+	Log.message ("Photometry table loaded.")
     var root = PhotmetryTable.searchTree.root;     
     EstimationCorrector.init();
+	Log.message ("Loading stars from Tycho catalogue ...");
     Hipparcos.init(root.coords[0], root.coords[1], root.fov, root.mag );
     SVGChart.init (root.coords[0], root.coords[1], root.fov, root.mag);
 	SVGChart.drawBorder ();
@@ -44,9 +53,11 @@ StarsSelection.init();
 
 CorrectorUIManager.init();
 Hipparcos.onInit = function () {
+	Log.message ("Done!");
     SVGChart.updateStars (Hipparcos.chart.stars);   	
 	SVGChart.drawCenterMark();
 	SVGChart.updateComparisonLabels (PhotmetryTable.comparisonStars);
+	setTimeout(function() { Log.message ("");}, 1000);
 }
 
 document.getElementById("updateChart").onclick = function () {
