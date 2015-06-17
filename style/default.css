@@ -40,10 +40,11 @@ html, body {
     }
     
     #container {
-        margin: 10px;
+        margin: 0px auto 0px auto;
     text-align: center;
-    min-width: 1160px;
-    width: 1160px;
+    min-width: 1170px;
+    width: 1170px;
+	padding: 5px;
 }
 
 #banner, #poweredBy div, #license {
@@ -54,7 +55,7 @@ html, body {
 
 #banner {
     margin: 0px 0px 50px 0px;
-    width: 1160;
+    width: 1150;
     font-size : 24pt;
     padding: 20px 0px 20px 0px;
     text-align: center;
@@ -84,12 +85,13 @@ pre {
 
 #wizard {
     float: left;
-    margin: 0px 10px 0px 10px;
+    margin: 0px 10px 0px 5px;
     width: 540px;
     text-align: left;
 }
 
 #imageContainer{
+	width: 1160px;
 }
 
 .selectorItem, .selectorItemActive {
@@ -146,7 +148,7 @@ pre {
 
 #poweredBy, #license {
 	text-align: left;
-	width: 1150px;
+	width: 1140px;
 }
 
 #license  {
@@ -172,5 +174,5 @@ text-align: center;
 #footer {
 	margin: 0px;
 	text-align: center;
-	width: 1150px;
+	width: 1140px;
 }
