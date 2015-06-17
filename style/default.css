@@ -23,17 +23,22 @@ html, body {
 	margin: 0px;
 }
     #donate {
-        border: solid 1px #000000;
+        border: solid 2px #000000;
         font-family : "Arial";
 
-        font-size: 14pt;
+        font-size: 15pt;
         padding: 5px;
         background-color : #dadadf;
     }
         
     #donate a {
         cursor: pointer;
+		text-decoration: none;
     }
+	
+	#donate span {
+		font-size: 12px;
+	}
     
     #submitButton {
         display: none;
