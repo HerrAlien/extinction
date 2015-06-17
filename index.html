@@ -41,15 +41,15 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl.html
           </li>
           <li>
             Location (0.5 degree accuracy is enough):<br>
-            latitude: <input placeholder="[degrees]" id="lat" size="7">, longitude: <input placeholder="[degrees]" id="long" size="7"> (or <a class="addAnchor" nohref id="geolocation">get from Geolocation</a>)
+            Latitude: <input placeholder="[degrees]" id="lat" size="7">, longitude: <input placeholder="[degrees]" id="long" size="7"> (or <a class="addAnchor" nohref id="geolocation">get them from Geolocation</a>).
           </li>
 
           <li>
               Chart and photometry table:<br>
-              name of variable star: <input placeholder="[name of star]" id="variableStarName" size="10"><br>
-              limitting magnitude: <input placeholder="[number]" id="mag" size="7">
+              Name of the variable star: <input placeholder="[name of star]" id="variableStarName" size="10"><br>
+              Limiting magnitude: <input placeholder="[number]" id="mag" size="7">,
               FOV [arc minutes]: <input placeholder="[number]" id="fov" size="7"><br>
-         chart orientation: 
+         Chart orientation: 
          <select id="chartOrientation" value="0"> 
         <option value="0">North up, West to the right (binoculars & terestrial instruments)</option>
         <option value="1">South up, East to the right (Newtons, refractors & SCTs)</option>
@@ -79,14 +79,14 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl.html
               <span id="brightnessNoExtinction">unknown</span>
               <br>Air mass for variable star V is <span id="airmassV">unknown</span><br>
               <br>
-              For the airmass values above, you should <span id="shouldComputeExtinction">not need to</span> corect for extinction.
+              For the airmass values above, you should <span id="shouldComputeExtinction">not need to</span> correct for extinction.
               <hr>
           </li>
           
           <li> Extinction coefficient (K)<br>
-              <input type="radio" id="useValueForK" checked="on"> use value: <input id="K" placeholder="[number]" size="5" value="0"><br>
-              <input type="radio" id="computeK"> or compute it from observations (using <a target="_blank" href="https://docs.google.com/document/d/18RcrzoP0-Xy8_-xsWbnwWAj2m1lAL5WrHUm5S-Neu7Y/edit?usp=sharing">this method</a>):<br>
-              <input type="radio" id="useArgelander">Argelander comparisons <input type="radio" id="usePaired">Paired comparisons
+              <input type="radio" id="useValueForK" checked="on"> <label for="useValueForK">Use value:</label> <input id="K" placeholder="[number]" size="5" value="0"><br>
+              <input type="radio" id="computeK"> <label for="computeK">Or compute it from observations (using</label> <a target="_blank" href="https://docs.google.com/document/d/18RcrzoP0-Xy8_-xsWbnwWAj2m1lAL5WrHUm5S-Neu7Y/edit?usp=sharing">this method</a>):<br>
+              <input type="radio" id="useArgelander"><label for="useArgelander">Argelander comparisons</label> <input type="radio" id="usePaired"><label for="usePaired">Paired comparisons</label>
               <table>
                 <tr id="extinctionEstimatesHeader">
                 </tr>
