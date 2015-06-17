@@ -54,7 +54,7 @@ var EstimationCorrector = {
 		while (table.hasChildNodes())
 			table.removeChild (table.firstChild);
 		// add the first estimate
-        EstimationCorrector.addNewComparison (false);
+        EstimationCorrector.addNewComparison ();
 
 		// reset the estimates for extinction
 		CorrectorUIManager.ClearComparisonsList();
@@ -72,11 +72,10 @@ var EstimationCorrector = {
         ExtinctionCoefficient.updateAirmassForStar (star, latitude, longitude, lst);        
     },
     
-    addNewComparison : function (addDeleteLink) {
+    addNewComparison : function () {
         var table = CorrectorUIManager.extraEstimatesTable;
         var createdObj = CorrectorUIManager.Utils.AddPairedComparison (table);
-        if (addDeleteLink)
-            CorrectorUIManager.Utils.AddDeleteLink (createdObj.row, createdObj.tddelete, createdObj.comp, EstimationCorrector.pairedComparisons);
+        CorrectorUIManager.Utils.AddDeleteLink (createdObj.row, createdObj.tddelete, createdObj.comp, EstimationCorrector.pairedComparisons);
 
         createdObj.midSelector.set (PhotmetryTable.variableStar);
         createdObj.midSelector.setClassName ("hidden");
@@ -120,7 +119,7 @@ var CorrectorUIManager = {
             CorrectorUIManager.onUserInput();
         }
         CorrectorUIManager.addVariableEstimateLink.onclick = function () {
-            EstimationCorrector.addNewComparison (true);
+            EstimationCorrector.addNewComparison ();
         }
         
         CorrectorUIManager.useArgelander.onclick = function () {
@@ -210,12 +209,12 @@ var CorrectorUIManager = {
         anch.noref="";
         anch.className = "addAnchor";
         anch.onclick = function () {
-                CorrectorUIManager[CorrectorUIManager.algorithms[CorrectorUIManager.selectedAlgorithm]].CreateComparisonUIRow(true);
+                CorrectorUIManager[CorrectorUIManager.algorithms[CorrectorUIManager.selectedAlgorithm]].CreateComparisonUIRow();
         }
         
-        CorrectorUIManager[CorrectorUIManager.algorithms[CorrectorUIManager.selectedAlgorithm]].CreateComparisonUIRow(false); // one compariso is enough for pairs
+        CorrectorUIManager[CorrectorUIManager.algorithms[CorrectorUIManager.selectedAlgorithm]].CreateComparisonUIRow(); // one compariso is enough for pairs
         if (0 == CorrectorUIManager.selectedAlgorithm)
-            CorrectorUIManager[CorrectorUIManager.algorithms[CorrectorUIManager.selectedAlgorithm]].CreateComparisonUIRow(false); // two, for Argelander
+            CorrectorUIManager[CorrectorUIManager.algorithms[CorrectorUIManager.selectedAlgorithm]].CreateComparisonUIRow(); // two, for Argelander
 
     },
     
@@ -299,7 +298,7 @@ var CorrectorUIManager = {
     },
     
     Argelander : {
-        CreateComparisonUIRow : function (addDeleteLink) {
+        CreateComparisonUIRow : function () {
             var table = CorrectorUIManager.table;
             var addChild = CorrectorUIManager.Utils.AddChild;
             
@@ -320,18 +319,16 @@ var CorrectorUIManager = {
             compImput.placeholder = "[number]";
             
             var comp = ExtinctionCoefficient.SingleComparison(brightSelector, compImput, dimSelector);
-            if (addDeleteLink)
-                CorrectorUIManager.Utils.AddDeleteLink (row, tddelete, comp, ExtinctionCoefficient.comparisons);
+            CorrectorUIManager.Utils.AddDeleteLink (row, tddelete, comp, ExtinctionCoefficient.comparisons);
             ExtinctionCoefficient.comparisons.push (comp);
         }
     },
     
     Paired : {
-        CreateComparisonUIRow : function (addDeleteLink) {
+        CreateComparisonUIRow : function () {
             var table = CorrectorUIManager.table;
             var createdObj = CorrectorUIManager.Utils.AddPairedComparison (table);
-            if (addDeleteLink)
-                CorrectorUIManager.Utils.AddDeleteLink (createdObj.row, createdObj.tddelete, createdObj.comp, ExtinctionCoefficient.comparisons);
+            CorrectorUIManager.Utils.AddDeleteLink (createdObj.row, createdObj.tddelete, createdObj.comp, ExtinctionCoefficient.comparisons);
             ExtinctionCoefficient.comparisons.push (createdObj.comp);
         }
     },

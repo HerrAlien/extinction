@@ -103,11 +103,12 @@ var StarsSelection = {
                         if (StarsSelection.activeSelector) {
                             StarsSelection.activeSelector.setClassName("selectorItem");
                             StarsSelection.activeSelector.setPlaceholder ("click me");
+							StarsSelection.activeSelector.update();
                         }
                             
                         sel.setClassName("selectorItemActive");
                         sel.setDisplayedString("");
-                        sel.setPlaceholder ("click on the chart");
+                        sel.setPlaceholder ("click a star label");
                         
                         StarsSelection.activeSelector = sel;
 						

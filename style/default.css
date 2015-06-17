@@ -53,7 +53,7 @@ html, body {
 }
 
 #banner {
-    margin: 0px;
+    margin: 0px 0px 50px 0px;
     width: 1160;
     font-size : 24pt;
     padding: 20px 0px 20px 0px;
