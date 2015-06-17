@@ -48,7 +48,7 @@ var EstimationCorrector = {
     
     init : function () {
 		// reset estimates
-        pairedComparisons = [];
+        EstimationCorrector.pairedComparisons = [];
 		// empty the table of estimates ...
 		var table = CorrectorUIManager.extraEstimatesTable;
 		while (table.hasChildNodes())
