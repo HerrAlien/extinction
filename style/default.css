@@ -176,3 +176,7 @@ text-align: center;
 	text-align: center;
 	width: 1140px;
 }
+
+td {
+	font-size: 12px;
+}
