@@ -2,8 +2,10 @@
     "manifest_version" : 2,
     "name" : "Extinction-o-Meter",
     "version": "1", // version is a string?
-    "icons" : { "256" : "resources/icon.png"
-        }, // no icons so far
+    "icons" : { 
+		"128" : "resources/icon128.png",
+		"256" : "resources/icon.png"
+    }, // no icons so far
     "permissions" : ["<all_urls>", "geolocation"], // does this mean no permissions?
     "app" : { // so, app is described by an object ... somewhat like icons
         "background" : {
