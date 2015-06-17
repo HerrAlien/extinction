@@ -45,8 +45,7 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl.html
           </li>
 
           <li>
-              Chart and AAVSO photometry table:<br>
-              photometry table ID: <input placeholder="[table ID]" id="tableID" size="7"><br>
+              Chart and photometry table:<br>
               name of variable star: <input placeholder="[name of star]" id="variableStarName" size="10"><br>
               limitting magnitude: <input placeholder="[number]" id="mag" size="7">
               FOV [arc minutes]: <input placeholder="[number]" id="fov" size="7"><br>
@@ -86,7 +85,7 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl.html
           
           <li> Extinction coefficient (K)<br>
               <input type="radio" id="useValueForK" checked="on"> use value: <input id="K" placeholder="[number]" size="5" value="0"><br>
-              <input type="radio" id="computeK"> or compute it from observations:<br>
+              <input type="radio" id="computeK"> or compute it from observations (using <a target="_blank" href="https://docs.google.com/document/d/18RcrzoP0-Xy8_-xsWbnwWAj2m1lAL5WrHUm5S-Neu7Y/edit?usp=sharing">this method</a>):<br>
               <input type="radio" id="useArgelander">Argelander comparisons <input type="radio" id="usePaired">Paired comparisons
               <table>
                 <tr id="extinctionEstimatesHeader">
@@ -105,44 +104,50 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl.html
         </div>
         <div id="imageContainer">
           <b><div id="debug" class="hidden"></div></b><br>
-          <!-- <img src="http://www.aavso.org/cgi-bin/vsp.pl?chartid=14564DM&printable=yes" id="chart"> -->
-          <img src="resources/14564DM.png" id="chart">
-        </div>
+            <svg width="600" height="600" xmlns="http://www.w3.org/2000/svg">
+                <g id="svgimage">
+                    
+                </g>
+            </svg>
+          </div>
         <div class="clear">&nbsp;</div>
       </div>
-        
-        <div style="float: left"><pre>
-            Extinction-O-Meter - an HTML & JavaScript utility to compute atmospheric extinction.
-               
-            Copyright 2015  Herr_Alien &lt;garone80@yahoo.com&gt;
-                
-            This program is free software: you can redistribute it and/or modify
-            it under the terms of the GNU Affero General Public License as published by
-            the Free Software Foundation, either version 3 of the License, or
-            (at your option) any later version.
-                
-            This program is distributed in the hope that it will be useful,
-            but WITHOUT ANY WARRANTY; without even the implied warranty of
-            MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-            GNU General Public License for more details.
-                
-            You should have received a copy of the GNU Affero General Public License
-            along with this program.  If not, see &lt;<a href="https://www.gnu.org/licenses/agpl.html">https://www.gnu.org/licenses/agpl.html</a>&gt;.
-            </pre>
+ 
+	  <div id="footer">
+		<div id="poweredBy">
+			Powered by:<br>
+			<div><a href="http://www.aavso.org" target="_blank">AAVSO</a><br>
+			<a href="http://www.aavso.org" target="_blank"><img alt="AAVSO" src="resources/aavso-logo.jpg"></a></div>
+			<div><a href="http://www.rssd.esa.int" target="_blank">ESA</a><br>
+			<a href="http://www.rssd.esa.int" target="_blank"><img alt="RSSD ESA" src="resources/rssd-esa-logo.jpg"></a></div>
+			<div><a href="https://www.bitbucket.org" target="_blank">BitBucket</a><br>
+			<a href="https://www.bitbucket.org" target="_blank"><img alt="BitBucket" src="resources/bitbucketLogoSmall.png"></a></div>
+		
+		
+		</div>
+		<div class="clear">&nbsp;</div>
+		
+        <div id="license">
+			Extinction-O-Meter - an HTML & JavaScript utility to compute atmospheric extinction.<br>
+			(source code available at &lt;<a href="https://bitbucket.org/herr_alien/extinction-o-meter" target="_blank">https://bitbucket.org/herr_alien/extinction-o-meter</a>&gt;)<br>
+			<br>               
+			Copyright 2015  Herr_Alien &lt;garone80@yahoo.com&gt;<br>
+			<br>                
+			This program is free software: you can redistribute it and/or modify
+			it under the terms of the GNU Affero General Public License as published by
+			the Free Software Foundation, either version 3 of the License, or
+			(at your option) any later version.<br>
+			<br>                
+			This program is distributed in the hope that it will be useful,
+			but WITHOUT ANY WARRANTY; without even the implied warranty of
+			MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+			GNU General Public License for more details.<br>
+			<br>
+			You should have received a copy of the GNU Affero General Public License
+			along with this program.  If not, see &lt;<a target="_blank"  href="https://www.gnu.org/licenses/agpl.html">https://www.gnu.org/licenses/agpl.html</a>&gt;.
         </div>
 
-        <div style="float: right">
-                <div id="donate">
-                        <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
-                            <input type="hidden" name="cmd" value="_s-xclick">
-                            <input type="hidden" name="hosted_button_id" value="WQQ54DVWHPRZ2">
-                            <label>
-                           <input type="submit" name="submit" id="submitButton">
-                           <a nohref="">Donate using PayPal</a>
-                          </label>
-                        </form>
-                </div>
-        </div>
+      </div>
     </div>
     
 </body>
@@ -155,4 +160,6 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl.html
 <script src="scripts/estimationcorrector.js"></script>
 <script src="scripts/extinctioncoefficientalgorithm.js"></script>
 <script src="scripts/computations.js"></script>
+<script src="scripts/hipparcos.js"></script>
+<script src="scripts/svgchart.js"></script>
 <script src="scripts/initialize.js"></script>
