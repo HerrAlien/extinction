@@ -24,14 +24,8 @@ var StarsSelection = {
     onStarSelected : null,
     onSelectionActivated : null,
 	
-	preselectionElem : document.getElementById ("debug"),
-    
+   
     init : function () {
-        
-		StarsSelection.preselectionElem.onmousemove = function (x, y) {
-			    StarsSelection.preselectionElem.style.left = x - 5;
-				StarsSelection.preselectionElem.style.top = y + 25;
-		}
     },
     
 	setSelectedStar : function (currentlyHoveredStar) {
@@ -53,7 +47,6 @@ var StarsSelection = {
 	setSurrentlyHoveredStar : function (star) {
 		if (star) {
 			StarsSelection.currentlyHoveredStar = star;
-			StarsSelection.preselectionElem.innerHTML = star.label;
 		}
 	},
 	
@@ -112,8 +105,6 @@ var StarsSelection = {
                         
                         StarsSelection.activeSelector = sel;
 						
-						StarsSelection.preselectionElem.className = "visible";
-						StarsSelection.preselectionElem.innerHTML = "";
 						
                         if (StarsSelection.onSelectionActivated)
                             StarsSelection.onSelectionActivated (sel);

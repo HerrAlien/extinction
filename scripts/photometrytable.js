@@ -285,7 +285,7 @@ var PhotmetryTable = {
     },
     
     initFromStarName : function (starName, fov, limitingMag) {
-        var xmlHttpReq = new XMLHttpRequest();
+        var xmlHttpReq = new XMLHttpRequest({mozSystem: true});
         xmlHttpReq.onreadystatechange = function() {
 				PhotmetryTable.onDataRetrieved (this, limitingMag);
 			}

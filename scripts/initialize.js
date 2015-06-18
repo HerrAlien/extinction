@@ -17,6 +17,23 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see https://www.gnu.org/licenses/agpl.html
 */
 
+if (!Array.prototype.indexOf) {
+	Array.prototype.indexOf = function (entryInArray, indexToStartFrom) {
+		for (var i = 0 || indexToStartFrom; i < this.length; i++)
+			if (entryInArray === this[i])
+				return i;
+		return -1;
+	}
+}
+
+if (!XMLHttpRequest)
+{
+	XMLHttpRequest = function(){
+		return new ActiveXObject("Microsoft.XMLHTTP");
+	}
+	
+}
+
 var Log = {
 	domElem : document.getElementById("debug"),
 	message : function (text) {
