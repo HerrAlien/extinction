@@ -168,12 +168,13 @@ var CorrectorUIManager = {
                                                     " " + h + ":" + m + ":" + s;
         
         document.getElementById("geolocation").onclick = function () {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition (function (position) {
+			var geoLocation = navigator.geolocation || window.navigator.geolocation;
+            if (geoLocation) {
+                geoLocation.getCurrentPosition (function (position) {
                     document.getElementById("lat").value = position.coords.latitude;
                     document.getElementById("long").value = position.coords.longitude;
                     CorrectorUIManager.onLocationOrTimeChanged();
-               }, function (){}, { enableHighAccuracy: true, maximumAge : 30000, timeout : 27000 });
+               });
             }
         }
     },
