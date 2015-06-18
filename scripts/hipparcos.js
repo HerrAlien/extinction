@@ -39,7 +39,7 @@ var Hipparcos = {
     },
     
     init : function (ra_deg, dec_deg, fov_arcmin, maglim) {
-        var xmlHttpReq = new XMLHttpRequest();
+        var xmlHttpReq = new XMLHttpRequest({mozSystem: true});
         Hipparcos.chart.config.ra = ra_deg;
         Hipparcos.chart.config.dec = dec_deg;
         Hipparcos.chart.config.fov = fov_arcmin;

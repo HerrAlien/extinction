@@ -57,7 +57,7 @@ Hipparcos.onInit = function () {
     SVGChart.updateStars (Hipparcos.chart.stars);   	
 	SVGChart.drawCenterMark();
 	SVGChart.updateComparisonLabels (PhotmetryTable.comparisonStars);
-	setTimeout(function() { Log.message ("");}, 1000);
+	setTimeout(function() { Log.message ("&nbsp;");}, 1000);
 }
 
 document.getElementById("updateChart").onclick = function () {

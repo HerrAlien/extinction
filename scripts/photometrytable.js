@@ -276,7 +276,7 @@ var PhotmetryTable = {
     },
     
     init : function (chartID, limittingMag) {
-        var xmlHttpReq = new XMLHttpRequest();
+        var xmlHttpReq = new XMLHttpRequest({mozSystem: true});
         xmlHttpReq.onreadystatechange = function() {
 			PhotmetryTable.onDataRetrieved (this, limittingMag);
 		}
