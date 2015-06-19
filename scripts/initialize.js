@@ -35,7 +35,6 @@ PhotmetryTable.onInit = function () {
 }
 
 document.getElementById("chartOrientation").onchange = function () {
-    ChartXYToRADec.chartOrientation = this.value;
 	SVGChart.chartOrientation = this.value;
 	SVGChart.drawBorder ();
 	SVGChart.redrawStars();
