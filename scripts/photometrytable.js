@@ -276,7 +276,7 @@ var PhotmetryTable = {
     },
     
     init : function (chartID, limittingMag) {
-        var xmlHttpReq = new XMLHttpRequest({mozSystem: true});
+        var xmlHttpReq = new XMLHttpRequest({mozSystem: true, mozAnon: true});
         xmlHttpReq.onreadystatechange = function() {
 			PhotmetryTable.onDataRetrieved (this, limittingMag);
 		}
@@ -285,7 +285,7 @@ var PhotmetryTable = {
     },
     
     initFromStarName : function (starName, fov, limitingMag) {
-        var xmlHttpReq = new XMLHttpRequest({mozSystem: true});
+        var xmlHttpReq = new XMLHttpRequest({mozSystem: true, mozAnon: true});
         xmlHttpReq.onreadystatechange = function() {
 				PhotmetryTable.onDataRetrieved (this, limitingMag);
 			}
