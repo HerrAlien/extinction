@@ -61,8 +61,8 @@ html, body {
 }
 
 #banner {
-    margin: 0px 0px 50px 0px;
-    width: 1150;
+    margin: 0px auto 50px auto;
+    width: 1170;
     font-size : 24pt;
     padding: 20px 0px 20px 0px;
     text-align: center;
@@ -150,7 +150,8 @@ pre {
 
 #poweredBy, #license {
 	text-align: left;
-	width: 1140px;
+	width: 1170px;
+    margin: 0px auto 10px auto;
 }
 
 #license  {
@@ -175,9 +176,9 @@ text-align: center;
 }
 
 #footer {
-	margin: 0px;
+	margin: 0px auto 0px auto;
 	text-align: center;
-	width: 1140px;
+	width: 1170px;
 }
 
 td {
