@@ -1,5 +1,6 @@
 /*
-Extinction-O-Meter - an HTML & JavaScript utility to compute atmospheric extinction.
+Extinction-O-Meter - an HTML & JavaScript utility to apply differential 
+extinction corrections to brightness estimates
                
 Copyright 2015  Herr_Alien <garone80@yahoo.com>
                 

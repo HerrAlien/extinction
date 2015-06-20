@@ -1,5 +1,6 @@
 /*
-Extinction-O-Meter - an HTML & JavaScript utility to compute atmospheric extinction.
+Extinction-O-Meter - an HTML & JavaScript utility to apply differential 
+extinction corrections to brightness estimates
                
 Copyright 2015  Herr_Alien <garone80@yahoo.com>
                 
@@ -17,6 +18,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see https://www.gnu.org/licenses/agpl.html
 
 */
+
 html, body {
     overflow-y: visible;
     overflow-x: visible;
@@ -36,7 +38,7 @@ html, body {
 		text-decoration: none;
     }
 	
-	#donate span {
+	#banner span {
 		font-size: 12px;
 	}
     

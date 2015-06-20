@@ -12,7 +12,7 @@ This README would normally document whatever steps are necessary to get your app
 
 * Summary of set up: make sure you're connected to the Internet
 * Configuration: none
-* Dependencies: Google Chrome
+* Dependencies: Google Chrome (when going for the chrome app) or Internet Explorer 9 (when using the .HTA version)
 * Database configuration: none
 * How to run tests: N/A
 * Deployment instructions: just run it ...
