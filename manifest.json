@@ -1,15 +1,15 @@
 {
     "manifest_version" : 2,
     "name" : "Extinction-o-Meter",
-    "version": "1", // version is a string?
+    "version": "1",
     "icons" : { 
 		"128" : "resources/icon128.png",
 		"256" : "resources/icon.png"
-    }, // no icons so far
-    "permissions" : ["<all_urls>", "geolocation"], // does this mean no permissions?
-    "app" : { // so, app is described by an object ... somewhat like icons
+    },
+    "permissions" : ["<all_urls>", "geolocation"],
+    "app" : {
         "background" : {
-            "scripts" : ["chromeapp.js"] // does this mean each script here runs in its own thread?
+            "scripts" : ["chromeapp.js"]
         }
     }
 }
