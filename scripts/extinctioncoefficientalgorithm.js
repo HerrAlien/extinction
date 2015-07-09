@@ -116,12 +116,12 @@ var ExtinctionCoefficient = {
     },
 
     SingleComparison : function (brighterStarSelector, degreesEditor, dimmerStarSelector) {
-        return function () {
+        return (function () {
             var b = brighterStarSelector;
             var deg = degreesEditor;
             var d = dimmerStarSelector;
-            
-            deg.oninput = function () { CorrectorUIManager.onUserInput() };
+            InputValidator.AddNumberMinimumValidator (deg, 0);
+            deg.oninput = function () { InputValidator.validate(this); CorrectorUIManager.onUserInput(); };
             
             return {
                 "bright" : function () { return this.ui.brightSelector.get(); },
@@ -153,11 +153,11 @@ var ExtinctionCoefficient = {
                     this.ui.dimSelector.update();
                 }
             };
-        }();
+        })();
     },
 
     PairedComparison : function (brighterStarSelector, b2m_editor, midStarSelector, m2d_editor, dimStarSelector) {
-        return function () {
+        return (function () {
             var b = brighterStarSelector;
             var deg1 = b2m_editor;
             var m = midStarSelector;
@@ -178,7 +178,7 @@ var ExtinctionCoefficient = {
                     this.second.updateUI();
                 }
             };
-        }();
+        })();
     },
     
     Argelander : {

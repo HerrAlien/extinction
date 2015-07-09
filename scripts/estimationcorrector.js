@@ -291,8 +291,11 @@ var CorrectorUIManager = {
             var midSelector = StarsSelection.Selector.build (midImput);
             var dimSelector = StarsSelection.Selector.build (dimInput);
             
-            b2m.oninput = CorrectorUIManager.onUserInput;
-            m2d.oninput = CorrectorUIManager.onUserInput;
+			InputValidator.AddNumberMinimumValidator (b2m, 0);
+			InputValidator.AddNumberMinimumValidator (m2d, 0);
+			
+            b2m.oninput = function () {InputValidator.validate(this); CorrectorUIManager.onUserInput();}
+            m2d.oninput = function () {InputValidator.validate(this); CorrectorUIManager.onUserInput();}
             
             var comp = ExtinctionCoefficient.PairedComparison(brightSelector, b2m, midSelector, m2d, dimSelector);
             return { "comp": comp, "midSelector" : midSelector, "tdmid" : tdmid, "row" :  row, "tddelete" : tddelete};
@@ -317,7 +320,8 @@ var CorrectorUIManager = {
             
             var brightSelector = StarsSelection.Selector.build (brightInput);
             var dimSelector = StarsSelection.Selector.build (dimInput);
-            compImput.oninput = CorrectorUIManager.onUserInput;
+			InputValidator.AddNumberMinimumValidator (compImput, 0);
+            compImput.oninput = function() { InputValidator.validate(this); CorrectorUIManager.onUserInput(); }
             compImput.placeholder = "[number]";
             
             var comp = ExtinctionCoefficient.SingleComparison(brightSelector, compImput, dimSelector);

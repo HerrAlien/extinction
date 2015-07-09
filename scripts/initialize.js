@@ -43,11 +43,18 @@ document.getElementById("chartOrientation").onchange = function () {
 	SVGChart.redrawLabels();	
 }
 
+InputValidator.AddNumberRangeValidator (document.getElementById("lat"), -90, 90);
+InputValidator.AddNumberRangeValidator (document.getElementById("long"), 0, 360);
+InputValidator.AddNumberMinimumValidator (document.getElementById("K"), 0);
+InputValidator.AddNumberRangeValidator (document.getElementById("mag"), 0, 20);
+InputValidator.AddNumberRangeValidator (document.getElementById("fov"), 0, 1200);
 
 document.getElementById("dateTime").oninput = CorrectorUIManager.onLocationOrTimeChanged;
-document.getElementById("lat").oninput = CorrectorUIManager.onLocationOrTimeChanged;
-document.getElementById("long").oninput = CorrectorUIManager.onLocationOrTimeChanged;
-document.getElementById("K").oninput = CorrectorUIManager.onLocationOrTimeChanged;
+document.getElementById("lat").oninput = function () { InputValidator.validate (this); CorrectorUIManager.onLocationOrTimeChanged(); }
+document.getElementById("long").oninput = function () { InputValidator.validate (this); CorrectorUIManager.onLocationOrTimeChanged(); }
+document.getElementById("K").oninput = function () { InputValidator.validate (this); CorrectorUIManager.onLocationOrTimeChanged(); }
+document.getElementById("mag").oninput = function () { InputValidator.validate (this); }
+document.getElementById("fov").oninput = function () { InputValidator.validate (this); }
 
 StarsSelection.init();
 
