@@ -67,8 +67,9 @@ var InputValidator = {
 										"<br>&nbsp;&nbsp;allowed minimum = " + _m + 
 										"<br>&nbsp;&nbsp;allowed maximum = " + _M;
 						lbl.style["display"] = "block";
-						lbl.style["top"] = _i.offsetTop - _i.scrollTop + _i.clientHeight + 5;
-						lbl.style["left"] = _i.offsetLeft  - _i.scrollLeft;
+                        var r = InputValidator.ComputeLabelPos(_i);
+						lbl.style["top"] = r[1];
+						lbl.style["left"] = r[0];
 					} else
 						lbl.style["display"] = "none";					
 				}
@@ -82,17 +83,18 @@ var InputValidator = {
 			var _i = input;
 			InputValidator.inputsWithValidators.push ({"input" : _i, 
 				"func" : function () {
-				var value = _i.value * 1.0;
-				var lbl = InputValidator.getErrorLabel();
-				if (value < _m) {
-					lbl.innerHTML = "Invalid numerical value: " + value + "." +
-									"<br>&nbsp;&nbsp;allowed minimum = " + _m;
-					lbl.style["display"] = "block";
-					lbl.style["top"] = _i.offsetTop - _i.scrollTop + _i.clientHeight + 5;
-					lbl.style["left"] = _i.offsetLeft  - _i.scrollLeft;
-				} else
-					lbl.style["display"] = "none";					
-			}
+                    var value = _i.value * 1.0;
+                    var lbl = InputValidator.getErrorLabel();
+                    if (value < _m) {
+                        lbl.innerHTML = "Invalid numerical value: " + value + "." +
+                                        "<br>&nbsp;&nbsp;allowed minimum = " + _m;
+                        lbl.style["display"] = "block";
+                        var r = InputValidator.ComputeLabelPos(_i);
+						lbl.style["top"] = r[1];
+						lbl.style["left"] = r[0];
+                    } else
+                        lbl.style["display"] = "none";					
+                }
 			});
 		})();
 	},
@@ -103,17 +105,18 @@ var InputValidator = {
 			var _i = input;
 			InputValidator.inputsWithValidators.push ({"input" : _i, 
 				"func" : function () {
-				var value = _i.value * 1.0;
-				var lbl = InputValidator.getErrorLabel();
-				if (value > _M) {
-					lbl.innerHTML = "Invalid numerical value: " + value + "." +
-					                "<br>&nbsp;&nbsp;allowed maximum = " + _M;
-					lbl.style["display"] = "block";
-					lbl.style["top"] = _i.offsetTop - _i.scrollTop + _i.clientHeight + 5;
-					lbl.style["left"] = _i.offsetLeft  - _i.scrollLeft;
-				} else
-					lbl.style["display"] = "none";					
-			}
+                    var value = _i.value * 1.0;
+                    var lbl = InputValidator.getErrorLabel();
+                    if (value > _M) {
+                        lbl.innerHTML = "Invalid numerical value: " + value + "." +
+                                        "<br>&nbsp;&nbsp;allowed maximum = " + _M;
+                        lbl.style["display"] = "block";
+                        var r = InputValidator.ComputeLabelPos(_i);
+						lbl.style["top"] = r[1];
+						lbl.style["left"] = r[0];
+                    } else
+                        lbl.style["display"] = "none";					
+                }
 			});
 		})();
 	},
@@ -124,16 +127,17 @@ var InputValidator = {
 			var _i = input;
 			InputValidator.inputsWithValidators.push ({"input" : _i, 
 				"func" : function () {
-				var value = _i.value;
-				var lbl = InputValidator.getErrorLabel();
-				if (value == "") {
-					lbl.innerHTML = _m;
-					lbl.style["display"] = "block";
-					lbl.style["top"] = _i.offsetTop - _i.scrollTop + _i.clientHeight + 5;
-					lbl.style["left"] = _i.offsetLeft  - _i.scrollLeft;
-				} else
-					lbl.style["display"] = "none";					
-			}
+                    var value = _i.value;
+                    var lbl = InputValidator.getErrorLabel();
+                    if (value == "") {
+                        lbl.innerHTML = _m;
+                        lbl.style["display"] = "block";
+                        var r = InputValidator.ComputeLabelPos(_i);
+						lbl.style["top"] = r[1];
+						lbl.style["left"] = r[0];
+                    } else
+                        lbl.style["display"] = "none";					
+                }
 			});
 		})();
 	},
@@ -144,17 +148,23 @@ var InputValidator = {
 			var _i = input;
 			InputValidator.inputsWithValidators.push ({"input" : _i, 
 				"func" : function () {
-				var errorMsg = _f();
-				var lbl = InputValidator.getErrorLabel();
-				if (errorMsg != "") {
-					lbl.innerHTML = errorMsg;
-					lbl.style["display"] = "block";
-					lbl.style["top"] = _i.offsetTop - _i.scrollTop + _i.clientHeight + 5;
-					lbl.style["left"] = _i.offsetLeft  - _i.scrollLeft;
-				} else
-					lbl.style["display"] = "none";					
-			}
+                    var errorMsg = _f();
+                    var lbl = InputValidator.getErrorLabel();
+                    if (errorMsg != "") {
+                        lbl.innerHTML = errorMsg;
+                        lbl.style["display"] = "block";
+                        var r = InputValidator.ComputeLabelPos(_i);
+						lbl.style["top"] = r[1];
+						lbl.style["left"] = r[0];
+                    } else
+                        lbl.style["display"] = "none";					
+                }
 			});
 		})();
-	}
+	},
+    
+    ComputeLabelPos : function (_i) {
+        var r = _i.getBoundingClientRect();
+        return [r.left , r.top + _i.clientHeight + 5];
+    }
 };
