@@ -56,6 +56,9 @@ document.getElementById("K").oninput = function () { InputValidator.validate (th
 document.getElementById("mag").oninput = function () { InputValidator.validate (this); }
 document.getElementById("fov").oninput = function () { InputValidator.validate (this); }
 
+document.documentElement.onscroll = InputValidator.UpdateErrorLabelPosition;
+window.onresize = InputValidator.UpdateErrorLabelPosition;
+
 StarsSelection.init();
 
 CorrectorUIManager.init();

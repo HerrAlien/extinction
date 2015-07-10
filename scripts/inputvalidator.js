@@ -24,6 +24,8 @@ var InputValidator = {
 	
 	errorLabel : null,
 	
+	lastObjectToPositionLabel: null,
+	
 	validate : function (inp, cfg) {
 		var i = 0;
 		for (i = 0; i < InputValidator.inputsWithValidators.length; i++){
@@ -175,10 +177,23 @@ var InputValidator = {
 	},
     
     ComputeLabelPos : function (_i) {
+		InputValidator.lastObjectToPositionLabel = _i;
+		if (!_i)
+			return [0, 0];
         var r = _i.getBoundingClientRect();
 		var doc = document.documentElement;
 		var left = (window.pageXOffset || doc.scrollLeft) - (doc.clientLeft || 0);
 		var top = (window.pageYOffset || doc.scrollTop)  - (doc.clientTop || 0);
         return [r.left +left , r.top + top + _i.clientHeight + 5];
-    }
+    },
+	
+	UpdateErrorLabelPosition : function() {
+		var pos = InputValidator.ComputeLabelPos (InputValidator.lastObjectToPositionLabel);
+		var lbl = InputValidator.errorLabel;
+		if (!lbl)
+			return;
+		
+		lbl.style["left"] = pos[0];
+		lbl.style["top"] = pos[1];
+	}
 };
