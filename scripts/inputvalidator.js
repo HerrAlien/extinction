@@ -176,6 +176,9 @@ var InputValidator = {
     
     ComputeLabelPos : function (_i) {
         var r = _i.getBoundingClientRect();
-        return [r.left , r.top + _i.clientHeight + 5];
+		var doc = document.documentElement;
+		var left = (window.pageXOffset || doc.scrollLeft) - (doc.clientLeft || 0);
+		var top = (window.pageYOffset || doc.scrollTop)  - (doc.clientTop || 0);
+        return [r.left +left , r.top + top + _i.clientHeight + 5];
     }
 };
