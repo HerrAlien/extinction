@@ -24,13 +24,55 @@ var InputValidator = {
 	
 	errorLabel : null,
 	
-	validate : function (inp) {
+	validate : function (inp, cfg) {
 		var i = 0;
 		for (i = 0; i < InputValidator.inputsWithValidators.length; i++){
 			var currentEntry = InputValidator.inputsWithValidators[i];
-			if (currentEntry.input == inp && currentEntry.func)
-				currentEntry.func();
+			if (currentEntry.input == inp && currentEntry.func) {
+				var c = {};
+				if (cfg)
+					c = cfg;
+				c.elemToMoveTo = inp;
+				InputValidator.validate_internal (c, currentEntry.func);
+			}
 		}
+	},
+	
+	validate_internal : function (c, getMsgFunc) {
+			var appendMessage = false;
+			var hideError = false;
+			var elemToMoveTo = null;
+			var prependMsg = ""
+			var lbl = InputValidator.getErrorLabel();
+			lbl.style["display"] = "none";
+
+			if (c) {
+				appendMessage = c.appendMessage;
+				hideError = c.hideError;
+				elemToMoveTo = c.elemToMoveTo;
+				if (c.prependMsg)
+					prependMsg = c.prependMsg;
+			}
+			
+			var msg = getMsgFunc();
+			if (msg != "") {
+				msg = prependMsg + msg;
+				if (appendMessage)
+					lbl.innerHTML = lbl.innerHTML + "<br>" + msg;
+				else
+					lbl.innerHTML = msg;
+				
+				if (hideError)
+					lbl.style["display"] = "none";
+				else
+					lbl.style["display"] = "block";
+				
+				if (elemToMoveTo) {
+					var coords = InputValidator.ComputeLabelPos(elemToMoveTo);
+					lbl.style["left"] = coords[0];
+					lbl.style["top"] = coords[1];
+				}
+			}
 	},
 	
 	getErrorLabel : function () {
@@ -54,24 +96,20 @@ var InputValidator = {
 	},
 	
 	AddNumberRangeValidator : function (input, min, max) {
-		(function (){
+		(function (c){
 			var _m = min;
 			var _M = max;
 			var _i = input;
+			
 			InputValidator.inputsWithValidators.push ({"input" : _i, 
 				"func" : function () {
-					var value = _i.value * 1.0;
-					var lbl = InputValidator.getErrorLabel();
+					var value = _i.value * 1.0;					
 					if (value > _M || value < _m) {
-						lbl.innerHTML = "Invalid numerical value: " + value + "." +
-										"<br>&nbsp;&nbsp;allowed minimum = " + _m + 
-										"<br>&nbsp;&nbsp;allowed maximum = " + _M;
-						lbl.style["display"] = "block";
-                        var r = InputValidator.ComputeLabelPos(_i);
-						lbl.style["top"] = r[1];
-						lbl.style["left"] = r[0];
-					} else
-						lbl.style["display"] = "none";					
+						return "Invalid numerical value: " + value + "." +
+								"<br>&nbsp;&nbsp;allowed minimum = " + _m + 
+								"<br>&nbsp;&nbsp;allowed maximum = " + _M;					
+					}
+					return "";					
 				}
 			});
 		})();
@@ -83,17 +121,10 @@ var InputValidator = {
 			var _i = input;
 			InputValidator.inputsWithValidators.push ({"input" : _i, 
 				"func" : function () {
-                    var value = _i.value * 1.0;
-                    var lbl = InputValidator.getErrorLabel();
-                    if (value < _m) {
-                        lbl.innerHTML = "Invalid numerical value: " + value + "." +
-                                        "<br>&nbsp;&nbsp;allowed minimum = " + _m;
-                        lbl.style["display"] = "block";
-                        var r = InputValidator.ComputeLabelPos(_i);
-						lbl.style["top"] = r[1];
-						lbl.style["left"] = r[0];
-                    } else
-                        lbl.style["display"] = "none";					
+                    var value = _i.value * 1.0;                  
+                    if (value < _m)
+                        return "Invalid numerical value: " + value + "." + "<br>&nbsp;&nbsp;allowed minimum = " + _m;
+                    return "";					
                 }
 			});
 		})();
@@ -106,16 +137,9 @@ var InputValidator = {
 			InputValidator.inputsWithValidators.push ({"input" : _i, 
 				"func" : function () {
                     var value = _i.value * 1.0;
-                    var lbl = InputValidator.getErrorLabel();
-                    if (value > _M) {
-                        lbl.innerHTML = "Invalid numerical value: " + value + "." +
-                                        "<br>&nbsp;&nbsp;allowed maximum = " + _M;
-                        lbl.style["display"] = "block";
-                        var r = InputValidator.ComputeLabelPos(_i);
-						lbl.style["top"] = r[1];
-						lbl.style["left"] = r[0];
-                    } else
-                        lbl.style["display"] = "none";					
+                    if (value > _M)
+                        return "Invalid numerical value: " + value + "." + "<br>&nbsp;&nbsp;allowed maximum = " + _M;
+                    return "";
                 }
 			});
 		})();
@@ -127,16 +151,9 @@ var InputValidator = {
 			var _i = input;
 			InputValidator.inputsWithValidators.push ({"input" : _i, 
 				"func" : function () {
-                    var value = _i.value;
-                    var lbl = InputValidator.getErrorLabel();
-                    if (value == "") {
-                        lbl.innerHTML = _m;
-                        lbl.style["display"] = "block";
-                        var r = InputValidator.ComputeLabelPos(_i);
-						lbl.style["top"] = r[1];
-						lbl.style["left"] = r[0];
-                    } else
-                        lbl.style["display"] = "none";					
+                    if (_i.value == "")
+                        return _m;
+					return "";
                 }
 			});
 		})();
@@ -149,15 +166,9 @@ var InputValidator = {
 			InputValidator.inputsWithValidators.push ({"input" : _i, 
 				"func" : function () {
                     var errorMsg = _f();
-                    var lbl = InputValidator.getErrorLabel();
-                    if (errorMsg != "") {
-                        lbl.innerHTML = errorMsg;
-                        lbl.style["display"] = "block";
-                        var r = InputValidator.ComputeLabelPos(_i);
-						lbl.style["top"] = r[1];
-						lbl.style["left"] = r[0];
-                    } else
-                        lbl.style["display"] = "none";					
+                    if (errorMsg != "") 
+                        return errorMsg; 
+					return "";					
                 }
 			});
 		})();
