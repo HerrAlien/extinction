@@ -69,8 +69,8 @@ var InputValidator = {
 				
 				if (elemToMoveTo) {
 					var coords = InputValidator.ComputeLabelPos(elemToMoveTo);
-					lbl.style["left"] = coords[0];
-					lbl.style["top"] = coords[1];
+					lbl.style["left"] = coords[0] + "px";
+					lbl.style["top"] = coords[1] + "px";
 				}
 			}
 	},
