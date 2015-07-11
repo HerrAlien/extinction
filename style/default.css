@@ -64,7 +64,7 @@ html, body {
 }
 
 #banner {
-    margin: 0px 0px 50px 0px;
+    margin: 0px 0px 20px 0px;
     font-size : 24pt;
     padding: 20px 0px 20px 0px;
     text-align: center;
@@ -101,6 +101,7 @@ pre {
 
 #mainarea {
     width: 998px;
+    margin: 0px;
 }
 
 .selectorItem, .selectorItemActive {
@@ -152,7 +153,7 @@ pre {
 
 #poweredBy, #license {
 	text-align: left;
-    margin: 30px 0px 10px 0px;
+    margin: 5px 0px 0px 0px;
 }
 
 #poweredBy {
