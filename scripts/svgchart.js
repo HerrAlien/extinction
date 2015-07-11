@@ -19,7 +19,7 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl.html
 */
 
 var SVGChart = {
-    size : 600,
+    size : 500,
     focalLength : 0,
     fov : 0,
     ra : 0,

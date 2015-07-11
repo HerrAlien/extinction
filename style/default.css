@@ -23,11 +23,14 @@ html, body {
     overflow-y: visible;
     overflow-x: visible;
 	margin: 0px;
+    padding: 0px;
+    font-family: Arial;
+    font-size: 12px;
+    text-align: left;
 }
     #donate {
         border: solid 2px #000000;
         font-family : "Arial";
-
         font-size: 12px;
         padding: 15px;
         background-color : #dadadf;
@@ -47,10 +50,10 @@ html, body {
     }
     
     #container {
-        margin: 0px auto 0px auto;
-    text-align: center;
-    min-width: 1170px;
-    width: 1170px;
+    margin: 0px auto 0px auto;
+    text-align: left;
+    max-width: 998px;
+    width: 998px;
 	padding: 5px;
 }
 
@@ -61,16 +64,15 @@ html, body {
 }
 
 #banner {
-    margin: 0px auto 50px auto;
-    width: 1170;
+    margin: 0px 0px 50px 0px;
     font-size : 24pt;
     padding: 20px 0px 20px 0px;
     text-align: center;
 }
     
 #chart {
-    width: 600px;
-    height: 600px;
+    width: 500px;
+    height: 500px;
 }
 
 a, .readyToSelect {
@@ -92,13 +94,13 @@ pre {
 
 #wizard {
     float: left;
-    margin: 20px 10px 0px 5px;
-    width: 540px;
+    margin: 20px 5px 0px 0px;
+    width: 452px;
     text-align: left;
 }
 
-#imageContainer{
-	width: 1160px;
+#mainarea {
+    width: 998px;
 }
 
 .selectorItem, .selectorItemActive {
@@ -150,17 +152,21 @@ pre {
 
 #poweredBy, #license {
 	text-align: left;
-	width: 1170px;
-    margin: 0px auto 10px auto;
+    margin: 30px 0px 10px 0px;
+}
+
+#poweredBy {
+	width: 800px;
 }
 
 #license  {
 	padding: 5px;
+	max-width: 998px;
 }
 
 #poweredBy div {
 float: left;
-margin: 5px 20px 5px 20px;
+margin: 5px 10px 5px 10px;
 padding: 5px;
 text-align: center;
 }
@@ -176,9 +182,9 @@ text-align: center;
 }
 
 #footer {
-	margin: 0px auto 0px auto;
-	text-align: center;
-	width: 1170px;
+	margin: 0px;
+	text-align: left;
+	width: 998px;
 }
 
 td {
