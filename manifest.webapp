@@ -1,0 +1,20 @@
+{
+    "name" : "Extinction-o-Meter",
+	"description": " utility that makes computation of atmospheric extinction easier",
+    "version": "1.0.3.4",
+	"type": "privileged",
+	"default_locale": "en",
+    "icons" : { 
+		"128" : "resources/icon128.png",
+		"256" : "resources/icon.png"
+    }, 
+    "permissions" : {
+		"systemXHR" : { "description" : "HTTP requests to fetch the photometry table and star positions" } , 
+		"geolocation": { "description" : "Latitude and longitude, needed for coordinate conversions" } 
+	},
+    "launch_path": "/index.html",
+	"developer": {
+		"name": "Herr_Alien",
+		"url": "https://bitbucket.org/herr_alien/extinction-o-meter"
+	}
+}
