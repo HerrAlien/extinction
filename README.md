@@ -16,3 +16,7 @@
 ### Who do I talk to? ###
 
 * Repo owner or admin: Herr_Alien <garone80@yahoo.com>
+
+### Found a bug! ###
+
+* You can submit bugs to [our bug tracker](https://bitbucket.org/herr_alien/extinction-o-meter/issues?status=new&status=open). As an alternative, mail me (see above).
