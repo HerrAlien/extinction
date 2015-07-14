@@ -14,6 +14,7 @@ This README would normally document whatever steps are necessary to get your app
 * Dependencies: Google Chrome (when going for the chrome app), Internet Explorer 9 (when using the .HTA version) or Mozilla Firefox (when installed via Mozilla Marketplace)
 
 [![ChromeWebStore_Badge_v2_340x96.png](https://bitbucket.org/repo/EqEnzq/images/671448342-ChromeWebStore_Badge_v2_340x96.png)](https://chrome.google.com/webstore/detail/extinction-o-meter/baigpaagflhnakaihppjcphpjkmnpjll)
+[![ZipFile.png](https://bitbucket.org/repo/EqEnzq/images/2604145917-ZipFile.png)](https://bitbucket.org/herr_alien/extinction-o-meter/downloads/extinction-o-meter-HTA.zip)
 [![firefox-marketplace_logo-wordmark_RGB_small.png](https://bitbucket.org/repo/EqEnzq/images/1731827097-firefox-marketplace_logo-wordmark_RGB_small.png)](https://marketplace.firefox.com/app/extinction-o-meter/)
 
 ### Contribution guidelines ###
