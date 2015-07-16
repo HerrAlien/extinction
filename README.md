@@ -9,9 +9,9 @@
 * **For Internet Explorer** fans, download and unpack [the zip file](https://bitbucket.org/herr_alien/extinction-o-meter/downloads/extinction-o-meter-HTA.zip) to your HDD, and double-click the index.hta file to use the application
 * **For Chrome and Firefox** fans, just click the image below for the corresponding app store.
 
-[![ZipFile.png](https://bitbucket.org/repo/EqEnzq/images/1796378322-ZipFile.png)](https://bitbucket.org/herr_alien/extinction-o-meter/downloads/extinction-o-meter-HTA.zip)
-[![ChromeWebStore_Badge_v2_340x96.png](https://bitbucket.org/repo/EqEnzq/images/671448342-ChromeWebStore_Badge_v2_340x96.png)](https://chrome.google.com/webstore/detail/extinction-o-meter/baigpaagflhnakaihppjcphpjkmnpjll)
-[![firefox-marketplace_logo-wordmark_RGB_small.png](https://bitbucket.org/repo/EqEnzq/images/1731827097-firefox-marketplace_logo-wordmark_RGB_small.png)](https://marketplace.firefox.com/app/extinction-o-meter/)
+[![ZipFile_small.png](https://bitbucket.org/repo/EqEnzq/images/1060774317-ZipFile_small.png)](https://bitbucket.org/herr_alien/extinction-o-meter/downloads/extinction-o-meter-HTA.zip)
+[![ChromeWebStore_Badge_v2_206x58.png](https://bitbucket.org/repo/EqEnzq/images/3446287288-ChromeWebStore_Badge_v2_206x58.png)](https://chrome.google.com/webstore/detail/extinction-o-meter/baigpaagflhnakaihppjcphpjkmnpjll)
+[![firefox-marketplace_badge-orange_172_60.png](https://bitbucket.org/repo/EqEnzq/images/3161810626-firefox-marketplace_badge-orange_172_60.png)](https://marketplace.firefox.com/app/extinction-o-meter/)
 
 ### Who do I talk to? ###
 
