@@ -24,18 +24,18 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl.html
 
 if (isset($_REQUEST['proxyfor']))
 {
-    $proxyfor = _REQUEST['proxyfor'];
+    $proxyfor = $_REQUEST['proxyfor'];
     $qstring = $_SERVER['QUERY_STRING'];
     $url = '/';
     
     
     if ($proxyfor == 'aavso-vsp'){
         $url = "http://www.aavso.org/cgi-bin/vsp.pl";
-        $data = ['ccdtable' => 'on', 'name' => _REQUEST['name'], 'fov' => _REQUEST['fov']];
+        $data = ['ccdtable' => 'on', 'name' => $_REQUEST['name'], 'fov' => $_REQUEST['fov']];
     }
     if ($proxyfor == 'rssd-esa-tycho'){
         $url = "http://www.rssd.esa.int/hipparcos_scripts/HIPcatalogueSearch.pl";
-        $data = ['raDecim' => _REQUEST['raDecim'], 'decDecim' => _REQUEST['decDecim'], 'box' => _REQUEST['box'], 'threshold' => _REQUEST['threshold']];
+        $data = ['raDecim' => $_REQUEST['raDecim'], 'decDecim' => $_REQUEST['decDecim'], 'box' =>$_REQUEST['box'], 'threshold' => $_REQUEST['threshold']];
     }
     
     $data = http_build_query($data);

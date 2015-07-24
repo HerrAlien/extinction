@@ -21,7 +21,7 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl.html
 var Hipparcos = {
     config : {
         method: "GET",
-        url : "/index.php",
+        url : "http://extinction-o-meter.appspot.com/index.php",
         params : [ "raDecim"  /* RA of the center of the square region to search in */, 
                    "decDecim" /* DEC of the center of the square region to search in */, 
                    "box" /* half size of the square region, in degrees */,
