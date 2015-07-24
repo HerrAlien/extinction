@@ -21,7 +21,7 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl.html
 var Hipparcos = {
     config : {
         method: "GET",
-        url : "http://www.rssd.esa.int/hipparcos_scripts/HIPcatalogueSearch.pl",
+        url : "/index.php",
         params : [ "raDecim"  /* RA of the center of the square region to search in */, 
                    "decDecim" /* DEC of the center of the square region to search in */, 
                    "box" /* half size of the square region, in degrees */,
@@ -61,7 +61,8 @@ var Hipparcos = {
                         Hipparcos.config.params[0] + "=" + ra_deg + "&" +
                         Hipparcos.config.params[1] + "=" + dec_deg + "&" +
                         Hipparcos.config.params[2] + "=" + fov_arcmin / 120.0 + "&" +
-                        Hipparcos.config.params[3] + "=" + maglim , true);
+                        Hipparcos.config.params[3] + "=" + maglim 
+                        + "&proxyfor=rssd-esa-tycho", true);
         xmlHttpReq.send(null); 
     },
     
