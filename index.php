@@ -30,15 +30,13 @@ if (isset($_REQUEST['proxyfor']))
     
     
     if ($proxyfor == 'aavso-vsp'){
-        $url = "http://www.aavso.org/cgi-bin/vsp.pl";
-        $data = ['ccdtable' => 'on', 'name' => $_REQUEST['name'], 'fov' => $_REQUEST['fov']];
+        $url = "http://www.aavso.org/cgi-bin/vsp.pl?ccdtable=on&name=" . urlencode($_REQUEST['name']) . '&fov=' . $_REQUEST['fov'];
     }
     if ($proxyfor == 'rssd-esa-tycho'){
-        $url = "http://www.rssd.esa.int/hipparcos_scripts/HIPcatalogueSearch.pl";
-        $data = ['raDecim' => $_REQUEST['raDecim'], 'decDecim' => $_REQUEST['decDecim'], 'box' =>$_REQUEST['box'], 'threshold' => $_REQUEST['threshold']];
+        $url = "http://www.rssd.esa.int/hipparcos_scripts/HIPcatalogueSearch.pl?raDecim=" . $_REQUEST['raDecim'] . '&decDecim='. $_REQUEST['decDecim'] .
+         '&box=' . $_REQUEST['box'] . '&threshold=' . $_REQUEST['threshold'];
     }
     
-    $data = http_build_query($data);
     $context = [
       'http' => [
         'method' => 'GET',
@@ -47,7 +45,9 @@ if (isset($_REQUEST['proxyfor']))
     ];
 
     $context = stream_context_create($context);
-    $result = file_get_contents($url, false, $context);    
+    
+    $result = file_get_contents($url, false, $context);
+    echo ($result);
 }
 else // do the GUI
 {
