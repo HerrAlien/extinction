@@ -53,8 +53,8 @@ html, body {
     #container {
     margin: 0px auto 0px auto;
     text-align: left;
-    max-width: 998px;
-    width: 998px;
+    max-width: 1010px;
+    width: 1010px;
 	padding: 5px;
 }
 
@@ -96,7 +96,7 @@ pre {
 #wizard {
     float: left;
     margin: 20px 5px 0px 0px;
-    width: 452px;
+    width: 460px;
     text-align: left;
 }
 
@@ -105,7 +105,7 @@ pre {
 }
 
 #mainarea {
-    width: 998px;
+    width: 1010px;
     margin: 0px;
 }
 
@@ -167,7 +167,7 @@ pre {
 
 #license  {
 	padding: 5px;
-	max-width: 998px;
+	max-width: 1010px;
 }
 
 #poweredBy div {
@@ -190,7 +190,7 @@ text-align: center;
 #footer {
 	margin: 0px;
 	text-align: left;
-	width: 998px;
+	width: 1010px;
 }
 
 td {
