@@ -1,5 +1,5 @@
 application: extinction-o-meter
-version: 1
+version: 3
 runtime: php55
 api_version: 1
 threadsafe: yes
@@ -10,16 +10,13 @@ handlers:
   upload: favicon\.ico
 
 - url: /scripts
-  static_files: scripts/\1
-  upload: scripts/(.*\.(js))
+  static_dir: static/scripts
 
 - url: /style
-  static_files: style/\1
-  upload: style/(.*\.(css))
+  static_dir: static/style
 
 - url: /resources
-  static_files: resources/\1
-  upload: resources/(.*\.(gif|png|jpg|jpeg))
+  static_dir: static/resources
 
-- url: .*
+- url: /.*
   script: index.php
