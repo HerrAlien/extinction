@@ -25,14 +25,17 @@ var Log = {
 	}
 };
 
-PhotmetryTable.onInit = function () { 
-	Log.message ("Photometry table loaded.")
-    var root = PhotmetryTable.searchTree.root;     
-    EstimationCorrector.init();
-	Log.message ("Loading stars from Tycho catalogue ...");
-    Hipparcos.init(root.coords[0], root.coords[1], root.fov, root.mag );
-    SVGChart.init (root.coords[0], root.coords[1], root.fov, root.mag);
-	SVGChart.drawBorder ();
+PhotmetryTable.onInit = function () {
+	setTimeout (function() {
+        var root = PhotmetryTable.searchTree.root;     
+        EstimationCorrector.init();
+        Log.message ("Loading stars from Tycho catalogue ...");
+        setTimeout (function() {
+                Hipparcos.init(root.coords[0], root.coords[1], root.fov, root.mag );
+                SVGChart.init (root.coords[0], root.coords[1], root.fov, root.mag);
+                SVGChart.drawBorder ();
+            }, 100);
+        }, 100);
 }
 
 document.getElementById("chartOrientation").onchange = function () {
@@ -71,9 +74,12 @@ Hipparcos.onInit = function () {
 }
 
 document.getElementById("updateChart").onclick = function () {
+	Log.message ("Loading photometry table ...");
 	var starName = document.getElementById("variableStarName").value;
 	var fov = document.getElementById("fov").value;
 	var limittingMag = document.getElementById("mag").value;
-
-	PhotmetryTable.initFromStarName (starName, fov, limittingMag);
+	setTimeout (
+        function(){
+            PhotmetryTable.initFromStarName (starName, fov, limittingMag);
+        }, 100);
 }
