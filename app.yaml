@@ -6,7 +6,7 @@ threadsafe: yes
 
 handlers:
 - url: /favicon\.ico
-  static_files: resources/icon\.png
+  static_files: resources/icon.png
   upload: resources/icon\.png
 
 - url: /scripts
