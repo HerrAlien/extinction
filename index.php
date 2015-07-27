@@ -22,33 +22,43 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl.html
 // if we have a query string param specifying a proxy, then do the proxy.
 
 
-if (isset($_REQUEST['proxyfor']))
-{
-    $proxyfor = $_REQUEST['proxyfor'];
-    $qstring = $_SERVER['QUERY_STRING'];
-    $url = '/';
-    
-    
-    if ($proxyfor == 'aavso-vsp'){
-        $url = "http://www.aavso.org/cgi-bin/vsp.pl?ccdtable=on&name=" . urlencode($_REQUEST['name']) . '&fov=' . $_REQUEST['fov'];
-    }
-    if ($proxyfor == 'rssd-esa-tycho'){
-        $url = "http://www.rssd.esa.int/hipparcos_scripts/HIPcatalogueSearch.pl?raDecim=" . $_REQUEST['raDecim'] . '&decDecim='. $_REQUEST['decDecim'] .
-         '&box=' . $_REQUEST['box'] . '&threshold=' . $_REQUEST['threshold'];
-    }
-    
-    $context = [
-      'http' => [
-        'method' => 'GET',
-        'content' => $data
-      ]
-    ];
-
-    $context = stream_context_create($context);
-    $result = file_get_contents($url, false, $context);
-    echo ($result);
+use google\appengine\api\users\User;
+use google\appengine\api\users\UserService;
+# Looks for current Google account session
+$user = UserService::getCurrentUser();
+if (!$user) {
+  header('Location: ' . UserService::createLoginURL($_SERVER['REQUEST_URI']));
 }
-else // do the GUI
+else 
 {
-    require('index.html');
+    if (isset($_REQUEST['proxyfor']))
+    {
+        $proxyfor = $_REQUEST['proxyfor'];
+        $qstring = $_SERVER['QUERY_STRING'];
+        $url = '/';
+        
+        
+        if ($proxyfor == 'aavso-vsp'){
+            $url = "http://www.aavso.org/cgi-bin/vsp.pl?ccdtable=on&name=" . urlencode($_REQUEST['name']) . '&fov=' . $_REQUEST['fov'];
+        }
+        if ($proxyfor == 'rssd-esa-tycho'){
+            $url = "http://www.rssd.esa.int/hipparcos_scripts/HIPcatalogueSearch.pl?raDecim=" . $_REQUEST['raDecim'] . '&decDecim='. $_REQUEST['decDecim'] .
+             '&box=' . $_REQUEST['box'] . '&threshold=' . $_REQUEST['threshold'];
+        }
+        
+        $context = [
+          'http' => [
+            'method' => 'GET',
+            'content' => $data
+          ]
+        ];
+    
+        $context = stream_context_create($context);
+        $result = file_get_contents($url, false, $context);
+        echo ($result);
+    }
+    else // do the GUI
+    {
+        require('index.html');
+    }
 }
