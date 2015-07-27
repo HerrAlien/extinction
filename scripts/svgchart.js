@@ -112,15 +112,16 @@ var SVGChart = {
 		
         // compute coordinates, in pixels
 		var coords = SVGChart.radec2xy (_star.ra, _star.dec);
-		coords[0] += 3;
-		coords[1] += 7;
+		var radius = 1 * Math.pow (1.35, SVGChart.limittingMag - _star.mag);
+		coords[0] += radius + 1;
+		coords[1] += radius + 5;
 		
 		var textDOM = _elementToDrawTo.ownerDocument.createElementNS (SVGChart.namespace, "text");
 		_elementToDrawTo.appendChild(textDOM);
 		textDOM.setAttribute("x", coords[0]);
 		textDOM.setAttribute("y", coords[1]);
 		textDOM.textContent = _star.label;
-		textDOM.style["fontSize"] = "11px";
+		textDOM.style["fontSize"] = "10px";
 		textDOM.style["fontFamily"] = "Arial";
         // ... TODO: correct for collisions
         // set the cursor as pointer (style wise)
