@@ -6,17 +6,17 @@ threadsafe: yes
 
 handlers:
 - url: /favicon\.ico
-  static_files: favicon.ico
-  upload: favicon\.ico
+  static_files: resources/icon\.png
+  upload: resources/icon\.png
 
 - url: /scripts
-  static_dir: static/scripts
+  static_dir: scripts
 
 - url: /style
-  static_dir: static/style
+  static_dir: style
 
 - url: /resources
-  static_dir: static/resources
+  static_dir: resources
 
 - url: /.*
   script: index.php
