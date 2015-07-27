@@ -1,11 +1,11 @@
 application: extinction-o-meter
-version: 3
+version: 4
 runtime: php55
 api_version: 1
 threadsafe: yes
 
 handlers:
-- url: /favicon\.ico
+- url: /favicon\..*
   static_files: resources/icon.png
   upload: resources/icon\.png
 
