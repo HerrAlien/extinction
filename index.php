@@ -70,7 +70,7 @@ else
         userBar.style["font-size"] = "11px";
         userBar.style["margin"] = "10px 5px -15px 0px";
         userBar.style["width"] = banner.style["width"];
-        userBar.innerHTML = 'Welcome back <b><?php echo $user->getNickname() ?></b>; you can <a href="<?php echo UserService::createLogoutURL("http://extinction-o-meter.appspot.com") ?>">logout here</a>.';
+        userBar.innerHTML = 'Logged in as <b><?php echo $user->getNickname() ?></b> | <a href="<?php echo UserService::createLogoutURL("http://extinction-o-meter.appspot.com") ?>">Logout</a>.';
         banner.appendChild(userBar);
     })();
 </script><?php        
