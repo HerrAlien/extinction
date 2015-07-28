@@ -1,0 +1,22 @@
+application: extinction-o-meter
+version: 5
+runtime: php55
+api_version: 1
+threadsafe: yes
+
+handlers:
+- url: /favicon\..*
+  static_files: resources/icon.png
+  upload: resources/icon\.png
+
+- url: /scripts
+  static_dir: scripts
+
+- url: /style
+  static_dir: style
+
+- url: /resources
+  static_dir: resources
+
+- url: /.*
+  script: index.php
