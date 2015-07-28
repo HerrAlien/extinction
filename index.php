@@ -60,5 +60,19 @@ else
     else // do the GUI
     {
         require('index.html');
+?><script type="text/javascript">
+    (function() {
+        var banner = document.getElementById("banner");
+        if (!banner)
+            return;
+        var userBar = document.createElement("div");
+        userBar.style["text-align"] = "right";
+        userBar.style["font-size"] = "11px";
+        userBar.style["margin"] = "10px 5px -15px 0px";
+        userBar.style["width"] = banner.style["width"];
+        userBar.innerHTML = 'Welcome back <b><?php echo $user->getNickname() ?></b>; you can <a href="<?php echo UserService::createLogoutURL("http://extinction-o-meter.appspot.com") ?>">logout here</a>.';
+        banner.appendChild(userBar);
+    })();
+</script><?php        
     }
 }
