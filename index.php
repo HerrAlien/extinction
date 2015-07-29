@@ -19,60 +19,78 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see https://www.gnu.org/licenses/agpl.html
 */
 
-// if we have a query string param specifying a proxy, then do the proxy.
-
-
 use google\appengine\api\users\User;
 use google\appengine\api\users\UserService;
-# Looks for current Google account session
-$user = UserService::getCurrentUser();
-if (!$user) {
-  header('Location: ' . UserService::createLoginURL($_SERVER['REQUEST_URI']));
-}
-else 
+
+// display below only if the user agent indicates a mobile device
+$isMobile = false;
+$userAgent = $_SERVER['HTTP_USER_AGENT'];
+$isMobile = stripos ($userAgent, 'kindle') ||
+            stripos ($userAgent, 'android') ||
+            stripos ($userAgent, 'BlackBerry') ||
+            stripos ($userAgent, 'phone') ||
+            stripos ($userAgent, 'arm') ||
+            stripos ($userAgent, 'opera mini') ||
+            stripos ($userAgent, 'opera mobi') ||
+            stripos ($userAgent, 'iPad');
+
+if ($isMobile)
 {
-    if (isset($_REQUEST['proxyfor']))
-    {
-        $proxyfor = $_REQUEST['proxyfor'];
-        $qstring = $_SERVER['QUERY_STRING'];
-        $url = '/';
-        
-        
-        if ($proxyfor == 'aavso-vsp'){
-            $url = "http://www.aavso.org/cgi-bin/vsp.pl?ccdtable=on&name=" . urlencode($_REQUEST['name']) . '&fov=' . $_REQUEST['fov'];
-        }
-        if ($proxyfor == 'rssd-esa-tycho'){
-            $url = "http://www.rssd.esa.int/hipparcos_scripts/HIPcatalogueSearch.pl?raDecim=" . $_REQUEST['raDecim'] . '&decDecim='. $_REQUEST['decDecim'] .
-             '&box=' . $_REQUEST['box'] . '&threshold=' . $_REQUEST['threshold'];
-        }
-        
-        $context = [
-          'http' => [
-            'method' => 'GET',
-            'content' => $data
-          ]
-        ];
-    
-        $context = stream_context_create($context);
-        $result = file_get_contents($url, false, $context);
-        echo ($result);
+    # Looks for current Google account session
+    $user = UserService::getCurrentUser();
+    if (!$user) {
+      header('Location: ' . UserService::createLoginURL($_SERVER['REQUEST_URI']));
     }
-    else // do the GUI
+    else 
     {
-        require('index.html');
-?><script type="text/javascript">
-    (function() {
-        var banner = document.getElementById("banner");
-        if (!banner)
-            return;
-        var userBar = document.createElement("div");
-        userBar.style["text-align"] = "right";
-        userBar.style["font-size"] = "11px";
-        userBar.style["margin"] = "10px 5px -15px 0px";
-        userBar.style["width"] = banner.style["width"];
-        userBar.innerHTML = 'Welcome back <b><?php echo $user->getNickname() ?></b>; you can <a href="<?php echo UserService::createLogoutURL("http://extinction-o-meter.appspot.com") ?>">logout here</a>.';
-        banner.appendChild(userBar);
-    })();
-</script><?php        
+        // if we have a query string param specifying a proxy, then do the proxy.
+        if (isset($_REQUEST['proxyfor']))
+        {
+            $proxyfor = $_REQUEST['proxyfor'];
+            $qstring = $_SERVER['QUERY_STRING'];
+            $url = '/';
+            
+            
+            if ($proxyfor == 'aavso-vsp'){
+                $url = "http://www.aavso.org/cgi-bin/vsp.pl?ccdtable=on&name=" . urlencode($_REQUEST['name']) . '&fov=' . $_REQUEST['fov'];
+            }
+            if ($proxyfor == 'rssd-esa-tycho'){
+                $url = "http://www.rssd.esa.int/hipparcos_scripts/HIPcatalogueSearch.pl?raDecim=" . $_REQUEST['raDecim'] . '&decDecim='. $_REQUEST['decDecim'] .
+                 '&box=' . $_REQUEST['box'] . '&threshold=' . $_REQUEST['threshold'];
+            }
+            
+            $context = [
+              'http' => [
+                'method' => 'GET',
+                'content' => $data
+              ]
+            ];
+        
+            $context = stream_context_create($context);
+            $result = file_get_contents($url, false, $context);
+            echo ($result);
+        }
+        else // do the GUI
+        {
+            require('index.html');
+    ?><script type="text/javascript">
+        (function() {
+            var banner = document.getElementById("banner");
+            if (!banner)
+                return;
+            var userBar = document.createElement("div");
+            userBar.style["text-align"] = "right";
+            userBar.style["font-size"] = "11px";
+            userBar.style["margin"] = "10px 5px -15px 0px";
+            userBar.style["width"] = banner.style["width"];
+            userBar.innerHTML = 'Welcome back <b><?php echo $user->getNickname() ?></b>; you can <a href="<?php echo UserService::createLogoutURL("http://extinction-o-meter.appspot.com") ?>">logout here</a>.';
+            banner.appendChild(userBar);
+        })();
+    </script><?php        
+        }
     }
+}
+else
+{   // redirect them to the project page, so they can select a downloadable package
+    header('Location: https://bitbucket.org/herr_alien/extinction-o-meter/');
 }
