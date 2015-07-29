@@ -23,18 +23,20 @@ use google\appengine\api\users\User;
 use google\appengine\api\users\UserService;
 
 // display below only if the user agent indicates a mobile device
-$isMobile = false;
+$isMobileOrMac = false;
 $userAgent = $_SERVER['HTTP_USER_AGENT'];
-$isMobile = stripos ($userAgent, 'kindle') ||
+$isMobileOrMac = stripos ($userAgent, 'kindle') ||
             stripos ($userAgent, 'android') ||
             stripos ($userAgent, 'BlackBerry') ||
-            stripos ($userAgent, 'phone') ||
+            stripos ($userAgent, 'windows phone') ||
             stripos ($userAgent, 'arm') ||
             stripos ($userAgent, 'opera mini') ||
             stripos ($userAgent, 'opera mobi') ||
+            (stripos ($userAgent, 'Macintosh') &&  (stripos($userAgent, 'CriOS') == 0)) ||
+            (stripos ($userAgent, 'Mac OS') &&  (stripos($userAgent, 'CriOS') == 0)) ||
             stripos ($userAgent, 'iPad');
 
-if ($isMobile)
+if ($isMobileOrMac)
 {
     # Looks for current Google account session
     $user = UserService::getCurrentUser();
