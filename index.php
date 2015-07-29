@@ -76,15 +76,19 @@ if ($isMobile)
     ?><script type="text/javascript">
         (function() {
             var banner = document.getElementById("banner");
-            if (!banner)
+        var container = document.getElementById("container");        
+        if (!banner || !container)
                 return;
+        
             var userBar = document.createElement("div");
             userBar.style["text-align"] = "right";
-            userBar.style["font-size"] = "11px";
-            userBar.style["margin"] = "10px 5px -15px 0px";
+        userBar.style["font-size"] = "10px";
+        userBar.style["margin"] = "0px";
             userBar.style["width"] = banner.style["width"];
-            userBar.innerHTML = 'Welcome back <b><?php echo $user->getNickname() ?></b>; you can <a href="<?php echo UserService::createLogoutURL("http://extinction-o-meter.appspot.com") ?>">logout here</a>.';
-            banner.appendChild(userBar);
+        userBar.innerHTML = 'Logged in as <?php echo $user->getNickname() ?> | <a href="https://www.google.com/accounts/ManageAccount" target="_blank">My Account</a> | <a href="<?php echo UserService::createLogoutURL("http://extinction-o-meter.appspot.com") ?>">Sign out</a>';
+        
+        container.insertBefore(userBar, banner);
+        
         })();
     </script><?php        
         }
