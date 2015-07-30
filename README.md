@@ -1,6 +1,8 @@
 # Extinction-O-Meter #
 * The repo is for an utility that can apply corrections for differential extinction on visual brightness estimates of variable stars. It can even determine the extinction coefficient, using the procedure described [here](https://docs.google.com/document/d/18RcrzoP0-Xy8_-xsWbnwWAj2m1lAL5WrHUm5S-Neu7Y/edit?usp=sharing)
 * Version: 1.0.3.6
+* [check out the tutorial](https://bitbucket.org/herr_alien/extinction-o-meter/wiki/Tutorial)
+* [check out the Wiki](https://bitbucket.org/herr_alien/extinction-o-meter/wiki/Home)
 
 ## How do I get set up? ##
 
