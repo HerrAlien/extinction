@@ -76,6 +76,7 @@ if ($isMobileOrMac)
         {
             require('index.html');
     ?><script type="text/javascript">
+        // do some alterations to the page and objects
         (function() {
             var banner = document.getElementById("banner");
             var container = document.getElementById("container");        
@@ -90,6 +91,10 @@ if ($isMobileOrMac)
             userBar.innerHTML = 'Logged in as <?php echo $user->getNickname() ?> | <a href="https://www.google.com/accounts/ManageAccount" target="_blank">My Account</a> | <a href="<?php echo UserService::createLogoutURL("http://extinction-o-meter.appspot.com") ?>">Sign out</a>';
         
             container.insertBefore(userBar, banner);
+            
+            // have the PHP re-do the URLs to point to us
+            PhotmetryTable.AAVSO.configFromStarName.url = "http://extinction-o-meter.appspot.com/index.php?";
+            Hipparcos.config.url = "http://extinction-o-meter.appspot.com/index.php";
         
         })();
     </script><?php        
