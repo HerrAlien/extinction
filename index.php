@@ -54,7 +54,7 @@ if ($isMobileOrMac)
             
             
             if ($proxyfor == 'aavso-vsp'){
-                $url = "http://www.aavso.org/cgi-bin/vsp.pl?ccdtable=on&name=" . urlencode($_REQUEST['name']) . '&fov=' . $_REQUEST['fov'];
+                $url = "https://www.aavso.org/cgi-bin/vsp.pl?ccdtable=on&name=" . urlencode($_REQUEST['name']) . '&fov=' . $_REQUEST['fov'];
             }
             if ($proxyfor == 'rssd-esa-tycho'){
                 $url = "http://www.rssd.esa.int/hipparcos_scripts/HIPcatalogueSearch.pl?raDecim=" . $_REQUEST['raDecim'] . '&decDecim='. $_REQUEST['decDecim'] .
