@@ -1,5 +1,5 @@
 application: extinction-o-meter
-version: 5
+version: 6
 runtime: php55
 api_version: 1
 threadsafe: yes

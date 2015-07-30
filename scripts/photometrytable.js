@@ -171,12 +171,12 @@ var PhotmetryTable = {
     // namespace holding utilities to access the VSP data
     AAVSO : {
         config: { // 
-            url : "http://www.aavso.org/cgi-bin/vsp.pl?ccdtable=on&chartid=",
+            url : "https://www.aavso.org/cgi-bin/vsp.pl?ccdtable=on&chartid=",
             method: "GET"
         },
         
         configFromStarName : { // 
-            url : "http://extinction-o-meter.appspot.com/index.php?",
+            url : "https://extinction-o-meter.appspot.com/index.php?",
             method: "GET",
             params : ["name" /* name of the variable star */,
                       "fov"  /* field of view for the field, arcmins */]

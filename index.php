@@ -23,18 +23,20 @@ use google\appengine\api\users\User;
 use google\appengine\api\users\UserService;
 
 // display below only if the user agent indicates a mobile device
-$isMobile = false;
+$isMobileOrMac = false;
 $userAgent = $_SERVER['HTTP_USER_AGENT'];
-$isMobile = stripos ($userAgent, 'kindle') ||
+$isMobileOrMac = stripos ($userAgent, 'kindle') ||
             stripos ($userAgent, 'android') ||
             stripos ($userAgent, 'BlackBerry') ||
-            stripos ($userAgent, 'phone') ||
+            stripos ($userAgent, 'windows phone') ||
             stripos ($userAgent, 'arm') ||
             stripos ($userAgent, 'opera mini') ||
             stripos ($userAgent, 'opera mobi') ||
+            (stripos ($userAgent, 'Macintosh') &&  (stripos($userAgent, 'CriOS') == 0)) ||
+            (stripos ($userAgent, 'Mac OS') &&  (stripos($userAgent, 'CriOS') == 0)) ||
             stripos ($userAgent, 'iPad');
 
-if ($isMobile)
+if ($isMobileOrMac)
 {
     # Looks for current Google account session
     $user = UserService::getCurrentUser();
@@ -52,7 +54,7 @@ if ($isMobile)
             
             
             if ($proxyfor == 'aavso-vsp'){
-                $url = "http://www.aavso.org/cgi-bin/vsp.pl?ccdtable=on&name=" . urlencode($_REQUEST['name']) . '&fov=' . $_REQUEST['fov'];
+                $url = "https://www.aavso.org/cgi-bin/vsp.pl?ccdtable=on&name=" . urlencode($_REQUEST['name']) . '&fov=' . $_REQUEST['fov'];
             }
             if ($proxyfor == 'rssd-esa-tycho'){
                 $url = "http://www.rssd.esa.int/hipparcos_scripts/HIPcatalogueSearch.pl?raDecim=" . $_REQUEST['raDecim'] . '&decDecim='. $_REQUEST['decDecim'] .
@@ -76,18 +78,18 @@ if ($isMobile)
     ?><script type="text/javascript">
         (function() {
             var banner = document.getElementById("banner");
-        var container = document.getElementById("container");        
-        if (!banner || !container)
+            var container = document.getElementById("container");        
+            if (!banner || !container)
                 return;
         
             var userBar = document.createElement("div");
             userBar.style["text-align"] = "right";
-        userBar.style["font-size"] = "10px";
-        userBar.style["margin"] = "0px";
+            userBar.style["font-size"] = "10px";
+            userBar.style["margin"] = "0px";
             userBar.style["width"] = banner.style["width"];
-        userBar.innerHTML = 'Logged in as <?php echo $user->getNickname() ?> | <a href="https://www.google.com/accounts/ManageAccount" target="_blank">My Account</a> | <a href="<?php echo UserService::createLogoutURL("http://extinction-o-meter.appspot.com") ?>">Sign out</a>';
+            userBar.innerHTML = 'Logged in as <?php echo $user->getNickname() ?> | <a href="https://www.google.com/accounts/ManageAccount" target="_blank">My Account</a> | <a href="<?php echo UserService::createLogoutURL("http://extinction-o-meter.appspot.com") ?>">Sign out</a>';
         
-        container.insertBefore(userBar, banner);
+            container.insertBefore(userBar, banner);
         
         })();
     </script><?php        
