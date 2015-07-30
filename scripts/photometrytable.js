@@ -176,7 +176,7 @@ var PhotmetryTable = {
         },
         
         configFromStarName : { // 
-            url : "https://extinction-o-meter.appspot.com/index.php?",
+            url : "https://www.aavso.org/cgi-bin/vsp.pl?ccdtable=on",
             method: "GET",
             params : ["name" /* name of the variable star */,
                       "fov"  /* field of view for the field, arcmins */]
