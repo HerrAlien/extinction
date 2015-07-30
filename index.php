@@ -78,20 +78,13 @@ if ($isMobileOrMac)
     ?><script type="text/javascript">
         // do some alterations to the page and objects
         (function() {
-            var banner = document.getElementById("banner");
-            var container = document.getElementById("container");        
-            if (!banner || !container)
+            var container = document.getElementById("topmenu");        
+            if (!container)
                 return;
         
-            var userBar = document.createElement("div");
-            userBar.style["text-align"] = "right";
-            userBar.style["font-size"] = "10px";
-            userBar.style["margin"] = "0px";
-            userBar.style["width"] = banner.style["width"];
-            userBar.innerHTML = 'Logged in as <?php echo $user->getNickname() ?> | <a href="https://www.google.com/accounts/ManageAccount" target="_blank">My Account</a> | <a href="<?php echo UserService::createLogoutURL("http://extinction-o-meter.appspot.com") ?>">Sign out</a>';
+            container.innerHTML = container.innerHTML + 
+                                 ' | Logged in as <?php echo $user->getNickname() ?> | <a href="https://www.google.com/accounts/ManageAccount" target="_blank">My Account</a> | <a href="<?php echo UserService::createLogoutURL("http://extinction-o-meter.appspot.com") ?>">Sign out</a>';
         
-            container.insertBefore(userBar, banner);
-            
             // have the PHP re-do the URLs to point to us
             PhotmetryTable.AAVSO.configFromStarName.url = "http://extinction-o-meter.appspot.com/index.php?";
             Hipparcos.config.url = "http://extinction-o-meter.appspot.com/index.php";
