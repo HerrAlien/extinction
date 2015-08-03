@@ -21,7 +21,7 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl.html
 var Log = {
 	domElem : document.getElementById("debug"),
 	message : function (text) {
-		Log.domElem.innerHTML = text;
+		Log.domElem.textContent = text;
 	}
 };
 
@@ -70,7 +70,7 @@ Hipparcos.onInit = function () {
     SVGChart.updateStars (Hipparcos.chart.stars);   	
 	SVGChart.drawCenterMark();
 	SVGChart.updateComparisonLabels (PhotmetryTable.comparisonStars);
-	setTimeout(function() { Log.message ("&nbsp;");}, 1000);
+	setTimeout(function() { Log.message (" ");}, 1000);
 }
 
 document.getElementById("updateChart").onclick = function () {

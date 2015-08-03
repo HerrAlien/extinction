@@ -83,7 +83,7 @@ var EstimationCorrector = {
 
         EstimationCorrector.pairedComparisons.push (createdObj.comp);
         var createdSpan = CorrectorUIManager.Utils.AddChild (createdObj.tdmid, "span");
-        createdSpan.innerHTML = "V";
+        createdSpan.textContent = "V";
     },
     
     update : function () {
@@ -188,9 +188,9 @@ var CorrectorUIManager = {
             var tdval =  addChild (CorrectorUIManager.tableHeader, "td");
             var tddim =  addChild (CorrectorUIManager.tableHeader, "td");
 
-            tdbright.innerHTML = "Bright star"; 
-            tddim.innerHTML = "Dim star"; 
-            tdval.innerHTML = "steps"; 
+            tdbright.textContent = "Bright star"; 
+            tddim.textContent = "Dim star"; 
+            tdval.textContent = "steps"; 
         } else {
             var tdbright =  addChild (CorrectorUIManager.tableHeader, "td");
             var tdval_bm =  addChild (CorrectorUIManager.tableHeader, "td");
@@ -198,16 +198,16 @@ var CorrectorUIManager = {
             var tdval_md =  addChild (CorrectorUIManager.tableHeader, "td");
             var tddim =  addChild (CorrectorUIManager.tableHeader, "td");
 
-            tdbright.innerHTML = "Bright star"; 
-            tdval_bm.innerHTML = "steps"; 
-            tddim.innerHTML = "Dim star"; 
-            tdval_md.innerHTML = "steps"; 
-            tdmid.innerHTML = "Middle star"; 
+            tdbright.textContent = "Bright star"; 
+            tdval_bm.textContent = "steps"; 
+            tddim.textContent = "Dim star"; 
+            tdval_md.textContent = "steps"; 
+            tdmid.textContent = "Middle star"; 
         }
 
         var tdadd =  addChild (CorrectorUIManager.tableHeader, "td");
         var anch = addChild(tdadd, "a");
-        anch.innerHTML = "(+) Add row";
+        anch.textContent = "(+) Add row";
         anch.noref="";
         anch.className = "addAnchor";
         anch.onclick = function () {
@@ -248,7 +248,7 @@ var CorrectorUIManager = {
                 var deleteAnchor = addChild (tddelete, "a");
                 var comp = c;
                 var arr = a;
-                deleteAnchor.innerHTML = "(x) Delete row";
+                deleteAnchor.textContent = "(x) Delete row";
                 deleteAnchor.className = "deleteAnchor";
                 var tr = r;
                 deleteAnchor.onclick = function () {
@@ -384,7 +384,7 @@ var CorrectorUIManager = {
             try {
                 var variableBrightnessArr = EstimationCorrector.Estimate (K);
                 var variableMagStats = Computations.AverageAndStdDev (variableBrightnessArr);
-                document.getElementById("brightnessNoExtinction").innerHTML = Computations.Round (variableMagStats.avg, 2) + 
+                document.getElementById("brightnessNoExtinction").textContent = Computations.Round (variableMagStats.avg, 2) + 
                                                                                 " (std. dev. " + 
                                                                                 Computations.Round (variableMagStats.stdDev, 2) + 
                                                                                 ")";
@@ -419,7 +419,7 @@ var CorrectorUIManager = {
                 airmassV = "unknown";
             }
             
-            document.getElementById ("airmassV").innerHTML = Computations.Round (airmassV, 3);
+            document.getElementById ("airmassV").textContent = Computations.Round (airmassV, 3);
             
             var extinctionCorrectionRequired = Math.abs (airmassA - airmassB) > 0.2 ||
                                                Math.abs (airmassA - airmassV) > 0.2 ||
@@ -441,7 +441,7 @@ var CorrectorUIManager = {
                 }
 
                 var variableMagStats = Computations.AverageAndStdDev (variableBrightnessArr);
-                document.getElementById("brightnessWithExtinction").innerHTML = Computations.Round (variableMagStats.avg, 2) + 
+                document.getElementById("brightnessWithExtinction").textContent = Computations.Round (variableMagStats.avg, 2) + 
                                                                                 " (std. dev. " + 
                                                                                 Computations.Round (variableMagStats.stdDev, 2) + 
                                                                                 ")";
@@ -460,7 +460,7 @@ var CorrectorUIManager = {
                 document.getElementById ("K").value = Computations.Round (kstats.avg, 4);
                 
                 var variableMagStats = Computations.AverageAndStdDev (variableMags);
-                document.getElementById("brightnessWithExtinction").innerHTML = Computations.Round (variableMagStats.avg, 2) + 
+                document.getElementById("brightnessWithExtinction").textContent = Computations.Round (variableMagStats.avg, 2) + 
                                                                                 " (std. dev. " + 
                                                                                 Computations.Round (variableMagStats.stdDev, 2) + 
                                                                                 ")";

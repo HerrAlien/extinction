@@ -230,9 +230,11 @@ var PhotmetryTable = {
             var stars = [];
             // parse the DOM
             // but first, insert it in the doc
-            var hostElement = document.createElement ("div");
-            hostElement.style.display = "none";
-            hostElement.innerHTML = text;
+            
+            var parser = new DOMParser();
+            var docAsDOM = parser.parseFromString(text, "text/html");
+            
+            var hostElement = docAsDOM.documentElement;
             // get the table
             var table = hostElement.getElementsByTagName("table")[0];
             
@@ -265,8 +267,6 @@ var PhotmetryTable = {
                     }
                 }
             
-            
-            delete hostElement;
             return stars;
         }
         
