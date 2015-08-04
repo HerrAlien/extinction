@@ -56,6 +56,9 @@ if ($isMobileOrMac)
             if ($proxyfor == 'aavso-vsp'){
                 $url = "https://www.aavso.org/cgi-bin/vsp.pl?ccdtable=on&name=" . urlencode($_REQUEST['name']) . '&fov=' . $_REQUEST['fov'];
             }
+            if ($proxyfor == 'aavso-vsx'){
+                $url = "https://www.aavso.org/vsx/index.php?view=query.votable&ident=" . urlencode($_REQUEST['ident']);
+            }
             if ($proxyfor == 'rssd-esa-tycho'){
                 $url = "http://www.rssd.esa.int/hipparcos_scripts/HIPcatalogueSearch.pl?raDecim=" . $_REQUEST['raDecim'] . '&decDecim='. $_REQUEST['decDecim'] .
                  '&box=' . $_REQUEST['box'] . '&threshold=' . $_REQUEST['threshold'];
@@ -87,6 +90,7 @@ if ($isMobileOrMac)
         
             // have the PHP re-do the URLs to point to us
             PhotmetryTable.AAVSO.configFromStarName.url = "http://extinction-o-meter.appspot.com/index.php?";
+            PhotmetryTable.AAVSO.vsxConfig.url = "http://extinction-o-meter.appspot.com/index.php?";
             Hipparcos.config.url = "http://extinction-o-meter.appspot.com/index.php";
         
         })();
