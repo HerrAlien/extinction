@@ -18,6 +18,53 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see https://www.gnu.org/licenses/agpl.html
 */
 
+// go through VSX .... //// https://www.aavso.org/vsx/index.php?view=query.votable&ident=R+Leo
+/*
+<?xml version="1.0" encoding="UTF-8"?>
+<VOTABLE version="1.0">
+    <RESOURCE>
+        <DESCRIPTION>International Variable Star Index (VSX) Query Results</DESCRIPTION>
+        <TABLE>
+            <FIELD id="auid" name="AUID"/>
+            <FIELD id="name" name="Name"/>
+            <FIELD id="const" name="Const"/>
+            <FIELD id="radec2000" name="Coords(J2000)"/>
+            <FIELD id="varType" name="VarType"/>
+            <FIELD id="maxMag" name="MaxMag"/>
+            <FIELD id="maxPass" name="MaxMagPassband"/>
+            <FIELD id="minMag" name="MinMag"/>
+            <FIELD id="minPass" name="MinMagPassband"/>
+            <FIELD id="epoch" name="Epoch"/>
+            <FIELD id="novaYr" name="NovaYear"/>
+            <FIELD id="period" name="Period"/>
+            <FIELD id="riseDur" name="RiseDuration"/>
+            <FIELD id="specType" name="SpecType"/>
+            <FIELD id="disc" name="Discoverer"/>
+            <DATA>
+                <TABLEDATA>
+                    <TR>
+                        <TD>000-BBQ-798</TD>
+                        <TD>R Leo</TD>
+                        <TD>Leo</TD>
+                        <TD>146.88954000,11.42881000</TD>
+                        <TD>M</TD>
+                        <TD>4.400</TD>
+                        <TD>V</TD>
+                        <TD>11.300</TD>
+                        <TD>V</TD>
+                        <TD>44164.00000</TD>
+                        <TD></TD>
+                        <TD>310</TD>
+                        <TD>43</TD>
+                        <TD>M6e-M8IIIe-M9.5e</TD>
+                        <TD></TD>
+                    </TR>
+                </TABLEDATA>
+            </DATA>
+        </TABLE>
+    </RESOURCE>
+</VOTABLE>
+*/
 var PhotmetryTable = {
     
     variableStar : { 
