@@ -54,7 +54,8 @@ if ($isMobileOrMac)
             
             
             if ($proxyfor == 'aavso-vsp'){
-                $url = "https://www.aavso.org/cgi-bin/vsp.pl?ccdtable=on&name=" . urlencode($_REQUEST['name']) . '&fov=' . $_REQUEST['fov'];
+                $url = "https://www.aavso.org/apps/vsp/api/chart/?star=" . urlencode($_REQUEST['star']) . '&fov=' . $_REQUEST['fov'] 
+                        . '&format=' . $_REQUEST['format'] . '&maglimit=' . $_REQUEST['maglimit'];
             }
             if ($proxyfor == 'aavso-vsx'){
                 $url = "https://www.aavso.org/vsx/index.php?view=query.votable&ident=" . urlencode($_REQUEST['ident']);
@@ -66,8 +67,7 @@ if ($isMobileOrMac)
             
             $context = [
               'http' => [
-                'method' => 'GET',
-                'content' => $data
+                'method' => 'GET'
               ]
             ];
         
@@ -89,9 +89,9 @@ if ($isMobileOrMac)
                                  ' | Logged in as <?php echo $user->getNickname() ?> | <a href="https://www.google.com/accounts/ManageAccount" target="_blank">My Account</a> | <a href="<?php echo UserService::createLogoutURL("http://extinction-o-meter.appspot.com") ?>">Sign out</a>';
         
             // have the PHP re-do the URLs to point to us
-            PhotmetryTable.AAVSO.configFromStarName.url = "http://extinction-o-meter.appspot.com/index.php?";
-            PhotmetryTable.AAVSO.vsxConfig.url = "http://extinction-o-meter.appspot.com/index.php?";
-            Hipparcos.config.url = "http://extinction-o-meter.appspot.com/index.php";
+            PhotmetryTable.AAVSO.configFromStarName.url = "https://extinction-o-meter.appspot.com/index.php?format=json";
+            PhotmetryTable.AAVSO.vsxConfig.url = "https://extinction-o-meter.appspot.com/index.php?";
+            Hipparcos.config.url = "https://extinction-o-meter.appspot.com/index.php";
         
         })();
     </script><?php        
