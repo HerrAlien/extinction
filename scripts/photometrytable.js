@@ -217,52 +217,29 @@ var PhotmetryTable = {
     
     // namespace holding utilities to access the VSP data
     AAVSO : {
-        config: { // 
-            url : "https://www.aavso.org/cgi-bin/vsp.pl?ccdtable=on&chartid=",
-            method: "GET"
-        },
-        
         configFromStarName : { // 
-            url : "https://www.aavso.org/cgi-bin/vsp.pl?ccdtable=on",
+            url : "https://www.aavso.org/apps/vsp/api/chart/?format=json",
             method: "GET",
-            params : ["name" /* name of the variable star */,
-                      "fov"  /* field of view for the field, arcmins */]
+            params : ["star" /* name of the variable star */,
+                      "fov"  /* field of view for the field, arcmins */,
+                      "maglimit" /* added recently*/]
         },
         
-        GetData : function (text) {
+        vsxConfig : {
+            url : "https://www.aavso.org/vsx/index.php?view=query.votable",
+            method: "GET",
+            params : ["ident"] // name of the star
+        },
+        
+        GetData : function (text, ra, dec, fov) {
             var data = {
-                centerCoords : [0, 0],
-                fov : 400,
+                centerCoords : [ra, dec],
+                fov : fov,
                 stars : []
             };
-            data.fov = PhotmetryTable.AAVSO.GetFOV (text);
-            data.centerCoords = PhotmetryTable.AAVSO.GetCoords(text);
             data.stars = PhotmetryTable.AAVSO.GetStars (text);
             
             return data;
-        },
-        
-        GetFOV : function (text) {
-            var fovBegins = text.indexOf ("within ") + 7; // length of string
-            return 2 * 60 * Computations.evalNum (text.substr (fovBegins, 7));
-        },
-        
-        GetCoords : function (text) {
-
-            truncatedText = text.toLowerCase()
-            
-            var numberStartsAt = truncatedText.indexOf (" (") + 2;
-            var numberEndsAt = truncatedText.indexOf (")</font>");
-            var raStr = truncatedText.substring (numberStartsAt, numberEndsAt);
-            var ra = Computations.evalNum (raStr);
-            
-            var decText = truncatedText.substring (numberEndsAt + 1);
-            numberStartsAt = decText.indexOf (" (") + 2;
-            numberEndsAt = decText.indexOf (")</font>");
-            var decStr = decText.substring (numberStartsAt, numberEndsAt);
-            var dec = Computations.evalNum (decStr);
-            
-            return [ra, dec];
         },
         
         extractNumericalValue : function  (str, begin, end) {
@@ -270,87 +247,88 @@ var PhotmetryTable = {
                 var valueEndsAt =  str.indexOf (end);
                 var valueAsString = str.substring (valueStartsAt, valueEndsAt);
                 return Computations.evalNum (valueAsString);
-                
         },
         
+        raToDecimalRa : function (sexadecimal) {
+            // split into hours, minutes, seconds
+            var comps = sexadecimal.split(":");
+            return 15.0*comps[0] + comps[1]/4.0 + comps[2]/900.0;
+        },
+        
+        decToDecimalDec : function (sexadecimal) {
+            // split into hours, minutes, seconds
+            var comps = sexadecimal.split(":");
+            return comps[0]*1.0 + comps[1]/60.0 + comps[2]/3600.0;
+        },
+
+        GetCoords : function (text) {
+            var parser=new DOMParser();
+            var xmlDoc=parser.parseFromString(text,"text/xml");
+            // now, get the TD elemengts
+            var entries = xmlDoc.getElementsByTagName("TD");
+            var cordsStr = entries[3].textContent.split(",");   
+            return [cordsStr[0] * 1.0 , cordsStr[1] * 1.0];
+        },
+
         GetStars : function (text) {
             var stars = [];
-            // parse the DOM
-            // but first, insert it in the doc
-            
-            var parser = new DOMParser();
-            var docAsDOM = parser.parseFromString(text, "text/html");
-            
-            var hostElement = docAsDOM.documentElement;
-            // get the table
-            var table = hostElement.getElementsByTagName("table")[0];
-            
-            
-                var i = 1;
-                for (i = 1; i < table.rows.length - 2; i++) {
-                    var currentRow = table.rows[i];
-                    
-                    var raNum = PhotmetryTable.AAVSO.extractNumericalValue (currentRow.cells[1].innerHTML, "[", "d]");
-                    var decNum = PhotmetryTable.AAVSO.extractNumericalValue (currentRow.cells[2].innerHTML, "[", "d]");
-                    var labelStr = "n/a";
-                    try{   
-                        labelStr= PhotmetryTable.AAVSO.extractNumericalValue (currentRow.cells[3].innerHTML, "<B>", "</B>");
-                    } catch (err1) {
-                        labelStr = PhotmetryTable.AAVSO.extractNumericalValue (currentRow.cells[3].innerHTML, "<b>", "</b>");
+            // this is now JSON!
+            var starsData = JSON.parse (text);
+            var i = 0;
+            for (i = 0; i < starsData.photometry.length; i++) {
+                var starJSON = starsData.photometry[i];
+                stars.push (
+                    { 
+                        "ra" : PhotmetryTable.AAVSO.raToDecimalRa(starJSON.ra) ,
+                        "dec" : PhotmetryTable.AAVSO.decToDecimalDec(starJSON.dec) ,
+                        "mag" : starJSON.bands[0].mag,
+                        "label" : starJSON.label
                     }
-                    var magNum = 0.1 * Computations.evalNum (labelStr);
-                    try {
-                        magNum = PhotmetryTable.AAVSO.extractNumericalValue (currentRow.cells[6].innerHTML, "<FONT size=-1>", " (");
-                    } catch (err2) {
-                        try {
-                            magNum = PhotmetryTable.AAVSO.extractNumericalValue (currentRow.cells[6].innerHTML, "<font size=\"-1\">", " (");
-                        } catch (err3) {
-                        }
-                    }
-                        
-                    if (magNum > -3) {
-                        var star = { "ra" : raNum, "dec" : decNum, "mag" : magNum, "label" : labelStr, "airmass" : 1 };
-                        stars.push ( star );
-                    }
-                }
-            
+                );
+            }
             return stars;
-        }
-        
+        }        
     },
 
     onInit : function () {
         
     },
     
-    init : function (chartID, limittingMag) {
-        var xmlHttpReq = new XMLHttpRequest({mozSystem: true});
-        xmlHttpReq.onreadystatechange = function() {
-			PhotmetryTable.onDataRetrieved (this, limittingMag);
-		}
-        xmlHttpReq.open(PhotmetryTable.AAVSO.config.method, PhotmetryTable.AAVSO.config.url + chartID, true);
-        xmlHttpReq.send(null);              
-    },
-    
     initFromStarName : function (starName, fov, limitingMag) {
-        var xmlHttpReq = new XMLHttpRequest({mozSystem: true});
-        xmlHttpReq.onreadystatechange = function() {
-				PhotmetryTable.onDataRetrieved (this, limitingMag);
-			}
-		var cfg = PhotmetryTable.AAVSO.configFromStarName;
-        xmlHttpReq.open(cfg.method, cfg.url + "&" + cfg.params[0] + "=" + starName + 
-						"&" + cfg.params[1] + "=" + fov
-                        + "&proxyfor=aavso-vsp", true);
-        xmlHttpReq.send(null);   
+    
+        // VSX first - we need the root coordinates vsxConfig
+        var xmlHttpReq_vsx = new XMLHttpRequest({mozSystem: true});
+        xmlHttpReq_vsx.onreadystatechange = function() {
+            if (4 != xmlHttpReq_vsx.readyState)
+                return;
+            // extract RA, DEC
+            var coords = PhotmetryTable.AAVSO.GetCoords(xmlHttpReq_vsx.responseText);
+            
+            var xmlHttpReq = new XMLHttpRequest({mozSystem: true});
+            xmlHttpReq.onreadystatechange = function() {
+    				PhotmetryTable.onDataRetrieved (this, limitingMag, coords[0], coords[1], fov);
+    			}
+    		var cfg = PhotmetryTable.AAVSO.configFromStarName;
+            xmlHttpReq.open(cfg.method, cfg.url + "&" + cfg.params[0] + "=" + starName + 
+    						"&" + cfg.params[1] + "=" + fov +
+    						"&" + cfg.params[2] + "=" + limitingMag +
+                            "&proxyfor=aavso-vsp", true);
+            xmlHttpReq.send(null);
+        }
+        
+        var vsxCfg = PhotmetryTable.AAVSO.vsxConfig;
+        xmlHttpReq_vsx.open (vsxCfg.method, vsxCfg.url + "&" + vsxCfg.params[0] + "=" + starName 
+                            + "&proxyfor=aavso-vsx", true);
+        xmlHttpReq_vsx.send(null);
     },
     
-	onDataRetrieved : function (xmlHttpReq, limittingMag) {
+	onDataRetrieved : function (xmlHttpReq, limittingMag, ra, dec, fov) {
             if(xmlHttpReq.readyState == 4) {
                 var doc =  xmlHttpReq.responseText;
-                var structuredData  = PhotmetryTable.AAVSO.GetData (doc);
+                var structuredData  = PhotmetryTable.AAVSO.GetData (doc, ra, dec, fov * 1.0);
 				PhotmetryTable.comparisonStars = structuredData.stars;
                 
-                PhotmetryTable.searchTree.init (structuredData, limittingMag);
+                PhotmetryTable.searchTree.init (structuredData, limittingMag * 1.0);
                 
                 PhotmetryTable.variableStar.ra = structuredData.centerCoords[0];
                 PhotmetryTable.variableStar.dec = structuredData.centerCoords[1];
