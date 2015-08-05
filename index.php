@@ -89,10 +89,16 @@ if ($isMobileOrMac)
                                  ' | Logged in as <?php echo $user->getNickname() ?> | <a href="https://www.google.com/accounts/ManageAccount" target="_blank">My Account</a> | <a href="<?php echo UserService::createLogoutURL("http://extinction-o-meter.appspot.com") ?>">Sign out</a>';
         
             var protocol = document.location.protocol;
+            var host = "<?php echo $_SERVER['SERVER_NAME']; ?>";
+            var port = "<?php if (isset($_SERVER['SERVER_PORT'])) echo $_SERVER['SERVER_PORT']; ?>";
+            var URI = protocol + "//" + host;
+            if (port != "")
+                URI = URI + ":" + port;
+            URI = URI + "/index.php";
             // have the PHP re-do the URLs to point to us
-            PhotmetryTable.AAVSO.configFromStarName.url = protocol + "//extinction-o-meter.appspot.com/index.php?";
-            PhotmetryTable.AAVSO.vsxConfig.url = protocol + "//extinction-o-meter.appspot.com/index.php?";
-            Hipparcos.config.url = protocol + "//extinction-o-meter.appspot.com/index.php";
+            PhotmetryTable.AAVSO.configFromStarName.url = URI + "?format=json";
+            PhotmetryTable.AAVSO.vsxConfig.url =  URI + "?";
+            Hipparcos.config.url = URI;
         
         })();
     </script><?php        
