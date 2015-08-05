@@ -54,7 +54,8 @@ if ($isMobileOrMac)
             
             
             if ($proxyfor == 'aavso-vsp'){
-                $url = "https://www.aavso.org/cgi-bin/vsp.pl?ccdtable=on&name=" . urlencode($_REQUEST['name']) . '&fov=' . $_REQUEST['fov'];
+                $url = "https://www.aavso.org/apps/vsp/api/chart/?star=" . urlencode($_REQUEST['star']) . '&fov=' . $_REQUEST['fov'] 
+                        . '&format=' . $_REQUEST['format'] . '&maglimit=' . $_REQUEST['maglimit'];
             }
             if ($proxyfor == 'aavso-vsx'){
                 $url = "https://www.aavso.org/vsx/index.php?view=query.votable&ident=" . urlencode($_REQUEST['ident']);
@@ -66,8 +67,7 @@ if ($isMobileOrMac)
             
             $context = [
               'http' => [
-                'method' => 'GET',
-                'content' => $data
+                'method' => 'GET'
               ]
             ];
         
