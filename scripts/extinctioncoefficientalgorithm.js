@@ -22,7 +22,7 @@ var ExtinctionCoefficient = {
 
     comparisons : [],
     
-    validValuesRange : [0.15 , 1.0],
+    validValuesRange : [0.0 , 10.0],
     
     algorithms : ["Argelander", "Paired"],
     currentAlgorithmID : 0,
