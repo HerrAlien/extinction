@@ -211,7 +211,10 @@ var PhotmetryTable = {
         decToDecimalDec : function (sexadecimal) {
             // split into hours, minutes, seconds
             var comps = sexadecimal.split(":");
-            return comps[0]*1.0 + comps[1]/60.0 + comps[2]/3600.0;
+            var sign = 1.0;
+            if (comps[0] * 1.0 < 0)
+                sign = -1.0;
+            return comps[0]*1.0 + sign*comps[1]/60.0 + sign*comps[2]/3600.0;
         },
 
         GetCoords : function (text) {
