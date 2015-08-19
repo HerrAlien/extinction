@@ -57,6 +57,9 @@ if ($isMobileOrMac)
                 $url = "https://www.aavso.org/apps/vsp/api/chart/?star=" . urlencode($_REQUEST['star']) . '&fov=' . $_REQUEST['fov'] 
                         . '&format=' . $_REQUEST['format'] . '&maglimit=' . $_REQUEST['maglimit'];
             }
+            if ($proxyfor == 'aavso-vsp-chart-id'){
+                $url = "https://www.aavso.org/apps/vsp/api/chart/" . $_REQUEST['chartID'] . '/?format=' . $_REQUEST['format'] ;
+            }
             if ($proxyfor == 'rssd-esa-tycho'){
                 $url = "https://www.rssd.esa.int/hipparcos_scripts/HIPcatalogueSearch.pl?raDecim=" . $_REQUEST['raDecim'] . '&decDecim='. $_REQUEST['decDecim'] .
                  '&box=' . $_REQUEST['box'] . '&threshold=' . $_REQUEST['threshold'];
@@ -93,9 +96,10 @@ if ($isMobileOrMac)
                 URI = URI + ":" + port;
             URI = URI + "/index.php";
             // have the PHP re-do the URLs to point to us
-            PhotmetryTable.AAVSO.configFromStarName.url = URI + "?format=json";
             Hipparcos.config.url = URI;
-        
+            PhotmetryTable.AAVSO.configFromStarName.url = URI + "?format=json";
+            PhotmetryTable.AAVSO.configFromChartID.url_prefix = URI + "?format=json&proxyfor=aavso-vsp-chart-id&chartID=";
+            PhotmetryTable.AAVSO.configFromChartID.url_suffix = "";
         })();
     </script><?php        
         }

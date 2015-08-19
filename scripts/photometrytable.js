@@ -179,9 +179,9 @@ var PhotmetryTable = {
         },
         
         configFromChartID : {
-            url : "https://www.aavso.org/apps/vsp/api/chart",
+            url_prefix : "https://www.aavso.org/apps/vsp/api/chart/",
             method: "GET",
-            params : null
+            url_suffix : "/?format=json&proxyfor=aavso-vsp-chart-id"
         },
                
         raToDecimalRa : function (sexadecimal) {
@@ -267,7 +267,7 @@ var PhotmetryTable = {
     	}
        	
         var cfg = PhotmetryTable.AAVSO.configFromChartID;
-        xmlHttpReq.open(cfg.method, cfg.url + "/" + chartID + "/?format=json&proxyfor=aavso-vsp-chart-id", true);
+        xmlHttpReq.open(cfg.method, cfg.url_prefix + chartID + cfg.url_suffix, true);
         xmlHttpReq.send(null);
     },
     
