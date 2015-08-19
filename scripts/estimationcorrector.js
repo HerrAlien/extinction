@@ -429,12 +429,12 @@ var CorrectorUIManager = {
             else
                 document.getElementById ("shouldComputeExtinction").className = "";
             
+            var variableBrightnessArr = [];
             // get K:
             //  - this can be a constant
             if (document.getElementById ("useValueForK").checked) {
                 document.getElementById ("K").readOnly = false;
                 K = parseFloat (document.getElementById ("K").value);
-                var variableBrightnessArr = [];
                 try {
                     variableBrightnessArr = EstimationCorrector.Estimate (K);
                 } catch (err) {
@@ -449,22 +449,21 @@ var CorrectorUIManager = {
             //  - or it must be determined from observations
                 document.getElementById ("K").readOnly = true;
                 var kvals = ExtinctionCoefficient.rebuildValues();
-                var variableMags  = [];
-                
-                var i = 0;
-                for (i = 0; i < kvals.length; i++) {
-                    variableMags = variableMags.concat (EstimationCorrector.Estimate (kvals[i]));
-                }
-                
+
                 var kstats = Computations.AverageAndStdDev (kvals);
                 document.getElementById ("K").value = Computations.Round (kstats.avg, 4);
-                
-                var variableMagStats = Computations.AverageAndStdDev (variableMags);
-                document.getElementById("brightnessWithExtinction").textContent = Computations.Round (variableMagStats.avg, 2) + 
-                                                                                " (std. dev. " + 
-                                                                                Computations.Round (variableMagStats.stdDev, 2) + 
-                                                                                ")";
+
+                var i = 0;
+                for (i = 0; i < kvals.length; i++) {
+                    variableBrightnessArr = variableBrightnessArr.concat (EstimationCorrector.Estimate (kvals[i]));
+                }
             }
+            
+            var variableMagStats = Computations.AverageAndStdDev (variableMags);
+            document.getElementById("brightnessWithExtinction").textContent = Computations.Round (variableMagStats.avg, 2) + 
+                                                                              " (std. dev. " + 
+                                                                              Computations.Round (variableMagStats.stdDev, 2) + 
+                                                                              ")";
             
         } catch (err) {
         }
