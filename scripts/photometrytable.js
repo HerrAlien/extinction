@@ -162,9 +162,9 @@ var PhotmetryTable = {
                 }
         },
         
-        init : function (data, mag) {
+        init : function (data) {
             // create the quad tree            
-            PhotmetryTable.searchTree.root = PhotmetryTable.searchTree.node (data.centerCoords, data.fov, data.stars, mag);
+            PhotmetryTable.searchTree.root = PhotmetryTable.searchTree.node (data.centerCoords, data.fov, data.stars, data.maglimit);
         }
     },
     
@@ -176,6 +176,12 @@ var PhotmetryTable = {
             params : ["star" /* name of the variable star */,
                       "fov"  /* field of view for the field, arcmins */,
                       "maglimit" /* added recently*/]
+        },
+        
+        configFromChartID : {
+            url : "https://www.aavso.org/apps/vsp/api/chart",
+            method: "GET",
+            params : null
         },
                
         raToDecimalRa : function (sexadecimal) {
@@ -193,7 +199,7 @@ var PhotmetryTable = {
             return comps[0]*1.0 + sign*comps[1]/60.0 + sign*comps[2]/3600.0;
         },
 
-        GetData : function (text, fov) {
+        GetData : function (text) {
             var stars = [];
             // this is now JSON!
             var starsData = JSON.parse (text);
@@ -212,9 +218,25 @@ var PhotmetryTable = {
             
             return {
                 "centerCoords" : [starsData.ra, starsData.dec], // and it also has the center coordinates
-                "fov" : fov,
-                "stars" : stars
+                "fov" : starsData.fov,
+                "stars" : stars,
+                "maglimit" : starsData.maglimit
             };
+        },
+        
+        IsChartID : function (text) {
+            // chart IDs do not have anything else than alphanumeric characters
+            var i = 0;
+            var isAlphanumeric = true;
+            for (i = 0; i < text.length && isAlphanumeric; i++)
+            {
+                var code = text.charCodeAt(i);
+                isAlphanumeric = isAlphanumeric && 
+                                 ((code >= 48 && code <= 57) ||
+                                  (code >= 65 && code <= 90) ||
+                                  (code >= 97 && code <= 122))
+            }
+            return isAlphanumeric;
         }        
     },
 
@@ -226,7 +248,7 @@ var PhotmetryTable = {
         xmlHttpReq.onreadystatechange = function() {
             if (4 != xmlHttpReq.readyState)
                 return;
-			PhotmetryTable.onDataRetrieved (this, limitingMag, fov);
+			PhotmetryTable.onDataRetrieved (this);
 		}
    		var cfg = PhotmetryTable.AAVSO.configFromStarName;
         xmlHttpReq.open(cfg.method, cfg.url + "&" + cfg.params[0] + "=" + starName + 
@@ -236,13 +258,26 @@ var PhotmetryTable = {
         xmlHttpReq.send(null);
     },
     
-	onDataRetrieved : function (xmlHttpReq, limittingMag, fov) {
+    initFromChartID : function (chartID) {
+        var xmlHttpReq = new XMLHttpRequest({mozSystem: true});
+        xmlHttpReq.onreadystatechange = function() {
+            if (4 != xmlHttpReq.readyState)
+                return;
+    	   PhotmetryTable.onDataRetrieved (this);
+    	}
+       	
+        var cfg = PhotmetryTable.AAVSO.configFromChartID;
+        xmlHttpReq.open(cfg.method, cfg.url + "/" + chartID + "/?format=json&proxyfor=aavso-vsp-chart-id", true);
+        xmlHttpReq.send(null);
+    },
+    
+	onDataRetrieved : function (xmlHttpReq) {
             if(xmlHttpReq.readyState == 4) {
                 var doc =  xmlHttpReq.responseText;
-                var structuredData  = PhotmetryTable.AAVSO.GetData (doc, fov * 1.0);
+                var structuredData  = PhotmetryTable.AAVSO.GetData (doc);
 				PhotmetryTable.comparisonStars = structuredData.stars;
                 
-                PhotmetryTable.searchTree.init (structuredData, limittingMag * 1.0);
+                PhotmetryTable.searchTree.init (structuredData);
                 
                 PhotmetryTable.variableStar.ra = structuredData.centerCoords[0];
                 PhotmetryTable.variableStar.dec = structuredData.centerCoords[1];

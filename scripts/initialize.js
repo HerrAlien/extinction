@@ -56,8 +56,30 @@ document.getElementById("dateTime").oninput = CorrectorUIManager.onLocationOrTim
 document.getElementById("lat").oninput = function () { InputValidator.validate (this); CorrectorUIManager.onLocationOrTimeChanged(); }
 document.getElementById("long").oninput = function () { InputValidator.validate (this); CorrectorUIManager.onLocationOrTimeChanged(); }
 document.getElementById("K").oninput = function () { InputValidator.validate (this); CorrectorUIManager.onLocationOrTimeChanged(); }
-document.getElementById("mag").oninput = function () { InputValidator.validate (this); }
-document.getElementById("fov").oninput = function () { InputValidator.validate (this); }
+
+var magInput = document.getElementById("mag");
+var fovInput = document.getElementById("fov");
+
+magInput.oninput = function () { InputValidator.validate (this); }
+fovInput.oninput = function () { InputValidator.validate (this); }
+
+document.getElementById("variableStarName").oninput = function () {
+    var starName = this.value;
+    if (PhotmetryTable.AAVSO.IsChartID(starName))
+    {
+        magInput.readOnly = true;
+        fovInput.readOnly = true;
+        magInput.placeholder = "not needed";
+        fovInput.placeholder = "not needed";
+    }
+    else
+    {
+        magInput.readOnly = false;
+        fovInput.readOnly = false;
+        magInput.placeholder = "[number]";
+        fovInput.placeholder = "[number]";
+    }
+}
 
 document.documentElement.onscroll = InputValidator.UpdateErrorLabelPosition;
 window.onresize = InputValidator.UpdateErrorLabelPosition;
@@ -80,6 +102,9 @@ document.getElementById("updateChart").onclick = function () {
 	var limittingMag = document.getElementById("mag").value;
 	setTimeout (
         function(){
-            PhotmetryTable.initFromStarName (starName, fov, limittingMag);
+            if (PhotmetryTable.AAVSO.IsChartID(starName))
+                PhotmetryTable.initFromChartID (starName);
+            else
+                PhotmetryTable.initFromStarName (starName, fov, limittingMag);
         }, 100);
 }
