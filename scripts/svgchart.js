@@ -58,6 +58,14 @@ var SVGChart = {
     
     updateStars : function (_stars) {
         SVGChart.stars = _stars;
+        SVGChart.stars.sort(function(a, b) { 
+                if (a.mag < b.mag)
+                    return -1;
+                if (b.mag < a.mag)
+                    return 1;
+                return 0;
+            } 
+        );
         SVGChart.redrawStars();
     },
 	
@@ -87,6 +95,8 @@ var SVGChart = {
         circleElem.setAttribute ("cy", coords [1]);
         circleElem.setAttribute ("r", radius);
         circleElem.setAttribute ("fill", "black");
+        circleElem.setAttribute ("stroke", "white");
+        circleElem.setAttribute ("stroke-width", 1);
     },
     
     updateComparisonLabels : function (_stars) {
