@@ -84,6 +84,8 @@ var EstimationCorrector = {
         EstimationCorrector.pairedComparisons.push (createdObj.comp);
         var createdSpan = CorrectorUIManager.Utils.AddChild (createdObj.tdmid, "span");
         createdSpan.textContent = "V";
+        
+        // set a ratings evaluation method. Yes, even vor the brightness estimates, we need a way to assess if they're ok or not.
     },
     
     update : function () {
@@ -327,6 +329,9 @@ var CorrectorUIManager = {
             var comp = ExtinctionCoefficient.SingleComparison(brightSelector, compImput, dimSelector);
             CorrectorUIManager.Utils.AddDeleteLink (row, tddelete, comp, ExtinctionCoefficient.comparisons);
             ExtinctionCoefficient.comparisons.push (comp);
+
+            // set a ratings evaluation method.
+
         }
     },
     
@@ -336,6 +341,8 @@ var CorrectorUIManager = {
             var createdObj = CorrectorUIManager.Utils.AddPairedComparison (table);
             CorrectorUIManager.Utils.AddDeleteLink (createdObj.row, createdObj.tddelete, createdObj.comp, ExtinctionCoefficient.comparisons);
             ExtinctionCoefficient.comparisons.push (createdObj.comp);
+
+            // set a ratings evaluation method.
         }
     },
     
