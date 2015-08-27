@@ -86,6 +86,10 @@ var EstimationCorrector = {
         createdSpan.textContent = "V";
         
         // set a ratings evaluation method. Yes, even vor the brightness estimates, we need a way to assess if they're ok or not.
+        // also set up a DOM element that can have the bg altered
+        var addChild = CorrectorUIManager.Utils.AddChild;
+        var tdRating = addChild(createdObj.row, "td");
+        var div = addChild (tdRating, "div");
     },
     
     update : function () {
@@ -216,10 +220,11 @@ var CorrectorUIManager = {
                 CorrectorUIManager[CorrectorUIManager.algorithms[CorrectorUIManager.selectedAlgorithm]].CreateComparisonUIRow();
         }
         
+        var tdRating = addChild (CorrectorUIManager.tableHeader, "td");
+        tdRating.style["background"] = "#ffffff";
         CorrectorUIManager[CorrectorUIManager.algorithms[CorrectorUIManager.selectedAlgorithm]].CreateComparisonUIRow(); // one compariso is enough for pairs
         if (0 == CorrectorUIManager.selectedAlgorithm)
             CorrectorUIManager[CorrectorUIManager.algorithms[CorrectorUIManager.selectedAlgorithm]].CreateComparisonUIRow(); // two, for Argelander
-
     },
     
     algorithms : ["Argelander", "Paired"],
@@ -331,7 +336,7 @@ var CorrectorUIManager = {
             ExtinctionCoefficient.comparisons.push (comp);
 
             // set a ratings evaluation method.
-
+            CorrectorUIManager.AddRatingIndicatorForExtinctionEstimate (comp, row);
         }
     },
     
@@ -343,8 +348,61 @@ var CorrectorUIManager = {
             ExtinctionCoefficient.comparisons.push (createdObj.comp);
 
             // set a ratings evaluation method.
+            CorrectorUIManager.AddRatingIndicatorForExtinctionEstimate (createdObj.comp, createdObj.row);
         }
     },
+    
+    AddRatingIndicatorForExtinctionEstimate : function (comp, row) {
+               var addChild = CorrectorUIManager.Utils.AddChild; 
+               (function(){
+                var tdRating = addChild (row, "td");
+                var div = addChild (tdRating, "div");
+                div.className = "norating";
+                
+                comp["updateRating"] = function() {
+                    if (!this.isValid())
+                        return;
+                    var ratingDiv = div;                    
+                    var originalComps = ExtinctionCoefficient.comparisons;
+                    var myLocation = originalComps.indexOf(this);
+                    if (myLocation < 0)
+                   	    return;
+                   
+                    var kVals = ExtinctionCoefficient.rebuildValues();
+                    var compsWithoutMe = originalComps.slice (0, myLocation).concat(originalComps.slice (myLocation+1, originalComps.length));
+                    ExtinctionCoefficient.comparisons = compsWithoutMe;
+                    var kvalsWOMe =   ExtinctionCoefficient.rebuildValues();
+                    ExtinctionCoefficient.comparisons = originalComps;
+                   
+                    var statsWithMe = Computations.AverageAndStdDev (kVals);
+                    var statsWOMe = Computations.AverageAndStdDev (kvalsWOMe);
+                    
+                    var ratingLabels = [ "sad", "meh", "happy"];
+                    var rating = 2;
+                    
+                    if (statsWOMe.stdDev > 0)
+                    {
+                        if ( Math.abs(statsWOMe.avg - statsWithMe.avg) < 0.5 * statsWOMe.stdDev )
+                            rating = 2;
+                        else if ( Math.abs(statsWOMe.avg - statsWithMe.avg) < statsWOMe.stdDev )
+                            rating = 1;
+                        else
+                            rating = 0;
+                    }
+                    else
+                    {
+                        if (statsWithMe.stdDev < 0.05)
+                            rating = 2;
+                        else if (statsWithMe.stdDev < 0.1)
+                            rating = 1;
+                        else
+                            rating = 0;
+                    }
+                    
+                    ratingDiv.className = ratingLabels [Math.min( Math.max(0, rating) , 2)];
+                }
+            })();
+    }, 
     
     onLocationOrTimeChanged : function () {
         try {
@@ -374,7 +432,6 @@ var CorrectorUIManager = {
         }
         
         EstimationCorrector.update();
-        ExtinctionCoefficient.updateUI();
         
         try {
             CorrectorUIManager.onUserInput();
@@ -446,12 +503,6 @@ var CorrectorUIManager = {
                     variableBrightnessArr = EstimationCorrector.Estimate (K);
                 } catch (err) {
                 }
-
-                var variableMagStats = Computations.AverageAndStdDev (variableBrightnessArr);
-                document.getElementById("brightnessWithExtinction").textContent = Computations.Round (variableMagStats.avg, 2) + 
-                                                                                " (std. dev. " + 
-                                                                                Computations.Round (variableMagStats.stdDev, 2) + 
-                                                                                ")";
             } else {
             //  - or it must be determined from observations
                 document.getElementById ("K").readOnly = true;
@@ -466,7 +517,7 @@ var CorrectorUIManager = {
                 }
             }
             
-            var variableMagStats = Computations.AverageAndStdDev (variableMags);
+            var variableMagStats = Computations.AverageAndStdDev (variableBrightnessArr);
             document.getElementById("brightnessWithExtinction").textContent = Computations.Round (variableMagStats.avg, 2) + 
                                                                               " (std. dev. " + 
                                                                               Computations.Round (variableMagStats.stdDev, 2) + 
@@ -474,5 +525,7 @@ var CorrectorUIManager = {
             
         } catch (err) {
         }
+
+        ExtinctionCoefficient.updateUI();
     }
 };

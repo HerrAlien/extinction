@@ -250,6 +250,7 @@ var ExtinctionCoefficient = {
         var comps = ExtinctionCoefficient.comparisons; // avoid long names
         for (; i < comps.length; i++) {
             comps[i].updateUI();
+            comps[i].updateRating();
         }
     }
 
