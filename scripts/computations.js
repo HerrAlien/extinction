@@ -108,5 +108,25 @@ var Computations = {
 		if (isNaN(thingToEval))
 			throw (thingToEval + " is not a number!");
 		return thingToEval * 1;
-	}
+	},
+	
+	CompareStats : function (statsWOMe, statsWithMe, thresholdsObj) {
+        var rating = 2;
+        if (statsWOMe.stdDev > 0){
+            if ( Math.abs(statsWOMe.avg - statsWithMe.avg) < /*0.5*/ thresholdsObj.avgStdDevRatio * statsWOMe.stdDev )
+                rating = 2;
+            else if ( Math.abs(statsWOMe.avg - statsWithMe.avg) < statsWOMe.stdDev )
+                rating = 1;
+            else
+                rating = 0;
+        } else {
+            if (statsWithMe.stdDev < thresholdsObj.stdDevAbsError)
+                rating = 2;
+            else if (statsWithMe.stdDev < thresholdsObj.stdDevMaxAbsError)
+                rating = 1;
+            else
+                rating = 0;
+        }
+        return rating;
+    }
 };

@@ -95,8 +95,8 @@ pre {
 
 #wizard {
     float: left;
-    margin: 20px 5px 0px 0px;
-    width: 452px;
+    margin: 20px 3px 0px 0px;
+    width: 495px;
     text-align: left;
 }
 
@@ -223,4 +223,8 @@ td {
 }
 
 .norating {
+}
+
+svg {
+    margin-right: 0px;
 }

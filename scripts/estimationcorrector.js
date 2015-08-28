@@ -85,11 +85,33 @@ var EstimationCorrector = {
         var createdSpan = CorrectorUIManager.Utils.AddChild (createdObj.tdmid, "span");
         createdSpan.textContent = "V";
         
-        // set a ratings evaluation method. Yes, even vor the brightness estimates, we need a way to assess if they're ok or not.
-        // also set up a DOM element that can have the bg altered
         var addChild = CorrectorUIManager.Utils.AddChild;
-        var tdRating = addChild(createdObj.row, "td");
-        var div = addChild (tdRating, "div");
+        (function() {
+            // set a ratings evaluation method. Yes, even vor the brightness estimates, we need a way to assess if they're ok or not.
+            // also set up a DOM element that can have the bg altered
+            var tdRating = addChild(createdObj.row, "td");
+            var ratingDiv = addChild (tdRating, "div");
+            ratingDiv.className = "norating";
+            createdObj.comp["updateRating"] = function ()
+            {
+                var initialComparisons = EstimationCorrector.pairedComparisons;
+                var estimatesWithMe = EstimationCorrector.Estimate(0);
+                
+                var myPos = initialComparisons.indexOf(this);
+                var compsWOMe = initialComparisons.slice(0, myPos).concat (initialComparisons.slice (myPos+1, initialComparisons.length));
+                EstimationCorrector.pairedComparisons = compsWOMe;
+                var estimatesWOMe = EstimationCorrector.Estimate(0);
+                // restore the data
+                EstimationCorrector.pairedComparisons = initialComparisons;
+                
+                var statsWOMe = Computations.AverageAndStdDev (estimatesWOMe);
+                var statsWithMe = Computations.AverageAndStdDev (estimatesWithMe);
+                
+                var ratingLabels = [ "sad", "meh", "happy"];
+                var rating = Computations.CompareStats (statsWOMe, statsWithMe, {"avgStdDevRatio" : 0.5, "stdDevAbsError" : 0.1, "stdDevMaxAbsError" : 0.2} );                    
+                ratingDiv.className = ratingLabels[rating];
+            }
+        })();
     },
     
     update : function () {
@@ -97,6 +119,7 @@ var EstimationCorrector = {
         for (i = 0; i < EstimationCorrector.pairedComparisons.length; i++) {
             var pairedComparison = EstimationCorrector.pairedComparisons[i];
             pairedComparison.updateUI();
+            pairedComparison.updateRating();
         }
     
     }
@@ -378,28 +401,8 @@ var CorrectorUIManager = {
                     var statsWOMe = Computations.AverageAndStdDev (kvalsWOMe);
                     
                     var ratingLabels = [ "sad", "meh", "happy"];
-                    var rating = 2;
-                    
-                    if (statsWOMe.stdDev > 0)
-                    {
-                        if ( Math.abs(statsWOMe.avg - statsWithMe.avg) < 0.5 * statsWOMe.stdDev )
-                            rating = 2;
-                        else if ( Math.abs(statsWOMe.avg - statsWithMe.avg) < statsWOMe.stdDev )
-                            rating = 1;
-                        else
-                            rating = 0;
-                    }
-                    else
-                    {
-                        if (statsWithMe.stdDev < 0.05)
-                            rating = 2;
-                        else if (statsWithMe.stdDev < 0.1)
-                            rating = 1;
-                        else
-                            rating = 0;
-                    }
-                    
-                    ratingDiv.className = ratingLabels [Math.min( Math.max(0, rating) , 2)];
+                    var rating = Computations.CompareStats (statsWOMe, statsWithMe, {"avgStdDevRatio" : 0.5, "stdDevAbsError" : 0.05, "stdDevMaxAbsError" : 0.1} );                    
+                    ratingDiv.className = ratingLabels [rating];
                 }
             })();
     }, 
@@ -431,8 +434,6 @@ var CorrectorUIManager = {
         } catch (err) {
         }
         
-        EstimationCorrector.update();
-        
         try {
             CorrectorUIManager.onUserInput();
         } catch (err) {
@@ -441,6 +442,9 @@ var CorrectorUIManager = {
     
     onUserInput : function () {
         try {
+        
+            EstimationCorrector.update();
+
             // this is the main callback ...
             // compute estimate with K = 0
             var K = 0;
@@ -525,7 +529,6 @@ var CorrectorUIManager = {
             
         } catch (err) {
         }
-
         ExtinctionCoefficient.updateUI();
     }
 };
