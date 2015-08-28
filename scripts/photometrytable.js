@@ -208,8 +208,8 @@ var PhotmetryTable = {
                 var starJSON = starsData.photometry[i];
                 stars.push (
                     { 
-                        "ra" : PhotmetryTable.AAVSO.raToDecimalRa(starJSON.ra) ,
-                        "dec" : PhotmetryTable.AAVSO.decToDecimalDec(starJSON.dec) ,
+                        "ra" : isNaN(starJSON.ra) ? PhotmetryTable.AAVSO.raToDecimalRa(starJSON.ra) : starJSON.ra,
+                        "dec" : isNaN(starJSON.dec) ? PhotmetryTable.AAVSO.decToDecimalDec(starJSON.dec) : starJSON.dec,
                         "mag" : starJSON.bands[0].mag,
                         "label" : starJSON.label
                     }
