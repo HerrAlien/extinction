@@ -27,6 +27,11 @@ var PhotmetryTable = {
         "label" : "V",
         "airmass" : 1
     },
+    
+    frame: {
+      "fov" : 400,
+      "maglimit" : 9
+    },
 	
 	comparisonStars : [],
 
@@ -145,16 +150,18 @@ var PhotmetryTable = {
                 if (errors != null) {
                     var i = 0, errorsStr = "";
                     for (i = 0; i < errors.length - 1; i++)
-                        errorsStr = errorsStr + errors[i] + "<br>";
+                        errorsStr = errorsStr + errors[i] + "\n";
                     errorsStr = errorsStr + errors[i];
                     Log.message (errorsStr);
                     return;
                 }                
 
                 var structuredData  = PhotmetryTable.AAVSO.GetData (starsData);
-				PhotmetryTable.comparisonStars = structuredData.stars;                
+				        PhotmetryTable.comparisonStars = structuredData.stars;                
                 PhotmetryTable.variableStar.ra = structuredData.centerCoords[0];
                 PhotmetryTable.variableStar.dec = structuredData.centerCoords[1];                
+                PhotmetryTable.frame.fov = structuredData.fov;
+                PhotmetryTable.frame.maglimit = structuredData.maglimit;
                 PhotmetryTable.onInit();
 			}
 	}

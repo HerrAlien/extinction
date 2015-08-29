@@ -19,7 +19,7 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl.html
 */
 
 var Log = {
-	domElem : document.getElementById("debug"),
+	domElem : document.getElementById("debug").getElementsByTagName("pre")[0],
 	message : function (text) {
 		Log.domElem.textContent = text;
 	}
@@ -27,12 +27,13 @@ var Log = {
 
 PhotmetryTable.onInit = function () {
 	setTimeout (function() {
-        var root = PhotmetryTable.searchTree.root;     
+        var coords = [PhotmetryTable.variableStar.ra, PhotmetryTable.variableStar.dec];
+        var frame = PhotmetryTable.frame;   
         EstimationCorrector.init();
         Log.message ("Loading stars from Tycho catalogue ...");
         setTimeout (function() {
-                Hipparcos.init(root.coords[0], root.coords[1], root.fov, root.mag );
-                SVGChart.init (root.coords[0], root.coords[1], root.fov, root.mag);
+                Hipparcos.init(coords[0], coords[1], frame.fov, frame.maglimit);
+                SVGChart.init (coords[0], coords[1], frame.fov, frame.maglimit);
                 SVGChart.drawBorder ();
             }, 100);
         }, 100);
