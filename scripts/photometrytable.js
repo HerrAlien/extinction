@@ -182,20 +182,17 @@ var PhotmetryTable = {
             url_prefix : "https://www.aavso.org/apps/vsp/api/chart/",
             method: "GET",
             url_suffix : "/?format=json&proxyfor=aavso-vsp-chart-id"
-        },
-               
-        raToDecimalRa : function (sexadecimal) {
-            // split into hours, minutes, seconds
-            var comps = sexadecimal.split(":");
-            return 15.0*comps[0] + comps[1]/4.0 + comps[2]/900.0;
-        },
+        },        
         
-        decToDecimalDec : function (sexadecimal) {
-            // split into hours, minutes, seconds
-            var comps = sexadecimal.split(":");
+        parseCoordinate : function (coord) {
+            if (!isNaN(coord))
+                return coord;
+            
+            var comps = coord.split(":");
             var sign = 1.0;
             if (comps[0] * 1.0 < 0)
                 sign = -1.0;
+
             return comps[0]*1.0 + sign*comps[1]/60.0 + sign*comps[2]/3600.0;
         },
 
@@ -206,10 +203,10 @@ var PhotmetryTable = {
             var i = 0;
             for (i = 0; i < starsData.photometry.length; i++) {
                 var starJSON = starsData.photometry[i];
-                stars.push (
+                stars.push ( 
                     { 
-                        "ra" : isNaN(starJSON.ra) ? PhotmetryTable.AAVSO.raToDecimalRa(starJSON.ra) : starJSON.ra,
-                        "dec" : isNaN(starJSON.dec) ? PhotmetryTable.AAVSO.decToDecimalDec(starJSON.dec) : starJSON.dec,
+                        "ra" : PhotmetryTable.AAVSO.parseCoordinate(starJSON.ra) * 15,
+                        "dec" : PhotmetryTable.AAVSO.parseCoordinate(starJSON.dec),
                         "mag" : starJSON.bands[0].mag,
                         "label" : starJSON.label
                     }
@@ -217,7 +214,8 @@ var PhotmetryTable = {
             }
             
             return {
-                "centerCoords" : [starsData.ra, starsData.dec], // and it also has the center coordinates
+                "centerCoords" : [PhotmetryTable.AAVSO.parseCoordinate(starsData.ra) * 15, 
+                                  PhotmetryTable.AAVSO.parseCoordinate(starsData.dec)], // and it also has the center coordinates
                 "fov" : starsData.fov,
                 "stars" : stars,
                 "maglimit" : starsData.maglimit
