@@ -48,6 +48,11 @@ var Hipparcos = {
         xmlHttpReq.onreadystatechange = function() {
             if(xmlHttpReq.readyState == 4) {
                 var doc =  xmlHttpReq.responseText;
+                if (doc == ""){
+                    // bad connection?
+                    Log.message ("Could not retrieve the position of stars; check your internet connection.");
+                    return;
+                }
                 Hipparcos.ParseStarsFromText (doc);
                 Hipparcos.onInit();
             }

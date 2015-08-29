@@ -196,10 +196,8 @@ var PhotmetryTable = {
             return comps[0]*1.0 + sign*comps[1]/60.0 + sign*comps[2]/3600.0;
         },
 
-        GetData : function (text) {
+        GetData : function (starsData) {
             var stars = [];
-            // this is now JSON!
-            var starsData = JSON.parse (text);
             var i = 0;
             for (i = 0; i < starsData.photometry.length; i++) {
                 var starJSON = starsData.photometry[i];
@@ -272,14 +270,30 @@ var PhotmetryTable = {
 	onDataRetrieved : function (xmlHttpReq) {
             if(xmlHttpReq.readyState == 4) {
                 var doc =  xmlHttpReq.responseText;
-                var structuredData  = PhotmetryTable.AAVSO.GetData (doc);
-				PhotmetryTable.comparisonStars = structuredData.stars;
-                
-                PhotmetryTable.searchTree.init (structuredData);
-                
+                if (doc == ""){
+                    // bad connection?
+                    Log.message ("Could not retrieve the photometry table; check your internet connection.");
+                    return;
+                }
+                 
+                // this is now JSON!
+                var starsData = JSON.parse (doc);
+                // check for errors reported by aavso
+                var errors = starsData["errors"];
+                if (errors != null) {
+                    var i = 0, errorsStr = "";
+                    for (i = 0; i < errors.length - 1; i++)
+                        errorsStr = errorsStr + errors[i] + "<br>";
+                    errorsStr = errorsStr + errors[i];
+                    Log.message (errorsStr);
+                    return;
+                }                
+
+                var structuredData  = PhotmetryTable.AAVSO.GetData (starsData);
+				PhotmetryTable.comparisonStars = structuredData.stars;                
+                PhotmetryTable.searchTree.init (structuredData);             
                 PhotmetryTable.variableStar.ra = structuredData.centerCoords[0];
-                PhotmetryTable.variableStar.dec = structuredData.centerCoords[1];
-                
+                PhotmetryTable.variableStar.dec = structuredData.centerCoords[1];                
                 PhotmetryTable.onInit();
 			}
 	}

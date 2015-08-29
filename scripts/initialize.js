@@ -46,24 +46,29 @@ document.getElementById("chartOrientation").onchange = function () {
 	SVGChart.redrawLabels();	
 }
 
+var magInput = document.getElementById("mag");
+var fovInput = document.getElementById("fov");
+
 InputValidator.AddNumberRangeValidator (document.getElementById("lat"), -90, 90);
 InputValidator.AddNumberRangeValidator (document.getElementById("long"), 0, 360);
 InputValidator.AddNumberMinimumValidator (document.getElementById("K"), 0);
-InputValidator.AddNumberRangeValidator (document.getElementById("mag"), 0, 20);
-InputValidator.AddNumberRangeValidator (document.getElementById("fov"), 0, 1200);
+InputValidator.AddNumberRangeValidator (magInput, 0, 20);
+InputValidator.AddNumberRangeValidator (fovInput, 0, 1200);
 
 document.getElementById("dateTime").oninput = CorrectorUIManager.onLocationOrTimeChanged;
 document.getElementById("lat").oninput = function () { InputValidator.validate (this); CorrectorUIManager.onLocationOrTimeChanged(); }
 document.getElementById("long").oninput = function () { InputValidator.validate (this); CorrectorUIManager.onLocationOrTimeChanged(); }
 document.getElementById("K").oninput = function () { InputValidator.validate (this); CorrectorUIManager.onLocationOrTimeChanged(); }
 
-var magInput = document.getElementById("mag");
-var fovInput = document.getElementById("fov");
+var starNameInput = document.getElementById("variableStarName");
+
+InputValidator.AddStringRequiredValidator (starNameInput, "Value required");
 
 magInput.oninput = function () { InputValidator.validate (this); }
 fovInput.oninput = function () { InputValidator.validate (this); }
 
-document.getElementById("variableStarName").oninput = function () {
+starNameInput.oninput = function () {
+    InputValidator.validate (this);
     var starName = this.value;
     if (PhotmetryTable.AAVSO.IsChartID(starName))
     {
@@ -96,10 +101,25 @@ Hipparcos.onInit = function () {
 }
 
 document.getElementById("updateChart").onclick = function () {
+    
+    if (!InputValidator.validate (starNameInput))
+        return;
+    
+	var fov = fovInput.value;
+	var limittingMag = magInput.value;
+	var starName = starNameInput.value;
+    if (!PhotmetryTable.AAVSO.IsChartID(starName))
+    {
+        var c = {};
+		c.elemToMoveTo = magInput;
+        if (!InputValidator.validate_internal (c, function() { if ("" == limittingMag) return "Value required"; return ""; } ))
+            return;
+		c.elemToMoveTo = fovInput;
+        if (!InputValidator.validate_internal (c, function() { if ("" == fov) return "Value required"; return ""; } ))
+            return;
+    }
+    
 	Log.message ("Loading photometry table ...");
-	var starName = document.getElementById("variableStarName").value;
-	var fov = document.getElementById("fov").value;
-	var limittingMag = document.getElementById("mag").value;
 	setTimeout (
         function(){
             if (PhotmetryTable.AAVSO.IsChartID(starName))

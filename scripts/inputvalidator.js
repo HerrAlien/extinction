@@ -28,6 +28,7 @@ var InputValidator = {
 	
 	validate : function (inp, cfg) {
 		var i = 0;
+        var valid = true;
 		for (i = 0; i < InputValidator.inputsWithValidators.length; i++){
 			var currentEntry = InputValidator.inputsWithValidators[i];
 			if (currentEntry.input == inp && currentEntry.func) {
@@ -35,46 +36,52 @@ var InputValidator = {
 				if (cfg)
 					c = cfg;
 				c.elemToMoveTo = inp;
-				InputValidator.validate_internal (c, currentEntry.func);
+                var isValid = InputValidator.validate_internal (c, currentEntry.func);
+                if (valid)
+                    valid = isValid;
 			}
 		}
+        return valid;
 	},
 	
 	validate_internal : function (c, getMsgFunc) {
-			var appendMessage = false;
-			var hideError = false;
-			var elemToMoveTo = null;
-			var prependMsg = ""
-			var lbl = InputValidator.getErrorLabel();
-			lbl.style["display"] = "none";
+		var appendMessage = false;
+		var hideError = false;
+		var elemToMoveTo = null;
+		var prependMsg = ""
+		var lbl = InputValidator.getErrorLabel();
+		lbl.style["display"] = "none";
 
-			if (c) {
-				appendMessage = c.appendMessage;
-				hideError = c.hideError;
-				elemToMoveTo = c.elemToMoveTo;
-				if (c.prependMsg)
-					prependMsg = c.prependMsg;
-			}
+		if (c) {
+			appendMessage = c.appendMessage;
+			hideError = c.hideError;
+			elemToMoveTo = c.elemToMoveTo;
+			if (c.prependMsg)
+				prependMsg = c.prependMsg;
+		}
 			
-			var msg = getMsgFunc();
-			if (msg != "") {
-				msg = prependMsg + msg;
-				if (appendMessage)
-					lbl.innerHTML = lbl.innerHTML + "<br>" + msg;
-				else
-					lbl.innerHTML = msg;
+		var msg = getMsgFunc();
+        var valid = (msg == "");
+		if (!valid) {
+			msg = prependMsg + msg;
+			if (appendMessage)
+				lbl.innerHTML = lbl.innerHTML + "<br>" + msg;
+			else
+				lbl.innerHTML = msg;
+			
+			if (hideError)
+				lbl.style["display"] = "none";
+			else
+				lbl.style["display"] = "block";
 				
-				if (hideError)
-					lbl.style["display"] = "none";
-				else
-					lbl.style["display"] = "block";
-				
-				if (elemToMoveTo) {
-					var coords = InputValidator.ComputeLabelPos(elemToMoveTo);
-					lbl.style["left"] = coords[0] + "px";
-					lbl.style["top"] = coords[1] + "px";
-				}
+			if (elemToMoveTo) {
+				var coords = InputValidator.ComputeLabelPos(elemToMoveTo);
+				lbl.style["left"] = coords[0] + "px";
+				lbl.style["top"] = coords[1] + "px";
 			}
+		}
+            
+        return valid;
 	},
 	
 	getErrorLabel : function () {
