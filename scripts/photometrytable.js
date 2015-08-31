@@ -145,16 +145,25 @@ var PhotmetryTable = {
                  
                 // this is now JSON!
                 var starsData = JSON.parse (doc);
-                // check for errors reported by aavso
-                var errors = starsData["errors"];
-                if (errors != null) {
-                    var i = 0, errorsStr = "";
-                    for (i = 0; i < errors.length - 1; i++)
-                        errorsStr = errorsStr + errors[i] + "\n";
-                    errorsStr = errorsStr + errors[i];
+                var hasPhotometry = (starsData.photometry != null) && (starsData.photometry.length > 0);
+    
+                if (!hasPhotometry){
+                    // check for errors reported by aavso
+                    var errorsStr = "Could not retrieve the photometry data:";
+                    var errors = starsData["errors"];
+                    if (errors != null) {
+                        var i = 0;
+                        for (i = 0; i < errors.length; i++)
+                            errorsStr = errorsStr + "\n" + errors[i];
+                    }
+
+                    var detail = starsData["detail"];
+                    if (detail != null)
+                        errorsStr = errorsStr + "\n" + detail
+
                     Log.message (errorsStr);
                     return;
-                }                
+                }            
 
                 var structuredData  = PhotmetryTable.AAVSO.GetData (starsData);
 				        PhotmetryTable.comparisonStars = structuredData.stars;                
