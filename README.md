@@ -1,6 +1,6 @@
 # Extinction-O-Meter #
 * The repo is for an utility that can apply corrections for differential extinction on visual brightness estimates of variable stars. It can even determine the extinction coefficient, using the procedure described [here](https://docs.google.com/document/d/18RcrzoP0-Xy8_-xsWbnwWAj2m1lAL5WrHUm5S-Neu7Y/edit?usp=sharing)
-* Version: 1.0.3.11
+* Version: 1.0.3.13
 * [check out the tutorial](https://bitbucket.org/herr_alien/extinction-o-meter/wiki/Tutorial)
 * [check out the Wiki](https://bitbucket.org/herr_alien/extinction-o-meter/wiki/Home)
 
@@ -16,7 +16,7 @@
 [![firefox-marketplace_badge-orange_172_60.png](https://bitbucket.org/repo/EqEnzq/images/3161810626-firefox-marketplace_badge-orange_172_60.png)](https://marketplace.firefox.com/app/extinction-o-meter/)
 [![Opera_logo_RGB_flat_60px.png](https://bitbucket.org/repo/EqEnzq/images/2101883723-Opera_logo_RGB_flat_60px.png)](https://addons.opera.com/en/extensions/details/extinction-o-meter/)
 
-* In the unfortunate event that you're stuck with a **mobile browser (be it on Android, or on iOS) or with Safari on a Mac** ... then the only thing I have for you is the [online version](http://extinction-o-meter.appspot.com/); it works, but is a tad slower in fetching maps.
+* If you prefer a **mobile browser (be it on Android, or on iOS) or Safari on a Mac** ... then please use the [online version](http://extinction-o-meter.appspot.com/); it works, but is a tad slower in fetching maps.
 
 ### Who do I talk to? ###
 
