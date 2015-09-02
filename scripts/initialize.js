@@ -98,7 +98,7 @@ Hipparcos.onInit = function () {
     SVGChart.updateStars (Hipparcos.chart.stars);   	
 	SVGChart.drawCenterMark();
 	SVGChart.updateComparisonLabels (PhotmetryTable.comparisonStars);
-	setTimeout(function() { Log.message (" ");}, 1000);
+	setTimeout(function() { Log.message (PhotmetryTable.variableStar.name + ", lim. mag.=" + PhotmetryTable.frame.maglimit + ", FOV[']=" + PhotmetryTable.frame.fov + "; chart id=" + PhotmetryTable.frame.chartID);}, 1000);
 }
 
 document.getElementById("updateChart").onclick = function () {

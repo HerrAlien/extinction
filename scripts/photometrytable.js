@@ -25,12 +25,14 @@ var PhotmetryTable = {
         "dec" : 0, 
         "mag" : "unknown", 
         "label" : "V",
-        "airmass" : 1
+        "airmass" : 1,
+        "name" : "unknown"
     },
     
     frame: {
       "fov" : 400,
-      "maglimit" : 9
+      "maglimit" : 9,
+      "chartID" : "unknown"
     },
 	
 	comparisonStars : [],
@@ -64,11 +66,11 @@ var PhotmetryTable = {
         },
 
         GetData : function (starsData) {
-            var stars = [];
+            PhotmetryTable.comparisonStars = [];
             var i = 0;
             for (i = 0; i < starsData.photometry.length; i++) {
                 var starJSON = starsData.photometry[i];
-                stars.push ( 
+                PhotmetryTable.comparisonStars.push ( 
                     { 
                         "ra" : PhotmetryTable.AAVSO.parseCoordinate(starJSON.ra) * 15,
                         "dec" : PhotmetryTable.AAVSO.parseCoordinate(starJSON.dec),
@@ -78,13 +80,12 @@ var PhotmetryTable = {
                 );
             }
             
-            return {
-                "centerCoords" : [PhotmetryTable.AAVSO.parseCoordinate(starsData.ra) * 15, 
-                                  PhotmetryTable.AAVSO.parseCoordinate(starsData.dec)], // and it also has the center coordinates
-                "fov" : starsData.fov,
-                "stars" : stars,
-                "maglimit" : starsData.maglimit
-            };
+            PhotmetryTable.variableStar.ra = PhotmetryTable.AAVSO.parseCoordinate(starsData.ra) * 15;
+            PhotmetryTable.variableStar.dec = PhotmetryTable.AAVSO.parseCoordinate(starsData.dec);                
+            PhotmetryTable.variableStar.name = starsData.star;                
+            PhotmetryTable.frame.fov = starsData.fov;
+            PhotmetryTable.frame.maglimit = starsData.maglimit;
+            PhotmetryTable.frame.chartID = starsData.chartid;
         },
         
         IsChartID : function (text) {
@@ -165,12 +166,7 @@ var PhotmetryTable = {
                     return;
                 }            
 
-                var structuredData  = PhotmetryTable.AAVSO.GetData (starsData);
-				        PhotmetryTable.comparisonStars = structuredData.stars;                
-                PhotmetryTable.variableStar.ra = structuredData.centerCoords[0];
-                PhotmetryTable.variableStar.dec = structuredData.centerCoords[1];                
-                PhotmetryTable.frame.fov = structuredData.fov;
-                PhotmetryTable.frame.maglimit = structuredData.maglimit;
+                PhotmetryTable.AAVSO.GetData (starsData);
                 PhotmetryTable.onInit();
 			}
 	}
