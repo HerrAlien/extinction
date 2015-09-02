@@ -443,7 +443,10 @@ var CorrectorUIManager = {
     onUserInput : function () {
         try {
         
-            EstimationCorrector.update();
+            try {
+                EstimationCorrector.update();
+            } catch (err) {
+            }
 
             // this is the main callback ...
             // compute estimate with K = 0

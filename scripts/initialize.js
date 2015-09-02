@@ -35,6 +35,7 @@ PhotmetryTable.onInit = function () {
                 Hipparcos.init(coords[0], coords[1], frame.fov, frame.maglimit);
                 SVGChart.init (coords[0], coords[1], frame.fov, frame.maglimit);
                 SVGChart.drawBorder ();
+                CorrectorUIManager.onLocationOrTimeChanged();
             }, 100);
         }, 100);
 }
