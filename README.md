@@ -8,7 +8,7 @@
 
 * Make sure you're connected to the Internet
 * You'll need one of the following browsers: Google Chrome (when going for the chrome app), Internet Explorer 9 (when using the .HTA version), Mozilla Firefox (when installed via Mozilla Marketplace) or Opera 30.0 (when installed as an extension from the Opera ); mobile browsers and Macs will have to use the online app (see last point in this list).
-* **For Internet Explorer** fans, download and unpack [the zip file](https://bitbucket.org/herr_alien/extinction-o-meter/downloads/extinction-o-meter-HTA.zip) to your HDD, and double-click the index.hta file to use the application
+* **For Internet Explorer** fans, download and unpack [the zip file](https://bitbucket.org/herr_alien/extinction-o-meter/downloads/extinction-o-meter-HTA.zip) to your HDD, and double-click the extinction-o-meter.hta file to use the application
 * **For Chrome, Firefox and Opera** fans, just click the image below for the corresponding app store.
 
 [![ZipFile_small.png](https://bitbucket.org/repo/EqEnzq/images/1060774317-ZipFile_small.png)](https://bitbucket.org/herr_alien/extinction-o-meter/downloads/extinction-o-meter-HTA.zip)
