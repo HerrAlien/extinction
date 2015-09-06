@@ -19,9 +19,6 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see https://www.gnu.org/licenses/agpl.html
 */
 
-use google\appengine\api\users\User;
-use google\appengine\api\users\UserService;
-
 // display below only if the user agent indicates a mobile device
 $isMobileOrMac = false;
 $userAgent = $_SERVER['HTTP_USER_AGENT'];
@@ -39,11 +36,6 @@ $isMobileOrMac = stripos ($userAgent, 'kindle') ||
 if ($isMobileOrMac)
 {
     # Looks for current Google account session
-    $user = UserService::getCurrentUser();
-    if (!$user) {
-      header('Location: ' . UserService::createLoginURL($_SERVER['REQUEST_URI']));
-    }
-    else 
     {
         // if we have a query string param specifying a proxy, then do the proxy.
         if (isset($_REQUEST['proxyfor']))
@@ -84,9 +76,6 @@ if ($isMobileOrMac)
             var container = document.getElementById("topmenu");        
             if (!container)
                 return;
-        
-            container.innerHTML = container.innerHTML + 
-                                 ' | Logged in as <?php echo $user->getNickname() ?> | <a href="https://www.google.com/accounts/ManageAccount" target="_blank">My Account</a> | <a href="<?php echo UserService::createLogoutURL("http://extinction-o-meter.appspot.com") ?>">Sign out</a>';
         
             var protocol = document.location.protocol;
             var host = "<?php echo $_SERVER['SERVER_NAME']; ?>";
