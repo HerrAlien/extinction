@@ -19,8 +19,12 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see https://www.gnu.org/licenses/agpl.html
 */
 
+use google\appengine\api\users\User;
+use google\appengine\api\users\UserService;
+
 // display below only if the user agent indicates a mobile device
 $isMobileOrMac = false;
+$requireGoogleAccount = false;
 $userAgent = $_SERVER['HTTP_USER_AGENT'];
 $isMobileOrMac = stripos ($userAgent, 'kindle') ||
             stripos ($userAgent, 'android') ||
@@ -36,6 +40,14 @@ $isMobileOrMac = stripos ($userAgent, 'kindle') ||
 if ($isMobileOrMac)
 {
     # Looks for current Google account session
+    $user = false;
+    if ($requireGoogleAccount)
+        $user = UserService::getCurrentUser();
+        
+    if ($requireGoogleAccount && !$user) {
+      header('Location: ' . UserService::createLoginURL($_SERVER['REQUEST_URI']));
+    }
+    else 
     {
         // if we have a query string param specifying a proxy, then do the proxy.
         if (isset($_REQUEST['proxyfor']))
@@ -76,7 +88,17 @@ if ($isMobileOrMac)
             var container = document.getElementById("topmenu");        
             if (!container)
                 return;
-        
+            <?php
+            if ($requireGoogleAccount)
+            {
+            ?>
+                container.innerHTML = container.innerHTML + 
+                                     ' | Logged in as <?php echo $user->getNickname() ?>' +
+                                     ' | <a href="https://www.google.com/accounts/ManageAccount" target="_blank">My Account</a>' + 
+                                     ' | <a href="<?php echo UserService::createLogoutURL("http://extinction-o-meter.appspot.com") ?>">Sign out</a>';        
+            <?php
+            }
+            ?>
             var protocol = document.location.protocol;
             var host = "<?php echo $_SERVER['SERVER_NAME']; ?>";
             var port = "<?php if (isset($_SERVER['SERVER_PORT'])) echo $_SERVER['SERVER_PORT']; ?>";
