@@ -158,13 +158,13 @@ var SVGChart = {
         var dra_rad = (ra - SVGChart.ra) * Math.PI / 180;
         var ddec_rad = (dec - SVGChart.dec) * Math.PI / 180;
         
-        var signX = 1;
-        if (SVGChart.chartOrientation != 0)
-            signX = -1;
+        var signX = 1; // west to the right
+        if (SVGChart.chartOrientation == 1 || SVGChart.chartOrientation == 2)
+            signX = -1; // east to the right
         
-        var signY = 1;
-        if (SVGChart.chartOrientation == 1)
-            signY = -1;
+        var signY = 1; // north up
+        if (SVGChart.chartOrientation == 1 || SVGChart.chartOrientation == 3)
+            signY = -1; // south up
 
         return [SVGChart.size / 2 - signX * SVGChart.focalLength * Math.tan (dra_rad), 
                 SVGChart.size / 2 - signY * SVGChart.focalLength * Math.tan (ddec_rad)];
@@ -234,27 +234,27 @@ var SVGChart = {
 		// now, draw NEWS ...
 		var textSize = 10;
 		var x = half;
-		var y = 0;
-		if (SVGChart.chartOrientation == 1)
-			y = SVGChart.size - textSize;
-        SVGChart.drawCoordinateMarker ("N", x, y, textSize);
+		var y = 0; // north up
+		if (SVGChart.chartOrientation == 1 || SVGChart.chartOrientation == 3)
+			y = SVGChart.size - textSize; // south up
+    SVGChart.drawCoordinateMarker ("N", x, y, textSize);
 		
 		y = half;
-		x = 0;
-		if (SVGChart.chartOrientation != 0)
-			x = SVGChart.size - textSize;
-        SVGChart.drawCoordinateMarker ("E", x, y, textSize);
+		x = 0; // west to the right
+		if (SVGChart.chartOrientation == 1 || SVGChart.chartOrientation == 2)
+			x = SVGChart.size - textSize; // east to the right
+    SVGChart.drawCoordinateMarker ("E", x, y, textSize);
 
-		x = SVGChart.size - textSize;
-		if (SVGChart.chartOrientation != 0)
-			x = 0;
-        SVGChart.drawCoordinateMarker ("W", x, y, textSize);
+		x = SVGChart.size - textSize; //west to the right
+		if (SVGChart.chartOrientation == 1 || SVGChart.chartOrientation == 2)
+			x = 0; // east to the right
+    SVGChart.drawCoordinateMarker ("W", x, y, textSize);
 
 		x = half;
-		y = SVGChart.size - textSize;
-		if (SVGChart.chartOrientation == 1)
-			y = 0;
-        SVGChart.drawCoordinateMarker ("S", x, y, textSize);
+		y = SVGChart.size - textSize; // north up
+		if (SVGChart.chartOrientation == 1 || SVGChart.chartOrientation == 3)
+			y = 0; // south up
+    SVGChart.drawCoordinateMarker ("S", x, y, textSize);
 	},
 	
 	drawCoordinateMarker : function (textToPlace, posx, posy, size) {
