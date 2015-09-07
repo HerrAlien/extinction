@@ -87,7 +87,7 @@ var SVGChart = {
         // compute the coordinates, in pixels
         var coords = SVGChart.radec2xy (_star.ra, _star.dec);
         // compute the radius
-        var radius = 1 * Math.pow (1.35, SVGChart.limittingMag - _star.mag);
+        var radius = 1.1 * Math.pow (1.35, SVGChart.limittingMag - _star.mag);
         // create a circle element, and that position, using that radius, filled black.
         var circleElem = _elementToDrawTo.ownerDocument.createElementNS (SVGChart.namespace, "circle");
         _elementToDrawTo.appendChild (circleElem);
