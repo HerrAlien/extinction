@@ -130,3 +130,10 @@ document.getElementById("updateChart").onclick = function () {
                 PhotmetryTable.initFromStarName (starName, fov, limittingMag);
         }, 100);
 }
+
+document.body.onclick = function (){
+    if (StarsSelection.selectionJustActivated) 
+        StarsSelection.selectionJustActivated = false;
+    else
+        StarsSelection.setSelectedStar (null);
+}

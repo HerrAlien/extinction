@@ -22,9 +22,7 @@ var StarsSelection = {
     currentlyHoveredStar : null,
     imageElem : document.getElementById ("chart"),
     activeSelector : null,
-    onStarSelected : null,
-    onSelectionActivated : null,
-	
+	selectionJustActivated: false,
    
     init : function () {
     },
@@ -35,13 +33,12 @@ var StarsSelection = {
                 EstimationCorrector.updateAirmassFromInput (currentlyHoveredStar);
                 StarsSelection.activeSelector.set(currentlyHoveredStar);
                 StarsSelection.activeSelector.setClassName("selectorItem");
+                if (!currentlyHoveredStar)
+                    StarsSelection.activeSelector.setPlaceholder ("click me");
+                
                 StarsSelection.activeSelector = null;
-
                 // now redo displayed values
                 CorrectorUIManager.onUserInput();
-                                
-                if (StarsSelection.onStarSelected)
-                    StarsSelection.onStarSelected(currentlyHoveredStar);
 			}
 	},
 	
@@ -94,21 +91,16 @@ var StarsSelection = {
                     
                     var sel = this;
                     this.addEventHandler ("onclick", function () {
+                        StarsSelection.selectionJustActivated = true;
                         if (StarsSelection.activeSelector) {
                             StarsSelection.activeSelector.setClassName("selectorItem");
                             StarsSelection.activeSelector.setPlaceholder ("click me");
 							StarsSelection.activeSelector.update();
                         }
-                            
                         sel.setClassName("selectorItemActive");
                         sel.setDisplayedString("");
                         sel.setPlaceholder ("click a star label");
-                        
                         StarsSelection.activeSelector = sel;
-						
-						
-                        if (StarsSelection.onSelectionActivated)
-                            StarsSelection.onSelectionActivated (sel);
                     });
                 }
             }();
