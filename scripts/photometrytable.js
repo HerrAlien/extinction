@@ -69,12 +69,23 @@ var PhotmetryTable = {
             PhotmetryTable.comparisonStars = [];
             var i = 0;
             for (i = 0; i < starsData.photometry.length; i++) {
+                
                 var starJSON = starsData.photometry[i];
+                var mag = 0;
+                var bandIndex = 0;
+                
+                for (; bandIndex < starJSON.bands.length; bandIndex++){
+                    if (starJSON.bands[bandIndex].band == "V") {
+                        mag = starJSON.bands[bandIndex].mag;
+                        break;
+                    }
+                }
+                
                 PhotmetryTable.comparisonStars.push ( 
                     { 
                         "ra" : PhotmetryTable.AAVSO.parseCoordinate(starJSON.ra) * 15,
                         "dec" : PhotmetryTable.AAVSO.parseCoordinate(starJSON.dec),
-                        "mag" : starJSON.bands[0].mag,
+                        "mag" : mag,
                         "label" : starJSON.label
                     }
                 );
