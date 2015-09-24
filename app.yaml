@@ -18,5 +18,9 @@ handlers:
 - url: /resources
   static_dir: resources
 
+- url: /manifest.json
+  static_files: manifest.json
+  upload: manifest.json
+
 - url: /.*
   script: index.php

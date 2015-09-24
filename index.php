@@ -105,12 +105,31 @@ if ($isMobileOrMac)
             var URI = protocol + "//" + host;
             if (port != "")
                 URI = URI + ":" + port;
-            URI = URI + "/index.php";
+            var proxyURL = URI + "/index.php";
             // have the PHP re-do the URLs to point to us
-            Hipparcos.config.url = URI;
-            PhotmetryTable.AAVSO.configFromStarName.url = URI + "?format=json";
-            PhotmetryTable.AAVSO.configFromChartID.url_prefix = URI + "?format=json&proxyfor=aavso-vsp-chart-id&chartID=";
+            Hipparcos.config.url = proxyURL;
+            PhotmetryTable.AAVSO.configFromStarName.url = proxyURL + "?format=json";
+            PhotmetryTable.AAVSO.configFromChartID.url_prefix = proxyURL + "?format=json&proxyfor=aavso-vsp-chart-id&chartID=";
             PhotmetryTable.AAVSO.configFromChartID.url_suffix = "";
+            
+            // display the version 
+            AppVersion.updateVersionString = function () {
+                var xmlhttp = new XMLHttpRequest();
+                xmlhttp.onreadystatechange = function() {
+                    if (4 != this.readyState)
+                        return;
+        			
+        			var doc =  this.responseText;
+                    // this is now JSON!
+                    var manifest = JSON.parse (doc);
+                    AppVersion.version = manifest.version;
+                    AppVersion.onVersionUpdated();
+        		}
+        		xmlhttp.open("GET", URI + "/manifest.json", true);
+                xmlhttp.send(null);
+            }
+            
+            AppVersion.updateVersionString();
         })();
     </script><?php        
         }

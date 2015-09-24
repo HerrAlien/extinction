@@ -25,6 +25,25 @@ var Log = {
 	}
 };
 
+var AppVersion = {
+    spanElem : document.getElementById("version"),
+    version : "N/A",
+    
+    updateVersionString : function () {
+        var manifest = null; 
+        if (chrome && chrome.runtime && chrome.runtime.getManifest) 
+            manifest = chrome.runtime.getManifest();
+        if (manifest)
+            AppVersion.version = manifest.version;
+            
+        AppVersion.onVersionUpdated();
+    },
+    
+    onVersionUpdated : function () {
+        AppVersion.spanElem.textContent = AppVersion.version;    
+    }
+};
+
 PhotmetryTable.onInit = function () {
 	setTimeout (function() {
         var coords = [PhotmetryTable.variableStar.ra, PhotmetryTable.variableStar.dec];
@@ -137,3 +156,5 @@ document.body.onclick = function (){
     else
         StarsSelection.setSelectedStar (null);
 }
+
+AppVersion.updateVersionString();
