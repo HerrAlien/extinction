@@ -20,7 +20,6 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl.html
 
 var ChartController = {
     ui : {
-        chartIDElem : document.getElementById("tableID"),
         variableStarElem : document.getElementById("variableStarName"),
         limittingMagnitudeElem : document.getElementById("mag"),
         fovElem : document.getElementById("fov"),
@@ -30,22 +29,71 @@ var ChartController = {
     
     init : function () {
         var ui = ChartController.ui;
+        var starNameInput = ui.variableStarElem;
+        var fovInput = ui.fovElem;
+        var magInput = ui.limittingMagnitudeElem;
 
-        ui.chartIDElem.oninput = function () {
-            ui.variableStarElem.readOnly = (ui.chartIDElem.value.length > 4);
+        InputValidator.AddNumberRangeValidator (magInput, 0, 20);
+        InputValidator.AddNumberRangeValidator (fovInput, 0, 1200);
+        InputValidator.AddStringRequiredValidator (starNameInput, "Value required");
+
+        magInput.oninput = function () { InputValidator.validate (this); }
+        fovInput.oninput = function () { InputValidator.validate (this); }
+
+        starNameInput.oninput = function () {
+            InputValidator.validate (this);
+            var starName = this.value;
+            if (PhotmetryTable.AAVSO.IsChartID(starName))
+            {
+                magInput.readOnly = true;
+                fovInput.readOnly = true;
+                magInput.placeholder = "not needed";
+                fovInput.placeholder = "not needed";
+            }
+            else
+            {
+                magInput.readOnly = false;
+                fovInput.readOnly = false;
+                magInput.placeholder = "[number]";
+                fovInput.placeholder = "[number]";
+            }
+        }
+
+        ui.updateChartButton.onclick = function () {            
+            if (!InputValidator.validate (starNameInput))
+                return;
+            
+        	  var fov = fovInput.value;
+        	  var limittingMag = magInput.value;
+        	  var starName = starNameInput.value;
+            if (!PhotmetryTable.AAVSO.IsChartID(starName)) {
+                var c = {};
+        		    c.elemToMoveTo = magInput;
+                if (!InputValidator.validate_internal (c, function() { if ("" == limittingMag) return "Value required"; return ""; } ))
+                    return;
+        		    c.elemToMoveTo = fovInput;
+                if (!InputValidator.validate_internal (c, function() { if ("" == fov) return "Value required"; return ""; } ))
+                    return;
+            }
+            
+        	  Log.message ("Loading photometry table ...");
+        	  setTimeout (
+                function(){
+                    if (PhotmetryTable.AAVSO.IsChartID(starName))
+                        PhotmetryTable.initFromChartID (starName);
+                    else
+                        PhotmetryTable.initFromStarName (starName, fov, limittingMag);
+                }, 100);
+                
+            ChartController.onUpdateChartPressed();
         }
         
-        ui.updateChartButton.onclick = function () {
-			Log.message ("Retrieving photometry table from AAVSO ...");
-            // TODO: call the photometry table methods
-            if (ui.variableStarElem.readOnly)
-                PhotmetryTable.init (ui.chartIDElem.value, ui.limittingMagnitudeElem.value);
-            else
-                PhotmetryTable.initFromStarName (ui.variableStarElem.value, ui.limittingMagnitudeElem.value);
-            
-            // call the callback
-            if (ChartController.onUpdateChartPressed)
-                ChartController.onUpdateChartPressed();
+        ui.orientationElem.onchange = function () {
+    	     SVGChart.chartOrientation = this.value;
+    	     SVGChart.drawBorder ();
+    	     SVGChart.redrawStars();
+    	     SVGChart.drawCenterMark();
+    	     SVGChart.redrawLabels();	
         }
     },
     
