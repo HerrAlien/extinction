@@ -23,10 +23,11 @@ use google\appengine\api\users\User;
 use google\appengine\api\users\UserService;
 
 // display below only if the user agent indicates a mobile device
-$isMobileOrMac = false;
+$allowAccess = false;
 $requireGoogleAccount = false;
 $userAgent = $_SERVER['HTTP_USER_AGENT'];
-$isMobileOrMac = stripos ($userAgent, 'kindle') ||
+
+$allowAccess = stripos ($userAgent, 'kindle') ||
             stripos ($userAgent, 'android') ||
             stripos ($userAgent, 'BlackBerry') ||
             stripos ($userAgent, 'windows phone') ||
@@ -37,7 +38,35 @@ $isMobileOrMac = stripos ($userAgent, 'kindle') ||
             (stripos ($userAgent, 'Mac OS') &&  (stripos($userAgent, 'CriOS') == 0)) ||
             stripos ($userAgent, 'iPad');
 
-if ($isMobileOrMac)
+if (!$allowAccess) {
+  session_start();
+  
+  $currentTime = time();
+  $timeout = 24 * 60 * 60;
+  
+  if (!isset($_SESSION['CREATED'])) {
+    $_SESSION['CREATED'] = $currentTime;
+  } else if ($currentTime - $_SESSION['CREATED'] > $timeout) {
+    // clean up the counters
+    session_regenerate_id(true);    // change session ID for the current session and invalidate old session ID
+    session_unset();
+    $_SESSION['CREATED'] = $currentTime;  // update creation time
+  }
+  
+  // Win/Lin desktop based browsers may access it, but only for a limitted number of times.
+  if (isset ($_SESSION['accessCount']))
+  { 
+    if ($_SESSION['accessCount'] < 16) {
+      $allowAccess = true;
+      $_SESSION['accessCount'] = $_SESSION['accessCount'] + 1;
+    }
+  } else {
+      $allowAccess = true;
+      $_SESSION['accessCount'] = 1;
+  }
+}
+
+if ($allowAccess)
 {
     # Looks for current Google account session
     $user = false;
