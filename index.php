@@ -82,9 +82,20 @@ if ($isMobileOrMac)
         else // do the GUI
         {
             require('index.html');
-    ?><script type="text/javascript">
+    ?><script type="text/javascript" async>
         // do some alterations to the page and objects
-        (function() {
+        var reassignURLs = function() {
+        
+            var doneInit = false;
+            try {
+                doneInit = Initialization.doneInit;
+            } catch (err) {}
+            
+            if (!doneInit) {
+                setTimeout (function() { reassignURLs(); }, 100);
+                return;
+            }
+            
             var container = document.getElementById("topmenu");        
             if (!container)
                 return;
@@ -130,7 +141,10 @@ if ($isMobileOrMac)
             }
             
             AppVersion.updateVersionString();
-        })();
+        }
+        
+        reassignURLs();
+        
     </script><?php        
         }
     }

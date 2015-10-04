@@ -204,3 +204,9 @@ var InputValidator = {
 		lbl.style["top"] = pos[1];
 	}
 };
+
+try {
+if (Initialization)
+    Initialization.init();
+} catch (err) {
+}

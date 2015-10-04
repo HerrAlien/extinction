@@ -535,3 +535,9 @@ var CorrectorUIManager = {
         ExtinctionCoefficient.updateUI();
     }
 };
+
+try {
+if (Initialization)
+    Initialization.init();
+} catch (err) {
+}

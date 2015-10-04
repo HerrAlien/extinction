@@ -102,3 +102,9 @@ var ChartController = {
         
     }
 };
+
+try {
+if (Initialization)
+    Initialization.init();
+} catch (err) {
+}

@@ -275,3 +275,9 @@ var SVGChart = {
 		txt.style["fontFamily"] = "Arial";
 	}
 };
+
+try {
+if (Initialization)
+    Initialization.init();
+} catch (err) {
+}

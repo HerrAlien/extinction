@@ -256,3 +256,9 @@ var ExtinctionCoefficient = {
 
 
 };
+
+try {
+if (Initialization)
+    Initialization.init();
+} catch (err) {
+}

@@ -135,3 +135,9 @@ var Hipparcos = {
         return res;
     }    
 };
+
+try {
+if (Initialization)
+    Initialization.init();
+} catch (err) {
+}

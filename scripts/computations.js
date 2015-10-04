@@ -130,3 +130,9 @@ var Computations = {
         return rating;
     }
 };
+
+try {
+if (Initialization)
+    Initialization.init();
+} catch (err) {
+}
