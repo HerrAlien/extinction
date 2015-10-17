@@ -89,16 +89,7 @@ var InputValidator = {
 			var lbl = document.createElement ("div");
 			InputValidator.errorLabel = lbl;
 			document.documentElement.appendChild (lbl);
-			// set the style ...
-			lbl.style["position"] = "absolute";
-			lbl.style["z-index"] = 99;
-			lbl.style["margin"] = "5px";
-			lbl.style["width"] = "240px";
-			lbl.style["max-width"] = "240px";
-			lbl.style["background-color"] = "#FFE0E0";
-			lbl.style["border"] = "solid 2px #FF0000";
-			lbl.style["top"] = 0;
-			lbl.style["left"] = 0;
+			lbl.setAttribute ("class", "errorBox");
 			lbl.style["display"] = "none";
 		}
 		return InputValidator.errorLabel;
