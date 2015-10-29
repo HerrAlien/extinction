@@ -76,15 +76,6 @@ html, body {
     height: 500px;
 }
 
-a, .readyToSelect {
-	cursor: pointer;
-}
-
-.normalCursor {
-	cursor: default;
-}
-
-
 .clear {
     clear: both;
 }
@@ -105,7 +96,8 @@ pre {
 }
 
 #wizard ol li {
-    margin: 0px 0px 5px 0px;
+    margin: 2px 0px 5px 0px;
+    padding: 2px 0px 2px 0px;
 }
 
 #mainarea {
@@ -126,6 +118,14 @@ pre {
 .selectorItemActive {
   background-color : #eaeaff; 
   border : solid 2px #8080ff;
+}
+
+.selectorItemActive, .chartSelectionActive {
+  box-shadow: 2px 2px 1px #888888;
+}
+
+.chartSelectionInactive {
+  box-shadow: none;
 }
 
 #brightnessNoExtinction {
