@@ -120,8 +120,8 @@ pre {
   border : solid 2px #8080ff;
 }
 
-.selectorItemActive, .chartSelectionActive {
-  box-shadow: 2px 2px 1px #888888;
+.chartSelectionActive {
+  box-shadow: 0px 0px 10px #8080ff;
 }
 
 .chartSelectionInactive {
@@ -229,8 +229,16 @@ td {
 .norating {
 }
 
-svg {
+svg, #svgContainer {
     margin-right: 0px;
+}
+
+#svgContainer {
+    width : 500px;
+    height : 500px;
+    padding: 0px;
+    margin: 0px;
+    float: right;
 }
 
 .errorBox {
