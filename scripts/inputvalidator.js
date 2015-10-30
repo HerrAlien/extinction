@@ -41,6 +41,12 @@ var InputValidator = {
                     valid = isValid;
 			}
 		}
+		
+		if (valid)
+		  inp.className = "";
+		else
+		  inp.className = "invalidInput";
+		  
         return valid;
 	},
 	
@@ -104,7 +110,7 @@ var InputValidator = {
 			InputValidator.inputsWithValidators.push ({"input" : _i, 
 				"func" : function () {
 					var value = _i.value * 1.0;					
-					if (value > _M || value < _m) {
+					if (value > _M || value < _m || isNaN(_i.value)) {
 						return "Invalid numerical value: " + value + "." +
 								"<br>&nbsp;&nbsp;allowed minimum = " + _m + 
 								"<br>&nbsp;&nbsp;allowed maximum = " + _M;					
@@ -122,7 +128,7 @@ var InputValidator = {
 			InputValidator.inputsWithValidators.push ({"input" : _i, 
 				"func" : function () {
                     var value = _i.value * 1.0;                  
-                    if (value < _m)
+                    if (value < _m || isNaN(_i.value))
                         return "Invalid numerical value: " + value + "." + "<br>&nbsp;&nbsp;allowed minimum = " + _m;
                     return "";					
                 }
@@ -137,7 +143,7 @@ var InputValidator = {
 			InputValidator.inputsWithValidators.push ({"input" : _i, 
 				"func" : function () {
                     var value = _i.value * 1.0;
-                    if (value > _M)
+                    if (value > _M || isNaN(_i.value))
                         return "Invalid numerical value: " + value + "." + "<br>&nbsp;&nbsp;allowed maximum = " + _M;
                     return "";
                 }

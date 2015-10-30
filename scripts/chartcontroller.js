@@ -39,6 +39,9 @@ var ChartController = {
 
         magInput.oninput = function () { InputValidator.validate (this); }
         fovInput.oninput = function () { InputValidator.validate (this); }
+        
+        magInput.onfocus = magInput.oninput;
+        fovInput.onfocus = fovInput.oninput;
 
         starNameInput.oninput = function () {
             InputValidator.validate (this);
@@ -58,6 +61,8 @@ var ChartController = {
                 fovInput.placeholder = "[number]";
             }
         }
+        
+        starNameInput.onfocus = starNameInput.oninput;
 
         ui.updateChartButton.onclick = function () {            
             if (!InputValidator.validate (starNameInput))
@@ -69,10 +74,12 @@ var ChartController = {
             if (!PhotmetryTable.AAVSO.IsChartID(starName)) {
                 var c = {};
         		    c.elemToMoveTo = magInput;
-                if (!InputValidator.validate_internal (c, function() { if ("" == limittingMag) return "Value required"; return ""; } ))
+                if (!InputValidator.validate_internal (c, function() { if ("" == limittingMag) return "Value required"; return ""; } ) ||
+                    !InputValidator.validate(magInput))
                     return;
         		    c.elemToMoveTo = fovInput;
-                if (!InputValidator.validate_internal (c, function() { if ("" == fov) return "Value required"; return ""; } ))
+                if (!InputValidator.validate_internal (c, function() { if ("" == fov) return "Value required"; return ""; } )||
+                    !InputValidator.validate(fovInput))
                     return;
             }
             

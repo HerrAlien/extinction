@@ -265,6 +265,11 @@ svg, #svgContainer {
 	left : 0;
 }
 
+.invalidInput {
+	background-color: #FFE0E0;
+	border : solid 2px #FF0000;
+}
+
 ::-webkit-input-placeholder {
     color:    #606060;
 }
