@@ -264,3 +264,18 @@ svg, #svgContainer {
 	top: 0;
 	left : 0;
 }
+
+::-webkit-input-placeholder {
+    color:    #606060;
+}
+:-moz-placeholder {
+   color:    #606060;
+   opacity:  1;
+}
+::-moz-placeholder {
+   color:    #606060;
+   opacity:  1;
+}
+:-ms-input-placeholder {
+   color:    #606060;
+}
