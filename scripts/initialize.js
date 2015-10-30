@@ -95,7 +95,7 @@ var Initialization = {
     },
     
   init: function () {  
-      if (!ChartController || !StarsSelection || !CorrectorUIManager || 
+      if (!ChartController || !StarsSelection || !CorrectorUIManager || !SVGChart ||
           !PhotmetryTable || !InputValidator || !Hipparcos || Initialization.doneInit)
         return;
       
