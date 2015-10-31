@@ -256,18 +256,13 @@ svg, #svgContainer {
 	margin: -1px 0px 0px 0px; /* was 5 */
 	width: 240px;
 	max-width: 240px;
-	background-color: #FFE0E0;
-	border-left : solid 2px #FF0000;
-	border-right : solid 2px #FF0000;
-	border-bottom : solid 2px #FF0000;
-	border-top : solid 1px #FF0000;
 	top: 0;
 	left : 0;
 }
 
-.invalidInput {
-	background-color: #FFE0E0;
-	border : solid 2px #FF0000;
+.invalidInput, .errorBox {
+	background-color: #FFE8E8;
+	border : solid 2px #CF0000;
 }
 
 ::-webkit-input-placeholder {

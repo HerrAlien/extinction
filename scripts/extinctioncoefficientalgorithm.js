@@ -123,6 +123,7 @@ var ExtinctionCoefficient = {
             InputValidator.AddNumberMinimumValidator (deg, 0);
             deg.onfocus = function () { InputValidator.validate(this); }
             deg.oninput = function () { this.onfocus(); CorrectorUIManager.onUserInput(); };
+            deg.onmuseenter = deg.onfocus;
             
             return {
                 "bright" : function () { return this.ui.brightSelector.get(); },

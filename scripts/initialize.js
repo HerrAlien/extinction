@@ -60,6 +60,8 @@ var LocationUI = {
         long.onfocus = function () { InputValidator.validate (this); }
         lat.oninput = function () { this.onfocus(); CorrectorUIManager.onLocationOrTimeChanged(); }
         long.oninput = function () { this.onfocus(); CorrectorUIManager.onLocationOrTimeChanged(); }
+        lat.onmouseenter = lat.onfocus;
+        long.onmouseenter = long.onfocus;
     }
 };
 
@@ -124,6 +126,7 @@ var Initialization = {
     InputValidator.AddNumberMinimumValidator (extinctionCoeffInput, 0);
 
     extinctionCoeffInput.onfocus =  function () { InputValidator.validate (this); }
+    extinctionCoeffInput.onmouseenter =  extinctionCoeffInput.onfocus;
     extinctionCoeffInput.oninput = function () { this.onfocus(); CorrectorUIManager.onLocationOrTimeChanged(); }
 
     document.documentElement.onscroll = InputValidator.UpdateErrorLabelPosition;
@@ -142,6 +145,10 @@ var Initialization = {
             StarsSelection.selectionJustActivated = false;
         else
             StarsSelection.setSelectedStar (null);
+    }
+    
+    document.body.onmouseover = function () {
+        InputValidator.hideError();
     }
         
     AppVersion.updateVersionString();

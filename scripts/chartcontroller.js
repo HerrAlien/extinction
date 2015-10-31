@@ -42,6 +42,8 @@ var ChartController = {
         
         magInput.onfocus = magInput.oninput;
         fovInput.onfocus = fovInput.oninput;
+        magInput.onmouseenter = magInput.oninput;
+        fovInput.onmouseenter = fovInput.oninput;
 
         starNameInput.oninput = function () {
             InputValidator.validate (this);
@@ -52,6 +54,12 @@ var ChartController = {
                 fovInput.readOnly = true;
                 magInput.placeholder = "not needed";
                 fovInput.placeholder = "not needed";
+                magInput.className = "";
+                fovInput.className = "";
+                magInput.onfocus = null;
+                fovInput.onfocus = null;
+                magInput.onmouseenter = null;
+                fovInput.onmouseenter = null;
             }
             else
             {
@@ -59,11 +67,15 @@ var ChartController = {
                 fovInput.readOnly = false;
                 magInput.placeholder = "[number]";
                 fovInput.placeholder = "[number]";
+                InputValidator.validate(magInput);
+                InputValidator.validate(fovInput);
+                magInput.onfocus = magInput.oninput;
+                fovInput.onfocus = fovInput.oninput;
+                magInput.onmouseenter = magInput.oninput;
+                fovInput.onmouseenter = fovInput.oninput;
             }
         }
         
-        starNameInput.onfocus = starNameInput.oninput;
-
         ui.updateChartButton.onclick = function () {            
             if (!InputValidator.validate (starNameInput))
                 return;

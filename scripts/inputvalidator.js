@@ -49,14 +49,19 @@ var InputValidator = {
 		  
         return valid;
 	},
+    
+    hideError : function () {
+		var lbl = InputValidator.getErrorLabel();
+		lbl.style["display"] = "none";
+    },
 	
 	validate_internal : function (c, getMsgFunc) {
 		var appendMessage = false;
 		var hideError = false;
 		var elemToMoveTo = null;
-		var prependMsg = ""
-		var lbl = InputValidator.getErrorLabel();
-		lbl.style["display"] = "none";
+		var prependMsg = "";
+        InputValidator.hideError();
+        var lbl = InputValidator.getErrorLabel();
 
 		if (c) {
 			appendMessage = c.appendMessage;
