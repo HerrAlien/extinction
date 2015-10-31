@@ -56,8 +56,12 @@ var LocationUI = {
 
         InputValidator.AddNumberRangeValidator (lat, -90, 90);
         InputValidator.AddNumberRangeValidator (long, 0, 360);
-        lat.oninput = function () { InputValidator.validate (this); CorrectorUIManager.onLocationOrTimeChanged(); }
-        long.oninput = function () { InputValidator.validate (this); CorrectorUIManager.onLocationOrTimeChanged(); }
+        lat.onfocus = function () { InputValidator.validate (this); }
+        long.onfocus = function () { InputValidator.validate (this); }
+        lat.oninput = function () { this.onfocus(); CorrectorUIManager.onLocationOrTimeChanged(); }
+        long.oninput = function () { this.onfocus(); CorrectorUIManager.onLocationOrTimeChanged(); }
+        lat.onmouseenter = lat.onfocus;
+        long.onmouseenter = long.onfocus;
     }
 };
 
@@ -95,7 +99,7 @@ var Initialization = {
     },
     
   init: function () {  
-      if (!ChartController || !StarsSelection || !CorrectorUIManager || 
+      if (!ChartController || !StarsSelection || !CorrectorUIManager || !SVGChart ||
           !PhotmetryTable || !InputValidator || !Hipparcos || Initialization.doneInit)
         return;
       
@@ -118,9 +122,12 @@ var Initialization = {
         }, 100);
     }
 
-    InputValidator.AddNumberMinimumValidator (document.getElementById("K"), 0);
+    var extinctionCoeffInput = document.getElementById("K");
+    InputValidator.AddNumberMinimumValidator (extinctionCoeffInput, 0);
 
-    document.getElementById("K").oninput = function () { InputValidator.validate (this); CorrectorUIManager.onLocationOrTimeChanged(); }
+    extinctionCoeffInput.onfocus =  function () { InputValidator.validate (this); }
+    extinctionCoeffInput.onmouseenter =  extinctionCoeffInput.onfocus;
+    extinctionCoeffInput.oninput = function () { this.onfocus(); CorrectorUIManager.onLocationOrTimeChanged(); }
 
     document.documentElement.onscroll = InputValidator.UpdateErrorLabelPosition;
     window.onresize = InputValidator.UpdateErrorLabelPosition;
@@ -138,6 +145,10 @@ var Initialization = {
             StarsSelection.selectionJustActivated = false;
         else
             StarsSelection.setSelectedStar (null);
+    }
+    
+    document.body.onmouseover = function () {
+        InputValidator.hideError();
     }
         
     AppVersion.updateVersionString();

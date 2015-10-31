@@ -121,7 +121,9 @@ var ExtinctionCoefficient = {
             var deg = degreesEditor;
             var d = dimmerStarSelector;
             InputValidator.AddNumberMinimumValidator (deg, 0);
-            deg.oninput = function () { InputValidator.validate(this); CorrectorUIManager.onUserInput(); };
+            deg.onfocus = function () { InputValidator.validate(this); }
+            deg.oninput = function () { this.onfocus(); CorrectorUIManager.onUserInput(); };
+            deg.onmuseenter = deg.onfocus;
             
             return {
                 "bright" : function () { return this.ui.brightSelector.get(); },

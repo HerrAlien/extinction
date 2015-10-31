@@ -20,7 +20,7 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl.html
 
 var StarsSelection = {
     currentlyHoveredStar : null,
-    imageElem : document.getElementById ("chart"),
+    imageElem : document.getElementById ("svgContainer"),
     activeSelector : null,
 	selectionJustActivated: false,
    
@@ -37,6 +37,7 @@ var StarsSelection = {
                     StarsSelection.activeSelector.setPlaceholder ("click me");
                 
                 StarsSelection.activeSelector = null;
+                StarsSelection.imageElem.className = "chartSelectionInactive";
                 // now redo displayed values
                 CorrectorUIManager.onUserInput();
 			}
@@ -101,6 +102,8 @@ var StarsSelection = {
                         sel.setDisplayedString("");
                         sel.setPlaceholder ("click a star label");
                         StarsSelection.activeSelector = sel;
+                        StarsSelection.imageElem.className = "chartSelectionActive";
+
                     });
                 }
             }();

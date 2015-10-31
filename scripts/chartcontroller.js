@@ -39,6 +39,11 @@ var ChartController = {
 
         magInput.oninput = function () { InputValidator.validate (this); }
         fovInput.oninput = function () { InputValidator.validate (this); }
+        
+        magInput.onfocus = magInput.oninput;
+        fovInput.onfocus = fovInput.oninput;
+        magInput.onmouseenter = magInput.oninput;
+        fovInput.onmouseenter = fovInput.oninput;
 
         starNameInput.oninput = function () {
             InputValidator.validate (this);
@@ -49,6 +54,12 @@ var ChartController = {
                 fovInput.readOnly = true;
                 magInput.placeholder = "not needed";
                 fovInput.placeholder = "not needed";
+                magInput.className = "";
+                fovInput.className = "";
+                magInput.onfocus = null;
+                fovInput.onfocus = null;
+                magInput.onmouseenter = null;
+                fovInput.onmouseenter = null;
             }
             else
             {
@@ -56,9 +67,15 @@ var ChartController = {
                 fovInput.readOnly = false;
                 magInput.placeholder = "[number]";
                 fovInput.placeholder = "[number]";
+                InputValidator.validate(magInput);
+                InputValidator.validate(fovInput);
+                magInput.onfocus = magInput.oninput;
+                fovInput.onfocus = fovInput.oninput;
+                magInput.onmouseenter = magInput.oninput;
+                fovInput.onmouseenter = fovInput.oninput;
             }
         }
-
+        
         ui.updateChartButton.onclick = function () {            
             if (!InputValidator.validate (starNameInput))
                 return;
@@ -69,10 +86,12 @@ var ChartController = {
             if (!PhotmetryTable.AAVSO.IsChartID(starName)) {
                 var c = {};
         		    c.elemToMoveTo = magInput;
-                if (!InputValidator.validate_internal (c, function() { if ("" == limittingMag) return "Value required"; return ""; } ))
+                if (!InputValidator.validate_internal (c, function() { if ("" == limittingMag) return "Value required"; return ""; } ) ||
+                    !InputValidator.validate(magInput))
                     return;
         		    c.elemToMoveTo = fovInput;
-                if (!InputValidator.validate_internal (c, function() { if ("" == fov) return "Value required"; return ""; } ))
+                if (!InputValidator.validate_internal (c, function() { if ("" == fov) return "Value required"; return ""; } )||
+                    !InputValidator.validate(fovInput))
                     return;
             }
             

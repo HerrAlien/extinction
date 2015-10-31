@@ -41,16 +41,27 @@ var InputValidator = {
                     valid = isValid;
 			}
 		}
+		
+		if (valid)
+		  inp.className = "";
+		else
+		  inp.className = "invalidInput";
+		  
         return valid;
 	},
+    
+    hideError : function () {
+		var lbl = InputValidator.getErrorLabel();
+		lbl.style["display"] = "none";
+    },
 	
 	validate_internal : function (c, getMsgFunc) {
 		var appendMessage = false;
 		var hideError = false;
 		var elemToMoveTo = null;
-		var prependMsg = ""
-		var lbl = InputValidator.getErrorLabel();
-		lbl.style["display"] = "none";
+		var prependMsg = "";
+        InputValidator.hideError();
+        var lbl = InputValidator.getErrorLabel();
 
 		if (c) {
 			appendMessage = c.appendMessage;
@@ -104,7 +115,7 @@ var InputValidator = {
 			InputValidator.inputsWithValidators.push ({"input" : _i, 
 				"func" : function () {
 					var value = _i.value * 1.0;					
-					if (value > _M || value < _m) {
+					if (value > _M || value < _m || isNaN(_i.value)) {
 						return "Invalid numerical value: " + value + "." +
 								"<br>&nbsp;&nbsp;allowed minimum = " + _m + 
 								"<br>&nbsp;&nbsp;allowed maximum = " + _M;					
@@ -122,7 +133,7 @@ var InputValidator = {
 			InputValidator.inputsWithValidators.push ({"input" : _i, 
 				"func" : function () {
                     var value = _i.value * 1.0;                  
-                    if (value < _m)
+                    if (value < _m || isNaN(_i.value))
                         return "Invalid numerical value: " + value + "." + "<br>&nbsp;&nbsp;allowed minimum = " + _m;
                     return "";					
                 }
@@ -137,7 +148,7 @@ var InputValidator = {
 			InputValidator.inputsWithValidators.push ({"input" : _i, 
 				"func" : function () {
                     var value = _i.value * 1.0;
-                    if (value > _M)
+                    if (value > _M || isNaN(_i.value))
                         return "Invalid numerical value: " + value + "." + "<br>&nbsp;&nbsp;allowed maximum = " + _M;
                     return "";
                 }

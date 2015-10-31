@@ -76,6 +76,10 @@ html, body {
     height: 500px;
 }
 
+.clear {
+    clear: both;
+}
+
 a, .readyToSelect {
 	cursor: pointer;
 }
@@ -84,10 +88,6 @@ a, .readyToSelect {
 	cursor: default;
 }
 
-
-.clear {
-    clear: both;
-}
 
 pre {
     text-align: left;
@@ -105,7 +105,8 @@ pre {
 }
 
 #wizard ol li {
-    margin: 0px 0px 5px 0px;
+    margin: 2px 0px 5px 0px;
+    padding: 2px 0px 2px 0px;
 }
 
 #mainarea {
@@ -126,6 +127,14 @@ pre {
 .selectorItemActive {
   background-color : #eaeaff; 
   border : solid 2px #8080ff;
+}
+
+.chartSelectionActive {
+  box-shadow: 0px 0px 7px #A0A0ff;
+}
+
+.chartSelectionInactive {
+  box-shadow: none;
 }
 
 #brightnessNoExtinction {
@@ -229,8 +238,16 @@ td {
 .norating {
 }
 
-svg {
+svg, #svgContainer {
     margin-right: 0px;
+}
+
+#svgContainer {
+    width : 500px;
+    height : 500px;
+    padding: 0px;
+    margin: 0px;
+    float: right;
 }
 
 .errorBox {
@@ -239,11 +256,26 @@ svg {
 	margin: -1px 0px 0px 0px; /* was 5 */
 	width: 240px;
 	max-width: 240px;
-	background-color: #FFE0E0;
-	border-left : solid 2px #FF0000;
-	border-right : solid 2px #FF0000;
-	border-bottom : solid 2px #FF0000;
-	border-top : solid 1px #FF0000;
 	top: 0;
 	left : 0;
+}
+
+.invalidInput, .errorBox {
+	background-color: #FFE8E8;
+	border : solid 2px #CF0000;
+}
+
+::-webkit-input-placeholder {
+    color:    #606060;
+}
+:-moz-placeholder {
+   color:    #606060;
+   opacity:  1;
+}
+::-moz-placeholder {
+   color:    #606060;
+   opacity:  1;
+}
+:-ms-input-placeholder {
+   color:    #606060;
 }

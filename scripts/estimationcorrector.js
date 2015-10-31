@@ -201,9 +201,14 @@ var CorrectorUIManager = {
 			var geoLocation = navigator.geolocation || window.navigator.geolocation;
             if (geoLocation) {
                 geoLocation.getCurrentPosition (function (position) {
-                    document.getElementById("lat").value = position.coords.latitude;
-                    document.getElementById("long").value = position.coords.longitude;
+                    var lat = document.getElementById("lat");
+                    var long = document.getElementById("long");
+                    lat.value = position.coords.latitude;
+                    long.value = position.coords.longitude;
+                    InputValidator.validate (lat);
+                    InputValidator.validate (long);
                     CorrectorUIManager.onLocationOrTimeChanged();
+                    
                });
             }
         }
@@ -324,9 +329,15 @@ var CorrectorUIManager = {
 			InputValidator.AddNumberMinimumValidator (b2m, 0);
 			InputValidator.AddNumberMinimumValidator (m2d, 0);
 			
-            b2m.oninput = function () {InputValidator.validate(this); CorrectorUIManager.onUserInput();}
-            m2d.oninput = function () {InputValidator.validate(this); CorrectorUIManager.onUserInput();}
+            b2m.onfocus = function () {InputValidator.validate(this); }
+            m2d.onfocus = function () {InputValidator.validate(this); }
+
+            b2m.oninput = function () { this.onfocus(); CorrectorUIManager.onUserInput();}
+            m2d.oninput = function () { this.onfocus(); CorrectorUIManager.onUserInput();}
             
+            b2m.onmouseenter = b2m.onfocus;
+            m2d.onmouseenter = m2d.onfocus;
+
             var comp = ExtinctionCoefficient.PairedComparison(brightSelector, b2m, midSelector, m2d, dimSelector);
             return { "comp": comp, "midSelector" : midSelector, "tdmid" : tdmid, "row" :  row, "tddelete" : tddelete};
         }
@@ -351,8 +362,10 @@ var CorrectorUIManager = {
             var brightSelector = StarsSelection.Selector.build (brightInput);
             var dimSelector = StarsSelection.Selector.build (dimInput);
 			InputValidator.AddNumberMinimumValidator (compImput, 0);
-            compImput.oninput = function() { InputValidator.validate(this); CorrectorUIManager.onUserInput(); }
+            compImput.onfocus = function() { InputValidator.validate(this); }
+            compImput.oninput = function() { this.onfocus(); CorrectorUIManager.onUserInput(); }
             compImput.placeholder = "[number]";
+            compImput.onmouseenter = compImput.onfocus;
             
             var comp = ExtinctionCoefficient.SingleComparison(brightSelector, compImput, dimSelector);
             CorrectorUIManager.Utils.AddDeleteLink (row, tddelete, comp, ExtinctionCoefficient.comparisons);
@@ -441,6 +454,9 @@ var CorrectorUIManager = {
     },
     
     onUserInput : function () {
+        
+        var coeffInput = document.getElementById ("K");
+        
         try {
         
             try {
@@ -504,19 +520,22 @@ var CorrectorUIManager = {
             // get K:
             //  - this can be a constant
             if (document.getElementById ("useValueForK").checked) {
-                document.getElementById ("K").readOnly = false;
-                K = parseFloat (document.getElementById ("K").value);
+                coeffInput.readOnly = false;
+                K = parseFloat (coeffInput.value);
+                
                 try {
                     variableBrightnessArr = EstimationCorrector.Estimate (K);
                 } catch (err) {
                 }
             } else {
             //  - or it must be determined from observations
-                document.getElementById ("K").readOnly = true;
+                coeffInput.readOnly = true;
                 var kvals = ExtinctionCoefficient.rebuildValues();
 
                 var kstats = Computations.AverageAndStdDev (kvals);
-                document.getElementById ("K").value = Computations.Round (kstats.avg, 4);
+                coeffInput.value = Computations.Round (kstats.avg, 4);
+                
+                InputValidator.validate (coeffInput);
 
                 var i = 0;
                 for (i = 0; i < kvals.length; i++) {
