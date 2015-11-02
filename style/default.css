@@ -102,7 +102,11 @@ pre {
     margin: 25px 3px 0px 0px;
     width: 495px;
     text-align: left;
+}
+
+#wizard ol {
 	list-style-position: inside;
+	padding: 0px;
 }
 
 #wizard ol li, #wizard ol li.alt {
@@ -121,7 +125,7 @@ pre {
 }
 
 span.title {
-	font-weight: bold;
+
 }
 
 #mainarea {
