@@ -99,14 +99,29 @@ pre {
 
 #wizard {
     float: left;
-    margin: 20px 3px 0px 0px;
+    margin: 25px 3px 0px 0px;
     width: 495px;
     text-align: left;
+	list-style-position: inside;
+}
+
+#wizard ol li, #wizard ol li.alt {
+    margin: 7px 0px 7px 0px;
+    padding: 4px 0px 4px 0px;
 }
 
 #wizard ol li {
-    margin: 2px 0px 5px 0px;
-    padding: 2px 0px 2px 0px;
+	padding: 4px 0px 4px 0px;
+}
+
+#wizard ol li.alt{
+	background-color: #F0F0F4;
+	border: solid 1px #CaCaCf;
+	padding: 4px 0px 4px 4px;
+}
+
+span.title {
+	font-weight: bold;
 }
 
 #mainarea {

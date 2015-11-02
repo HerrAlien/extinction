@@ -45,7 +45,7 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl.html
       <div id="mainarea">
         <div id="wizard">        
         <ol>
-          <li>
+          <li class="alt">
             <span class="title">Date & time</span> (JD or UTC yyyy/mm/dd hh:mm:ss):  <input placeholder="[JD or yyyy/mm/dd hh:mm:ss]" id="dateTime" size="13">
           </li>
           <li>
@@ -53,7 +53,7 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl.html
             Latitude: <input placeholder="[degrees]" id="lat" size="7">, longitude: <input placeholder="[degrees]" id="long" size="7"> (or <a class="addAnchor" nohref id="geolocation">get them from Geolocation</a>).
           </li>
 
-          <li>
+          <li class="alt">
               <span class="title">Chart:</span><br>
               Name of the variable star, or AAVSO chart ID: <input placeholder="[name of star or AAVSO chart ID]" id="variableStarName" size="24"><br>
               Limiting magnitude: <input placeholder="[number]" id="mag" size="7">,
@@ -70,7 +70,7 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl.html
           </li>
     
           <li>
-              <span class="title">Brightness estimate</span> (A (brightness steps) V (brightness steps) B)<br>
+              <span class="title">Brightness estimate</span> as (A (brightness steps) V (brightness steps) B)<br>
               <table>
                 <tr class="header">
                     <td>Bright star</td>
@@ -82,15 +82,14 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl.html
                 </tr>
                 <tbody id="extraEstimates">
                 </tbody>
-                
               </table>
-              <br><hr>
-              Without considering extinction, brightness of V is:<br>
+            </li>
+            <li  class="alt">
+              <span class="title">Without considering extinction</span>, brightness of V is:<br>
               <span id="brightnessNoExtinction">unknown</span>
               <br>Air mass for variable star V is <span id="airmassV">unknown</span><br>
               <br>
-              For the airmass values above, you should <span id="shouldComputeExtinction">not need to</span> correct for extinction.<br>
-              <hr><br>
+              For the airmass values above, you should <span id="shouldComputeExtinction">not need to</span> correct for extinction.
           </li>
           
           <li> <span class="title">Extinction coefficient (K)</span><br>
@@ -105,8 +104,8 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl.html
               </table>
           </li>
 
-          <li>
-          Considering extinction, brightness of V is:<br>
+          <li class="alt">
+          <span class="title">Considering extinction</span>, brightness of V is:<br>
           <span id="brightnessWithExtinction">unknown</span>
           </li>
 
