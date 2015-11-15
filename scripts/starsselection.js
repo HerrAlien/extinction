@@ -20,7 +20,7 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl.html
 
 var StarsSelection = {
     currentlyHoveredStar : null,
-    imageElem : document.getElementById ("svgContainer"),
+    imageElem : document.getElementById ("chart"),
     activeSelector : null,
 	selectionJustActivated: false,
    
