@@ -95,14 +95,15 @@ if ($allowAccess)
             }
                         
             if ($proxyfor == 'casu-adc-tycho'){
-                $url = "http://apm5.ast.cam.ac.uk/cgi-bin/wdb/hipp/tycho/query?max_rows_returned=1000&tab_dec=on&tab_ra=on&tab_box=on&tab_vtmag=on&ra=" . $_REQUEST['ra'] . '&dec='. $_REQUEST['dec'] .
-                 '&box=' . $_REQUEST['box'] . '&vtmag=' . $_REQUEST['vtmag'] . '&full_screen_mode=0';
+                $url = "http://apm5.ast.cam.ac.uk/cgi-bin/wdb/hipp/tycho/query?max_rows_returned=1000&tab_dec=on&tab_ra=on&tab_box=on&tab_vtmag=on&full_screen_mode=0&ra=" . $_REQUEST['ra'] . '&dec='. $_REQUEST['dec'] .
+                 '&box=' . $_REQUEST['box'] . '&vtmag=' . $_REQUEST['vtmag'];
             }
 
             $contextArr = [
               'http' => [
                 'method' => 'GET',
-                'timeout' => 120
+                'timeout' => 120,
+                'user_agent' => 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36'
               ]
             ];
         
