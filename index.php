@@ -93,18 +93,20 @@ if ($allowAccess)
             if ($proxyfor == 'aavso-vsp-chart-id'){
                 $url = "https://www.aavso.org/apps/vsp/api/chart/" . $_REQUEST['chartID'] . '/?format=' . $_REQUEST['format'] ;
             }
-            if ($proxyfor == 'rssd-esa-tycho'){
-                $url = "https://www.rssd.esa.int/hipparcos_scripts/HIPcatalogueSearch.pl?raDecim=" . $_REQUEST['raDecim'] . '&decDecim='. $_REQUEST['decDecim'] .
-                 '&box=' . $_REQUEST['box'] . '&threshold=' . $_REQUEST['threshold'];
+                        
+            if ($proxyfor == 'casu-adc-tycho'){
+                $url = "http://apm5.ast.cam.ac.uk/cgi-bin/wdb/hipp/tycho/query?tab_box=on&tab_vtmag=on&max_rows_returned=1000&ra=" . $_REQUEST['ra'] . '&dec='. $_REQUEST['dec'] .
+                 '&box=' . $_REQUEST['box'] . '&vtmag=' . $_REQUEST['vtmag'];
             }
-            
-            $context = [
+
+            $contextArr = [
               'http' => [
-                'method' => 'GET'
+                'method' => 'GET',
+                'timeout' => 120
               ]
             ];
         
-            $context = stream_context_create($context);
+            $context = stream_context_create($contextArr);
             $result = file_get_contents($url, false, $context);
             echo ($result);
         }
@@ -116,6 +118,7 @@ if ($allowAccess)
         var reassignURLs = function() {
         
             var doneInit = false;
+
             try {
                 doneInit = Initialization.doneInit;
             } catch (err) {}

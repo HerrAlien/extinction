@@ -70,7 +70,7 @@ var Hipparcos = {
                         Hipparcos.config.params[1] + "=" + dec_deg + "&" +
                         Hipparcos.config.params[2] + "=" + fov_arcmin / 60.0 + "&" +
                         Hipparcos.config.params[3] + "=<" + maglim 
-                        + "&proxyfor=rssd-esa-tycho";
+                        + "&proxyfor=casu-adc-tycho";
         
         xmlHttpReq.open(Hipparcos.config.method, Hipparcos.config.url + "?" + queryString, true);
         xmlHttpReq.send(null); 
