@@ -53,17 +53,7 @@ var PhotmetryTable = {
             url_suffix : "/?format=json&proxyfor=aavso-vsp-chart-id"
         },        
         
-        parseCoordinate : function (coord) {
-            if (!isNaN(coord))
-                return coord;
-            
-            var comps = coord.split(":");
-            var sign = 1.0;
-            if (comps[0] * 1.0 < 0)
-                sign = -1.0;
-
-            return comps[0]*1.0 + sign*comps[1]/60.0 + sign*comps[2]/3600.0;
-        },
+        
 
         GetData : function (starsData) {
             PhotmetryTable.comparisonStars = [];
@@ -83,16 +73,16 @@ var PhotmetryTable = {
                 
                 PhotmetryTable.comparisonStars.push ( 
                     { 
-                        "ra" : PhotmetryTable.AAVSO.parseCoordinate(starJSON.ra) * 15,
-                        "dec" : PhotmetryTable.AAVSO.parseCoordinate(starJSON.dec),
+                        "ra" : Computations.parseCoordinate(starJSON.ra, ":") * 15,
+                        "dec" : Computations.parseCoordinate(starJSON.dec, ":"),
                         "mag" : mag,
                         "label" : starJSON.label
                     }
                 );
             }
             
-            PhotmetryTable.variableStar.ra = PhotmetryTable.AAVSO.parseCoordinate(starsData.ra) * 15;
-            PhotmetryTable.variableStar.dec = PhotmetryTable.AAVSO.parseCoordinate(starsData.dec);                
+            PhotmetryTable.variableStar.ra = Computations.parseCoordinate(starsData.ra, ":") * 15;
+            PhotmetryTable.variableStar.dec = Computations.parseCoordinate(starsData.dec, ":");                
             PhotmetryTable.variableStar.name = starsData.star;                
             PhotmetryTable.frame.fov = starsData.fov;
             PhotmetryTable.frame.maglimit = starsData.maglimit;

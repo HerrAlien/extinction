@@ -18,14 +18,17 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see https://www.gnu.org/licenses/agpl.html
 */
 
+/* http://apm5.ast.cam.ac.uk/cgi-bin/wdb/hipp/tycho/query?max_rows_returned=1000&tab_dec=on&tab_ra=on&tab_box=on&tab_vtmag=on&box=10&ra=18.61578888888889&dec=-28.927722222222222&vtmag=<7
+*/
+
 var Hipparcos = {
     config : {
         method: "GET",
-        url : "http://www.rssd.esa.int/hipparcos_scripts/HIPcatalogueSearch.pl",
-        params : [ "raDecim"  /* RA of the center of the square region to search in */, 
-                   "decDecim" /* DEC of the center of the square region to search in */, 
+        url : "http://apm5.ast.cam.ac.uk/cgi-bin/wdb/hipp/tycho/query",
+        params : [ "ra"  /* RA of the center of the square region to search in */, 
+                   "dec" /* DEC of the center of the square region to search in */, 
                    "box" /* half size of the square region, in degrees */,
-                   "threshold" /* magnitude of the faintest star to be included */],
+                   "vtmag" /* magnitude of the faintest star to be included */],
         columnDelimiter : "|"
     },
     
@@ -61,13 +64,15 @@ var Hipparcos = {
     },
     
     sendRequest : function (xmlHttpReq, ra_deg, dec_deg, fov_arcmin, maglim) {
-        xmlHttpReq.open(Hipparcos.config.method, 
-                        Hipparcos.config.url + "?" +
-                        Hipparcos.config.params[0] + "=" + ra_deg + "&" +
+        
+        var queryString = "max_rows_returned=1000&tab_dec=on&tab_ra=on&tab_box=on&tab_vtmag=on&" +
+                        Hipparcos.config.params[0] + "=" + ra_deg / 15.0 + "&" +
                         Hipparcos.config.params[1] + "=" + dec_deg + "&" +
-                        Hipparcos.config.params[2] + "=" + fov_arcmin / 120.0 + "&" +
-                        Hipparcos.config.params[3] + "=" + maglim 
-                        + "&proxyfor=rssd-esa-tycho", true);
+                        Hipparcos.config.params[2] + "=" + fov_arcmin / 60.0 + "&" +
+                        Hipparcos.config.params[3] + "=<" + maglim 
+                        + "&proxyfor=rssd-esa-tycho";
+        
+        xmlHttpReq.open(Hipparcos.config.method, Hipparcos.config.url + "?" + queryString, true);
         xmlHttpReq.send(null); 
     },
     
@@ -84,56 +89,31 @@ var Hipparcos = {
     
     ParseStarsFromText : function (text) {
         var stars = [];
-        // first, locate the tycho section ("Tycho Catalogue Data")
-        var tycoBeginsAt = text.indexOf ("<h3>Tycho Catalogue  Data</h3>");
-        var tychoText = text.substring(tycoBeginsAt);
-        // the line starts with a "T|"; the T is at column 0.
-        var lineBeginsAt = tychoText.indexOf("T|");
-        do {
-            tychoText = tychoText.substring(lineBeginsAt);
-            var i = 0;
-            var starToAdd = { "ra" : 0, "dec" : 0, "mag" : 0, "label" : null, "airmass" : 1 };
-            try {
-                for (i = 0; i < 10; i++) {
-                    var column = Hipparcos.extractColumn (tychoText);
-                    tychoText = column.remaining;
-                    //  columns of interest: 
-                    if ((i == 5 || i == 8 || i == 9) && column.empty)
-                        throw "empty column for index " + i;
-                    switch (i) {
-                        case 1: starToAdd.label = column.value; break;
-                        //   * T5: V-band magnitude of the star
-                        case 5: starToAdd.mag = column.value; break;
-                        //   * T8: RA in degrees
-                        case 8: starToAdd.ra = column.value; break;
-                        //   * T9: DEC in degrees
-                        case 9: starToAdd.dec = column.value; break;
-                    }
-                }
-                stars.push (starToAdd);
-            } catch (err) {
-            }
-            // the line starts with a "T|"; the T is at column 0.
-            lineBeginsAt = tychoText.indexOf("T|");
-        } while (lineBeginsAt > 0);
+
+        var parser=new DOMParser();
+        var xmlDoc=parser.parseFromString(text,"text/html");
+        var entries = xmlDoc.getElementsByTagName("tr");
+        
+        var rowIndex = 0;
+        for (; rowIndex < entries.length; rowIndex++) {
+            var row = entries[rowIndex];
+            var columns = row.getElementsByTagName("td");
+            if (columns.length == 0)
+                continue;
+            // ra - 9 
+            // dec - 10 
+            // Vmag - 21
+            var starToAdd = { "ra" :  Computations.parseCoordinate(columns[9].innerHTML, " ") * 15 , 
+                            "dec" : Computations.parseCoordinate(columns[10].innerHTML, " "), 
+                            "mag" : Computations.evalNum(columns[21].innerHTML), 
+                            "label" : "NA", 
+                            "airmass" : 1 };
+            stars.push (starToAdd);
+        }
         
         Hipparcos.chart.stars = stars;
         return stars;
-    },
-    
-    extractColumn : function (str) {
-        var res = {"value" : 0, "remaining": null, "empty" : false };
-        var endsAt = str.indexOf (Hipparcos.config.columnDelimiter);
-        var valStr = str.substring (0, endsAt).trim();
-        res.empty = 0 == valStr.length;
-        res.remaining = str.substring (endsAt + Hipparcos.config.columnDelimiter.length);            
-        try {
-            res.value = Computations.evalNum (valStr);
-        } catch (err) {
-            res.value = valStr;
-        }
-        return res;
-    }    
+    }
 };
 
 try {

@@ -109,6 +109,18 @@ var Computations = {
 			throw (thingToEval + " is not a number!");
 		return thingToEval * 1;
 	},
+    
+    parseCoordinate : function (coord, separator) {
+            if (!isNaN(coord))
+                return coord;
+            
+            var comps = coord.split(separator);
+            var sign = 1.0;
+            if (comps[0] * 1.0 < 0)
+                sign = -1.0;
+
+            return comps[0]*1.0 + sign*comps[1]/60.0 + sign*comps[2]/3600.0;
+    },
 	
 	CompareStats : function (statsWOMe, statsWithMe, thresholdsObj) {
         var rating = 2;
