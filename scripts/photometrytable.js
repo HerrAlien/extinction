@@ -32,7 +32,8 @@ var PhotmetryTable = {
     frame: {
       "fov" : 400,
       "maglimit" : 9,
-      "chartID" : "unknown"
+      "chartID" : "unknown",
+      "image_uri" : "https://www.aavso.org/apps/vsp/chart/X15387AOS.png"
     },
 	
 	comparisonStars : [],
