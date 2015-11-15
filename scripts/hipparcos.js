@@ -65,7 +65,7 @@ var Hipparcos = {
     
     sendRequest : function (xmlHttpReq, ra_deg, dec_deg, fov_arcmin, maglim) {
         
-        var queryString = "max_rows_returned=1000&tab_dec=on&tab_ra=on&tab_box=on&tab_vtmag=on&" +
+        var queryString = "max_rows_returned=1000&tab_dec=on&tab_ra=on&tab_box=on&tab_vtmag=on&full_screen_mode=0&" +
                         Hipparcos.config.params[0] + "=" + ra_deg / 15.0 + "&" +
                         Hipparcos.config.params[1] + "=" + dec_deg + "&" +
                         Hipparcos.config.params[2] + "=" + fov_arcmin / 60.0 + "&" +

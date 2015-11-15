@@ -30,13 +30,16 @@ var AppVersion = {
     version : "N/A",
     
     updateVersionString : function () {
-        var manifest = null; 
-        if (chrome && chrome.runtime && chrome.runtime.getManifest) 
-            manifest = chrome.runtime.getManifest();
-        if (manifest)
-            AppVersion.version = manifest.version;
-            
-        AppVersion.onVersionUpdated();
+        try {
+            var manifest = null; 
+            if (chrome && chrome.runtime && chrome.runtime.getManifest) 
+                manifest = chrome.runtime.getManifest();
+            if (manifest)
+                AppVersion.version = manifest.version;
+                
+            AppVersion.onVersionUpdated();
+        } catch (err) {
+        }
     },
     
     onVersionUpdated : function () {
@@ -98,10 +101,14 @@ var Initialization = {
         CorrectorUIManager.onLocationOrTimeChanged();
     },
     
-  init: function () {  
+  init: function () {
+      try {
       if (!ChartController || !StarsSelection || !CorrectorUIManager || !SVGChart ||
           !PhotmetryTable || !InputValidator || !Hipparcos || Initialization.doneInit)
         return;
+      } catch (err) {
+        return;
+    }
       
     ChartController.init();
     StarsSelection.init();

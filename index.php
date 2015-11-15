@@ -95,8 +95,8 @@ if ($allowAccess)
             }
                         
             if ($proxyfor == 'casu-adc-tycho'){
-                $url = "http://apm5.ast.cam.ac.uk/cgi-bin/wdb/hipp/tycho/query?tab_box=on&tab_vtmag=on&max_rows_returned=1000&ra=" . $_REQUEST['ra'] . '&dec='. $_REQUEST['dec'] .
-                 '&box=' . $_REQUEST['box'] . '&vtmag=' . $_REQUEST['vtmag'];
+                $url = "http://apm5.ast.cam.ac.uk/cgi-bin/wdb/hipp/tycho/query?max_rows_returned=1000&tab_dec=on&tab_ra=on&tab_box=on&tab_vtmag=on&ra=" . $_REQUEST['ra'] . '&dec='. $_REQUEST['dec'] .
+                 '&box=' . $_REQUEST['box'] . '&vtmag=' . $_REQUEST['vtmag'] . '&full_screen_mode=0';
             }
 
             $contextArr = [
@@ -109,6 +109,9 @@ if ($allowAccess)
             $context = stream_context_create($contextArr);
             $result = file_get_contents($url, false, $context);
             echo ($result);
+            
+            if ($proxyfor == 'casu-adc-tycho')
+                echo ('<!-- ' .$url . ' -->');
         }
         else // do the GUI
         {
