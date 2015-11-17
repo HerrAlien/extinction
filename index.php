@@ -84,11 +84,9 @@ if ($allowAccess)
             $proxyfor = $_REQUEST['proxyfor'];
             $qstring = $_SERVER['QUERY_STRING'];
             $url = '/';
-            
-            
+
             if ($proxyfor == 'aavso-vsp'){
-                $url = "https://www.aavso.org/apps/vsp/api/chart/?star=" . urlencode($_REQUEST['star']) . '&fov=' . $_REQUEST['fov'] 
-                        . '&format=' . $_REQUEST['format'] . '&maglimit=' . $_REQUEST['maglimit'];
+                $url = "https://www.aavso.org/apps/vsp/api/chart/?" . $qstring;
             }
             if ($proxyfor == 'aavso-vsp-chart-id'){
                 $url = "https://www.aavso.org/apps/vsp/api/chart/" . $_REQUEST['chartID'] . '/?format=' . $_REQUEST['format'] ;
@@ -104,17 +102,13 @@ if ($allowAccess)
                 'timeout' => 120,
                 'header'=>"User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) AppleWebKit/537.75.14 (KHTML, like Gecko) Version/7.0.3 Safari/7046A194A\r\n" .
                           "Upgrade-Insecure-Requests: 1\r\n" .
-                          "Connection: keep-alive\r\n"
-                
+                          "Connection: keep-alive\r\n"                
               ]
             ];
                
             $context = stream_context_create($contextArr);
             $result = file_get_contents($url, false, $context);
             echo ($result);
-            
-            if ($proxyfor == 'casu-adc-tycho')
-                echo ('<!-- ' .$url . ' -->');
         }
         else // do the GUI
         {
