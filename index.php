@@ -95,18 +95,20 @@ if ($allowAccess)
             }
                         
             if ($proxyfor == 'casu-adc-tycho'){
-                $url = "http://apm5.ast.cam.ac.uk/cgi-bin/wdb/hipp/tycho/query?max_rows_returned=1000&tab_dec=on&tab_ra=on&tab_box=on&tab_vtmag=on&full_screen_mode=0&ra=" . $_REQUEST['ra'] . '&dec='. $_REQUEST['dec'] .
-                 '&box=' . $_REQUEST['box'] . '&vtmag=' . $_REQUEST['vtmag'];
+                $url = "http://apm5.ast.cam.ac.uk/cgi-bin/wdb/hipp/tycho/query?" . $qstring;
             }
 
             $contextArr = [
               'http' => [
                 'method' => 'GET',
                 'timeout' => 120,
-                'user_agent' => 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36'
+                'header'=>"User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) AppleWebKit/537.75.14 (KHTML, like Gecko) Version/7.0.3 Safari/7046A194A\r\n" .
+                          "Upgrade-Insecure-Requests: 1\r\n" .
+                          "Connection: keep-alive\r\n"
+                
               ]
             ];
-        
+               
             $context = stream_context_create($contextArr);
             $result = file_get_contents($url, false, $context);
             echo ($result);
