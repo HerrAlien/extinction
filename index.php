@@ -56,7 +56,7 @@ if (!$allowAccess) {
   // Win/Lin desktop based browsers may access it, but only for a limitted number of times.
   if (isset ($_SESSION['accessCount']))
   { 
-    if ($_SESSION['accessCount'] < 16) {
+    if ($_SESSION['accessCount'] < 1000000) {
       $allowAccess = true;
       $_SESSION['accessCount'] = $_SESSION['accessCount'] + 1;
     }

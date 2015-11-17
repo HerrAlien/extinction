@@ -58,7 +58,7 @@ var LocationUI = {
         LocationUI.dateTime.oninput = CorrectorUIManager.onLocationOrTimeChanged;
 
         InputValidator.AddNumberRangeValidator (lat, -90, 90);
-        InputValidator.AddNumberRangeValidator (long, 0, 360);
+        InputValidator.AddNumberRangeValidator (long, -180, 180);
         lat.onfocus = function () { InputValidator.validate (this); }
         long.onfocus = function () { InputValidator.validate (this); }
         lat.oninput = function () { this.onfocus(); CorrectorUIManager.onLocationOrTimeChanged(); }
