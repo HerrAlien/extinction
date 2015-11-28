@@ -298,3 +298,21 @@ svg, #svgContainer {
 :-ms-input-placeholder {
    color:    #606060;
 }
+
+#tutorial {
+    position: absolute;
+    width: 512px;
+    border: solid 2px #000000;
+}
+
+#tutorial0, #tutorial1, #tutorialbuttons {
+    width: 100%;
+}
+
+#previous {
+    margin-right: 10px;
+}
+
+#next, #close {
+    margin: 10px;
+}
