@@ -29,6 +29,8 @@ var Tutorial = {
     
     window : document.getElementById("tutorial"),
     
+    previousEvt : null,
+    
     init : function () {
         var sectionNames = ["tutorial0", "tutorial1", "tutorial2", "tutorial3", "tutorial4", "tutorial5", 
                     "tutorial6", "tutorial7", "tutorial8", "tutorial9", "tutorial10", "tutorial11", "tutorial12"];
@@ -80,11 +82,14 @@ var Tutorial = {
         caption.onmousemove = function (mouseEvt) {
             if (!Tutorial.captionGrabbed)
                 return;
-          
-            // get the window coordinates
-            // move the tutorial window
-            Tutorial.window.style.left = (Tutorial.window.offsetLeft + mouseEvt.movementX) + "px";
-            Tutorial.window.style.top = (Tutorial.window.offsetTop + mouseEvt.movementY) + "px";
+            
+            if (null != Tutorial.previousEvt) {
+                // use only API available on all browsers
+                Tutorial.window.style.left = (Tutorial.window.offsetLeft + mouseEvt.pageX - Tutorial.previousEvt.pageX) + "px";
+                Tutorial.window.style.top = (Tutorial.window.offsetTop + mouseEvt.pageY - Tutorial.previousEvt.pageY) + "px";
+            }
+            
+            Tutorial.previousEvt = mouseEvt;
         }
         
     },
