@@ -72,7 +72,7 @@ var Tutorial = {
         
         caption.onmouseup = function () {
             Tutorial.captionGrabbed = false;
-            this.style.cursor = "auto";
+            this.style.cursor = "pointer";
         }
         
         caption.onmouseout = caption.onmouseup;

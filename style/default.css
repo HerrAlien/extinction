@@ -333,6 +333,10 @@ svg, #svgContainer {
     margin: 10px;
 }
 
+#next, #close, #previous {
+    text-decoration: underline;
+}
+
 #tutorialbuttons {
     margin-top: 10px;
 }
@@ -344,4 +348,5 @@ svg, #svgContainer {
     border-bottom: solid 2px #000000;
     line-height: 30px;
     font-size: 15px;
+    cursor: pointer;
 }
