@@ -43,6 +43,8 @@ var Tutorial = {
         var launchTutorLink = document.getElementById ("launchtutorial");
         launchTutorLink.onclick = function () {
             Tutorial.window.style.display = "block";
+            Tutorial.window.style.top = "200px";
+            Tutorial.window.style.left = "200px";
         }
         
         var closeTutorWindow = document.getElementById ("close");
@@ -75,6 +77,7 @@ var Tutorial = {
         caption.onmouseup = function () {
             Tutorial.captionGrabbed = false;
             this.style.cursor = "pointer";
+            Tutorial.previousEvt = null;
         }
         
         caption.onmouseout = caption.onmouseup;
