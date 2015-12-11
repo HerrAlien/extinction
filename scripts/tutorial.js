@@ -33,7 +33,7 @@ var Tutorial = {
     
     init : function () {
         var sectionNames = ["tutorial0", "tutorial1", "tutorial2", "tutorial3", "tutorial4", "tutorial5", 
-                    "tutorial6", "tutorial7", "tutorial8", "tutorial9", "tutorial10", "tutorial11", "tutorial12"];
+                    "tutorial6", "tutorial7", "tutorial7b", "tutorial8", "tutorial9", "tutorial10", "tutorial11", "tutorial12"];
         var i = 0;
         for (; i < sectionNames.length; i++) {
             Tutorial.sections.push (document.getElementById(sectionNames[i]));
@@ -45,6 +45,7 @@ var Tutorial = {
             Tutorial.window.style.display = "block";
             Tutorial.window.style.top = "200px";
             Tutorial.window.style.left = "200px";
+			Tutorial.changeSection (0);
         }
         
         var closeTutorWindow = document.getElementById ("close");
@@ -58,8 +59,6 @@ var Tutorial = {
             var toIndex = Math.max (Tutorial.currentChapter - 1, 0);
             Tutorial.changeSection (toIndex);
         }
-        
-        prevAnchor.onclick();
         
         var nextAnchor = document.getElementById ("next");
         nextAnchor.onclick = function () {

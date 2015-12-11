@@ -319,7 +319,10 @@ svg, #svgContainer {
     width : 100%;
 }
 
-#tutorial0, #tutorial1, #tutorial2, #tutorial3, #tutorial4, #tutorial5, #tutorial6, #tutorial7, #tutorial8, #tutorial9, #tutorial10, #tutorial11,  #tutorial12{
+#tutorial0, #tutorial1, #tutorial2, #tutorial3, 
+#tutorial4, #tutorial5, #tutorial6, #tutorial7, #tutorial7b,
+#tutorial8, #tutorial9, #tutorial10, #tutorial11, 
+ #tutorial12{
     width: 99%;
     display: none;
     margin: 5px;
