@@ -21,17 +21,16 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl.html
 var Tutorial = {
     
     currentChapter : 0,
-    captionGrabbed : false,
-    
-    previousDragPos : [0, 0],
-    
+
     sections : [], // to be filled in with the DIVs
-    
-    window : document.getElementById("tutorial"),
-    
-    previousEvt : null,
+    popup : null, 
+    window : null, 
     
     init : function () {
+        
+        Tutorial.popup = new PopupWindow ("tutorial", "tutorialcaption");
+        Tutorial.window = Tutorial.popup._window;
+        
         var sectionNames = ["tutorial0", "tutorial1", "tutorial2", "tutorial3", "tutorial4", "tutorial5", 
                     "tutorial6", "tutorial7", "tutorial7b", "tutorial8", "tutorial9", "tutorial10", "tutorial11", "tutorial12"];
         var i = 0;
@@ -65,35 +64,6 @@ var Tutorial = {
             var toIndex = Math.min (Tutorial.currentChapter + 1, sectionNames.length - 1);
             Tutorial.changeSection (toIndex);
         }
-        
-        // associate the drag event -> move window
-        var caption = document.getElementById ("tutorialcaption");
-        caption.onmousedown = function () {
-            Tutorial.captionGrabbed = true;
-            this.style.cursor = "move";
-        }
-        
-        caption.onmouseup = function () {
-            Tutorial.captionGrabbed = false;
-            this.style.cursor = "pointer";
-            Tutorial.previousEvt = null;
-        }
-        
-        caption.onmouseout = caption.onmouseup;
-        
-        caption.onmousemove = function (mouseEvt) {
-            if (!Tutorial.captionGrabbed)
-                return;
-            
-            if (null != Tutorial.previousEvt) {
-                // use only API available on all browsers
-                Tutorial.window.style.left = (Tutorial.window.offsetLeft + mouseEvt.pageX - Tutorial.previousEvt.pageX) + "px";
-                Tutorial.window.style.top = (Tutorial.window.offsetTop + mouseEvt.pageY - Tutorial.previousEvt.pageY) + "px";
-            }
-            
-            Tutorial.previousEvt = mouseEvt;
-        }
-        
     },
     
     changeSection : function (toIndex) {
