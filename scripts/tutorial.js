@@ -32,7 +32,7 @@ var Tutorial = {
         Tutorial.window = Tutorial.popup._window;
         
         var sectionNames = ["tutorial0", "tutorial1", "tutorial2", "tutorial3", "tutorial4", "tutorial5", 
-                    "tutorial6", "tutorial7", "tutorial7b", "tutorial8", "tutorial9", "tutorial10", "tutorial11", "tutorial12"];
+                    "tutorial6", "tutorial7", "tutorial7as", "tutorial7s", "tutorial7b", "tutorial8", "tutorial9", "tutorial10", "tutorial11", "tutorial12"];
         var i = 0;
         for (; i < sectionNames.length; i++) {
             Tutorial.sections.push (document.getElementById(sectionNames[i]));
