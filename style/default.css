@@ -309,6 +309,7 @@ svg, #svgContainer {
     left: 200px;
     position: absolute;
     width: 512px;
+	height: 400px;
     border: solid 2px #000000;
     display: none;
     z-index: 999;
@@ -342,7 +343,8 @@ svg, #svgContainer {
 }
 
 #tutorialbuttons {
-    margin-top: 10px;
+	position: absolute;
+    top: 380px;
 }
 
 #tutorialcaption {
@@ -350,7 +352,7 @@ svg, #svgContainer {
     background-color : #dadadf;
     margin-bottom: 20px;
     border-bottom: solid 2px #000000;
-    line-height: 30px;
+    line-height: 50px;
     font-size: 15px;
     cursor: pointer;
 }

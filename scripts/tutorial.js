@@ -42,8 +42,8 @@ var Tutorial = {
         var launchTutorLink = document.getElementById ("launchtutorial");
         launchTutorLink.onclick = function () {
             Tutorial.window.style.display = "block";
-            Tutorial.window.style.top = "200px";
-            Tutorial.window.style.left = "200px";
+            Tutorial.window.style.top = "500px";
+            Tutorial.window.style.left = "480px";
 			Tutorial.changeSection (0);
         }
         
