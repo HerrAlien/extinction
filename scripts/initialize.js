@@ -104,12 +104,13 @@ var Initialization = {
   init: function () {
       try {
       if (!ChartController || !StarsSelection || !CorrectorUIManager || !SVGChart ||
-          !PhotmetryTable || !InputValidator || !Hipparcos || Initialization.doneInit)
+          !PhotmetryTable || !InputValidator || !Hipparcos || !Tutorial || Initialization.doneInit || (typeof PopupWindow == 'undefined'))
         return;
       } catch (err) {
         return;
     }
-      
+    
+    Tutorial.init();    
     ChartController.init();
     StarsSelection.init();
     CorrectorUIManager.init();

@@ -176,15 +176,15 @@ span.title {
     display: block;
 }
 
-.addAnchor, .deleteAnchor {
+.addAnchor, .deleteAnchor, #previous, #next, #close {
     font-weight: bold;
 }
 
-.addAnchor {
+.addAnchor, #previous, #next {
     color: #208820;
 }
 
-.deleteAnchor {
+.deleteAnchor, #close {
     color: #882020;
 }
 
@@ -297,4 +297,62 @@ svg, #svgContainer {
 }
 :-ms-input-placeholder {
    color:    #606060;
+}
+
+#launchtutorial {
+    color: -webkit-link;
+    text-decoration: underline;
+}
+
+#tutorial {
+    top: 200px;
+    left: 200px;
+    position: absolute;
+    width: 512px;
+	height: 480px;
+    border: solid 2px #000000;
+    display: none;
+    z-index: 999;
+    background-color: #ffffff;
+}
+
+#tutorialbuttons , #tutorialcaption {
+    width : 100%;
+}
+
+#tutorial0, #tutorial1, #tutorial2, #tutorial3, 
+#tutorial4, #tutorial5, #tutorial6, #tutorial7, 
+#tutorial7b, #tutorial7c, #tutorial7s, 
+#tutorial9, #tutorial10, #tutorial11, 
+ #tutorial12,  #tutorial13{
+    width: 99%;
+    display: none;
+    margin: 5px;
+}
+
+#previous {
+    margin-right: 10px;
+}
+
+#next, #close {
+    margin: 10px;
+}
+
+#next, #close, #previous {
+    text-decoration: underline;
+}
+
+#tutorialbuttons {
+	position: absolute;
+    top: 460px;
+}
+
+#tutorialcaption {
+    text-align: right;
+    background-color : #dadadf;
+    margin-bottom: 20px;
+    border-bottom: solid 2px #000000;
+    line-height: 50px;
+    font-size: 15px;
+    cursor: pointer;
 }

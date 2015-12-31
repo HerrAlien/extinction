@@ -33,7 +33,7 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl.html
     <div id="container">
       <div id="topmenu">
           <a href="https://bitbucket.org/herr_alien/extinction-o-meter/" target="_blank">Project Homepage</a> | 
-          <a href="https://bitbucket.org/herr_alien/extinction-o-meter/wiki/Tutorial" target="_blank">Tutorial</a>
+          <a nohref id="launchtutorial">Tutorial</a>
       </div>
       <div class="clear">&nbsp;</div>
       <div id="banner">
@@ -168,6 +168,156 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl.html
         </div>
 
       </div>
+    
+        <!-- this DIV is usually hidden, unless you're doing the tutorial -->
+        <div id="tutorial">
+            <div id="tutorialcaption"> 
+                    <a nohref id="close">Close tutorial window</a>
+            </div>
+            <!-- only one of these can be visible -->
+            <div id="tutorial0">
+                <h3>Welcome to the <i>Step-by-step tutorial for Nova Sgr 2015 No. 2</i> for the Extinction-o-Meter app.</h3>
+                <p>The application provides an easy way to apply differential extinction corrections to visual brightness estimates of variable stars. 
+                This is strongly encouraged especially when performing visual photometry for variable stars at an altitude below 20 degrees, 
+                when differences in airmass between the variable star and comparison stars may skew the estimated brightness of the variable. 
+                It can use a predetermined extinction coefficient, or it can determine one from visual brightness estimates of known stars 
+                (<a href="https://docs.google.com/document/d/18RcrzoP0-Xy8_-xsWbnwWAj2m1lAL5WrHUm5S-Neu7Y/edit#heading=h.36rib9ttizf2">see here</a>).</p>
+            </div>
+
+            <div id="tutorial1">
+                <h3>Date and time</h3>
+                Set <i>Date &amp; time:</i> to <strong>2015/04/13 01:30:00</strong>
+                <br>
+                <img src="resources/tutorial/tutorial1.png">
+                
+                <p><i>You can also specify the date as Julian Date (JD).</i></p>
+            </div>
+        
+            <div id="tutorial2">
+                <h3>Location</h3>
+                <ul>
+                    <li>Set <i>Latitude:</i> <strong>45.705</strong></li>
+                    <li>Set <i>Longitude:</i> <strong>25.653</strong></li>
+                </ul>
+                <img src="resources/tutorial/tutorial2.png">
+                
+            </div>
+        
+            <div id="tutorial3">                
+                <h3>Location</h3>
+                <p><i>For this tutorial, the values entered manually are OK. When processing your own data, you can also use the Geolocation link to automatically fill in these fields with your current location:</i></p>
+                <img src="resources/tutorial/tutorial3.png">
+            </div>
+
+            <div id="tutorial4">
+                <h3>Chart</h3>
+                Fill in the following fields in order to generate a star chart:
+                <ul>
+                    <li>Name of the variable star: <strong>Nova Sgr 2015 No. 2</strong></li>
+                    <li>Limiting magnitude: <strong>7</strong></li>
+                    <li>FOV [arc minutes]: <strong>1200</strong></li>
+                    <li>Click the <strong>'Update Chart'</strong> button </li>
+                </ul>
+                <img src="resources/tutorial/tutorial4.png">
+            </div>
+        
+            <div id="tutorial5">                
+                <h3>Chart</h3>
+                <p><i>Alternatively, you can use an AAVSO chart ID instead of the star name; in that case, the limiting magnitude and the FOV are the same as the one used to generate the AAVSO chart.</i></p>
+                
+                <img src="resources/tutorial/tutorial5.png">
+            </div>
+        
+            <div id="tutorial6">               
+                <h3>Chart</h3>
+                <p><i>The chart orientation can be changed at any time, without having to click 'Update Chart', and without having to retrieve the data again.</i></p>
+                <br>
+                <img src="resources/tutorial/tutorial6.png">
+            </div>
+
+            <div id="tutorial7">
+                <h3>Brightness estimate</h3>
+                Here you have to specify the brightness estimate of the variable star, by bracketig it between two comparison stars.
+                <p>Bright star: select the star labeled <strong>57</strong>, in the NE part of the map, above the 'teapot handle'.</p>
+				First, click on the star selection field in the <strong>Bright star</strong> column:
+						<img src="resources/tutorial/beforeselectionactivation.png">
+                Then click the required star:
+                <img src="resources/tutorial/beforeselection_reduced.png">
+            </div>
+
+            <div id="tutorial7s">
+                <h3>Brightness estimate</h3>
+                <p>The selected star is now used in the active star selection field:</p>
+							<img src="resources/tutorial/doneselecting.png">
+				
+			</div>
+			<div id="tutorial7b">
+                <h3>Brightness estimate</h3><ul>
+                    <li>specify <strong>2</strong> as number of steps between the bright star and the variable 'V'</li>
+                    <li>specify <strong>3</strong> as number of steps between the variable 'V' and the dim star</li>
+                </ul>                
+
+                <img src="resources/tutorial/tutorial7_steps.png">
+            </div>
+        
+            <div id="tutorial7c">
+                <h3>Brightness estimate</h3>
+                <p>Dim star: select the star labeled <strong>63</strong>, from the small triangle asterism towards the center of the map, just South of Kaus Borealis.</p>
+                                
+                <img src="resources/tutorial/tutorial7_dim.png">
+                This would correspond to an estimation marked as A 2 V 3 B, where A is the 57 and B is the 63
+                <img src="resources/tutorial/tutorial7c.png">
+            </div>
+       
+            <div id="tutorial9">
+                <h3>Brightness estimate</h3>
+                <p>At this stage, the brightness estimate is <strong>5.9</strong>; the application will advise to apply extinction corrections, since the differences in airmass between the variable and comparison stars are too big</p>
+                <img src="resources/tutorial/tutorial9.png">
+                <p><i>You can add more estimations to the table, and the final number will be the average; the application also computes a standard deviation, and you can use that to judge if the newly added estimation is actually improving things (standard deviation decreases) or making them worse (standard deviation increases)</i></p>
+            </div>
+
+            <div id="tutorial10">
+                <h3>Extinction coefficient (K)</h3>
+
+                <ul>
+                    <li>click the <strong>Or compute it from observations</strong> radio button</li>
+                    <li>click the <strong>Argelander comparisons</strong> radio button (it should be already checked by default when starting the application).
+                    </li>
+                </ul>
+                    <p><em>When using Argelander comparisons, we need to provide at least two comparisons, so the table already has two rows</em></p>
+                    <img src="resources/tutorial/tutorial10.png">
+            </div>
+
+            <div id="tutorial11">
+                <h3>Extinction coefficient (K)</h3>
+                For the first comparison, select the <strong>47</strong> as bright star (in the Western part of the map, on the Northern part of the spout of the teapot asterism), specify <strong>2</strong> as brightness steps to the dim starand then select <strong>46</strong> as dim star, from the same region.
+                <img src="resources/tutorial/tutorial11.png">
+            </div>
+
+            <div id="tutorial12">
+                <h3>Extinction coefficient (K)</h3>
+                For the second comparison, select <strong>57</strong> as bright star (from the North-East side of the map, above the 'teapot handle'), specify <strong>1</strong> as brightness steps to the dim starand then select the <strong>59</strong> as dim star (just above the '57')</li>
+                        </ul>
+                    </li>
+                </ul>
+                <img src="resources/tutorial/tutorial12.png">
+                
+            </div>
+
+            <div id="tutorial13">
+                <h3>Extinction coefficient (K)</h3>                
+                <p>With the corrections required to compensate differential extinction, the brightness estimate of the variable  is now listed as <strong>5.57</strong></p>
+
+                <img src="resources/tutorial/tutorial13.png">
+            </div>
+
+            <div id="tutorialbuttons">
+                <div style="float:right;">
+                    <a nohref id="previous">&lt; Previous</a>
+                    <a nohref id="next">Next &gt;</a>
+                </div>
+            </div>
+        </div>
     </div>
     
 </body>
@@ -183,4 +333,6 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl.html
 <script src="scripts/hipparcos.js" async></script>
 <script src="scripts/svgchart.js" async></script>
 <script src="scripts/chartcontroller.js" async></script>
+<script src="scripts/tutorial.js" async></script>
+<script src="scripts/popup.js" async></script>
 <script src="scripts/initialize.js" async></script>
