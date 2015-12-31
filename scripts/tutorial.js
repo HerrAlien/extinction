@@ -32,7 +32,7 @@ var Tutorial = {
         Tutorial.window = Tutorial.popup._window;
         
         var sectionNames = ["tutorial0", "tutorial1", "tutorial2", "tutorial3", "tutorial4", "tutorial5", 
-                    "tutorial6", "tutorial7", "tutorial7as", "tutorial7s", "tutorial7b", "tutorial8", "tutorial9", "tutorial10", "tutorial11", "tutorial12"];
+                    "tutorial6", "tutorial7", "tutorial7s", "tutorial7b", "tutorial7c", "tutorial9", "tutorial10", "tutorial11", "tutorial12", "tutorial13"];
         var i = 0;
         for (; i < sectionNames.length; i++) {
             Tutorial.sections.push (document.getElementById(sectionNames[i]));
@@ -42,7 +42,7 @@ var Tutorial = {
         var launchTutorLink = document.getElementById ("launchtutorial");
         launchTutorLink.onclick = function () {
             Tutorial.window.style.display = "block";
-            Tutorial.window.style.top = "500px";
+            Tutorial.window.style.top = "480px";
             Tutorial.window.style.left = "480px";
 			Tutorial.changeSection (0);
         }

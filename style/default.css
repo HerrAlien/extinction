@@ -309,7 +309,7 @@ svg, #svgContainer {
     left: 200px;
     position: absolute;
     width: 512px;
-	height: 400px;
+	height: 480px;
     border: solid 2px #000000;
     display: none;
     z-index: 999;
@@ -322,9 +322,9 @@ svg, #svgContainer {
 
 #tutorial0, #tutorial1, #tutorial2, #tutorial3, 
 #tutorial4, #tutorial5, #tutorial6, #tutorial7, 
-#tutorial7b, #tutorial7as, #tutorial7s,
-#tutorial8, #tutorial9, #tutorial10, #tutorial11, 
- #tutorial12{
+#tutorial7b, #tutorial7c, #tutorial7s, 
+#tutorial9, #tutorial10, #tutorial11, 
+ #tutorial12,  #tutorial13{
     width: 99%;
     display: none;
     margin: 5px;
@@ -344,7 +344,7 @@ svg, #svgContainer {
 
 #tutorialbuttons {
 	position: absolute;
-    top: 380px;
+    top: 460px;
 }
 
 #tutorialcaption {
