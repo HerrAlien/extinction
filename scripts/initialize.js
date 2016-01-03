@@ -104,7 +104,8 @@ var Initialization = {
   init: function () {
       try {
       if (!ChartController || !StarsSelection || !CorrectorUIManager || !SVGChart ||
-          !PhotmetryTable || !InputValidator || !Hipparcos || !Tutorial || Initialization.doneInit || (typeof PopupWindow == 'undefined'))
+          !PhotmetryTable || !InputValidator || !Hipparcos || !Tutorial || Initialization.doneInit || 
+          !SaveLoadCompnent || (typeof PopupWindow == 'undefined'))
         return;
       } catch (err) {
         return;
@@ -114,6 +115,7 @@ var Initialization = {
     ChartController.init();
     StarsSelection.init();
     CorrectorUIManager.init();
+    SaveLoadCompnent.init();
 
     PhotmetryTable.onInit = function () {
     	setTimeout (function() {

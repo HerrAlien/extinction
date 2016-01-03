@@ -356,3 +356,31 @@ svg, #svgContainer {
     font-size: 15px;
     cursor: pointer;
 }
+
+#sessions {
+    border: none;
+    outline: 0;
+    padding: 0px;
+    width: 100%;
+    margin: 5px;
+}
+        
+#saveload {
+    padding: 5px;
+    width: 380px;
+    display: none;
+}
+        
+#sessionNameDiv, #sessionName, #saveLoadButtons {
+    width: 100%;
+}
+        
+#sessionNameDiv, #saveLoadButtons {
+    margin: 5px;
+}
+        
+#SaveSessionButton, #LoadSessionButton, 
+#sessionName, #sessions {
+    background-color: #ffffff;
+    border: solid 1px #777777;
+}

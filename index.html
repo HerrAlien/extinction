@@ -320,6 +320,21 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl.html
         </div>
     </div>
     
+    <div id="saveload">
+        <div id="sessionNameDiv">
+            <input type="text" id="sessionName" 
+            placeholder="New name to save session as"/>
+        </div>
+        <select  size="5" id="sessions">
+<!--            <option value="0">[2016-01-03 22:23:00] Nova Sgr 2015 No. 2 (12AK347Z)</option>  -->
+        </select>
+        <div id="saveLoadButtons">
+            <input type="button" value="Save" id="SaveSessionButton"/>
+            <input type="button" value="Load" id="LoadSessionButton"/>
+        </div>
+    </div>
+
+    
 </body>
 
 </html>
@@ -335,4 +350,5 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl.html
 <script src="scripts/chartcontroller.js" async></script>
 <script src="scripts/tutorial.js" async></script>
 <script src="scripts/popup.js" async></script>
+<script src="scripts/saveloadcomponent.js" async></script>
 <script src="scripts/initialize.js" async></script>
