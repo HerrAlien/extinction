@@ -81,6 +81,30 @@ var PhotmetryTable = {
                 );
             }
             
+            // when sorted, we can then use indices when saving sessions
+            PhotmetryTable.comparisonStars.sort(function (a, b) {
+               if (a.mag == b.mag) {
+                   if (a.ra == b.ra) {
+                       if (a.dec == b.dec)
+                           return 0;
+                       else if (a.dec < b.dec)
+                           return -1;
+                       else
+                           return 1;
+                   } else {
+                       if (a.ra < b.ra)
+                           return -1;
+                       else
+                           return 1;
+                   }
+               }else {
+                   if (a.mag < b.mag)
+                       return -1;
+                   else 
+                       return 1;
+               }                   
+            });
+            
             PhotmetryTable.variableStar.ra = Computations.parseCoordinate(starsData.ra, ":") * 15;
             PhotmetryTable.variableStar.dec = Computations.parseCoordinate(starsData.dec, ":");                
             PhotmetryTable.variableStar.name = starsData.star;                
