@@ -113,6 +113,14 @@ var Hipparcos = {
         
         Hipparcos.chart.stars = stars;
         return stars;
+    },
+    
+    saveToSession : function (session) {
+        // save the list of stars
+    },
+    
+    loadFromSession : function (session) {
+        
     }
 };
 

@@ -122,6 +122,14 @@ var EstimationCorrector = {
             pairedComparison.updateRating();
         }
     
+    },
+    
+    saveToSession : function (session) {
+
+    },
+    
+    loadFromSession : function (session) {
+        
     }
 };
 
@@ -552,6 +560,14 @@ var CorrectorUIManager = {
         } catch (err) {
         }
         ExtinctionCoefficient.updateUI();
+    },
+    
+    saveToSession : function (session) {
+        
+    },
+    
+    loadFromSession : function (session) {
+        
     }
 };
 

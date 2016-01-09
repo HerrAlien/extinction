@@ -194,7 +194,18 @@ var PhotmetryTable = {
                 PhotmetryTable.AAVSO.GetData (starsData);
                 PhotmetryTable.onInit();
 			}
-	}
+	},
+    
+    saveToSession : function (session) {
+        // save chart ID
+        // save the photometry table
+    },
+    
+    loadFromSession : function (session) {
+        
+    },
+    
+    
 };
 
 try {
