@@ -72,6 +72,8 @@ var Initialization = {
 
     doneInit : false,
     
+    url : "",
+    
     sesionData : {
         Photometry : {
             frame : {"fov":1200,"maglimit":7,"chartID":"X15387AOS"},
