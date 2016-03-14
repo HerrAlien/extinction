@@ -71,8 +71,10 @@ var LocationUI = {
 var Initialization = {
 
     doneInit : false,
-    
-    url : "",
+    url : false,  
+    urlDataObj : false,
+    oldOnInitPhtometryTable : false,
+    oldOnInitHipparcos : false,
     
     setURL : function (_u) {
         Initialization.url = _u;
@@ -116,6 +118,48 @@ var Initialization = {
             setTimeout (function () {Initialization.initFromURL(); }, 100);
         
         // TODO: actual init code
+        /*
+            var userInput = {dateTime: <dateTimeStr>, lat:<lat>, long:<long>, id: <chartID>, brightComps : [{b: <index>, b2v: <steps>, v2d: <steps>, d: <index>}+], useCoeff: <true|false>, k:<value>, extAlgo: <0|1>, extComps: [({b: <index>, b2d: <steps>, d: <index>} | {b: <index>, b2m: <steps>, m:<index>, m2d: <steps>, d: <index>})+]}
+        */
+        // get the URL fragment
+        var hashes = Initialization.url.split ('#');
+        if (hashes.length != 2)
+            return;
+        
+        // then turn it into an object
+        Initialization.urlDataObj = JSON.parse(hashes[1]);
+        // and now, start setting values and 
+        LocationUI.latitude = Initialization.urlDataObj.lat;
+        LocationUI.longitude = Initialization.urlDataObj.long;
+        LocationUI.dateTime = Initialization.urlDataObj.dateTime;
+        
+        ChartController.ui.variableStarElem = Initialization.urlDataObj.id;
+        
+        // save various callbacks (PhotmetryTable.onInit, Hipparcos.onInit)
+        Initialization.oldOnInitPhtometryTable = PhotmetryTable.onInit;
+        Initialization.oldOnInitHipparcos = Hipparcos.onInit;
+        // set new ones, that rely on the older ones
+        PhotmetryTable.onInit = function () {
+            Initialization.oldOnInitPhtometryTable();
+            var urlDataObj = Initialization.urlDataObj;
+            // set the brightness estimates
+            // set the extinction comparisons
+        }
+        // for Hipparcos.onInit, also call Initialization.restoreCallbacks
+        Hipparcos.onInit = function () {
+            Initialization.oldOnInitHipparcos();
+            Initialization.restoreCallbacks();
+        }
+        
+        // set ext. coeff, ext. choice, algorithm type
+        ChartController.ui.updateChartButton.onclick();
+    },
+    
+    restoreCallbacks : function () {
+        PhotmetryTable.onInit = Initialization.oldOnInitPhtometryTable;
+        Hipparcos.onInit = Initialization.oldOnInitHipparcos;
+        Initialization.oldOnInitPhtometryTable = false;
+        Initialization.oldOnInitHipparcos = false;
     },
     
   init: function () {
