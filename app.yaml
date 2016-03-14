@@ -22,5 +22,9 @@ handlers:
   static_files: manifest.json
   upload: manifest.json
 
+- url: /googleec11f857b3fda7de.html
+  static_files: googleec11f857b3fda7de.html
+  upload: googleec11f857b3fda7de.html
+
 - url: /.*
   script: index.php
