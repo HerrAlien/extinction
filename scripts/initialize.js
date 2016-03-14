@@ -116,7 +116,7 @@ var Initialization = {
             setTimeout (function () {Initialization.initFromURL(); }, 100);
         
         // TODO: actual init code
-    }
+    },
     
   init: function () {
       try {
