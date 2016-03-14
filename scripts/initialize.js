@@ -74,6 +74,10 @@ var Initialization = {
     
     url : "",
     
+    setURL : function (_u) {
+        Initialization.url = _u;
+    },
+    
     sesionData : {
         Photometry : {
             frame : {"fov":1200,"maglimit":7,"chartID":"X15387AOS"},
