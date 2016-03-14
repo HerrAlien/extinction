@@ -25,11 +25,18 @@ var Tutorial = {
     sections : [], // to be filled in with the DIVs
     popup : null, 
     window : null, 
+    prevAnchor : null,
+    nextAnchor : null,
+    activeLinkColor : null,
     
     init : function () {
         
         Tutorial.popup = new PopupWindow ("tutorial", "tutorialcaption");
         Tutorial.window = Tutorial.popup._window;
+        Tutorial.prevAnchor = document.getElementById ("previous");
+        Tutorial.nextAnchor = document.getElementById ("next");
+        Tutorial.activeLinkColor = Tutorial.nextAnchor.style.color;
+        
         
         var sectionNames = ["tutorial0", "tutorial1", "tutorial2", "tutorial3", "tutorial4", "tutorial5", 
                     "tutorial6", "tutorial7", "tutorial7s", "tutorial7b", "tutorial7c", "tutorial9", "tutorial10", "tutorial11", "tutorial12", "tutorial13"];
@@ -53,16 +60,19 @@ var Tutorial = {
         }
         
         // associate the next, previous and close links
-        var prevAnchor = document.getElementById ("previous");
+        var prevAnchor = Tutorial.prevAnchor;
+        var nextAnchor = Tutorial.nextAnchor;
+        
         prevAnchor.onclick = function () {
             var toIndex = Math.max (Tutorial.currentChapter - 1, 0);
             Tutorial.changeSection (toIndex);
+            
         }
         
-        var nextAnchor = document.getElementById ("next");
         nextAnchor.onclick = function () {
             var toIndex = Math.min (Tutorial.currentChapter + 1, sectionNames.length - 1);
             Tutorial.changeSection (toIndex);
+            
         }
     },
     
@@ -70,6 +80,19 @@ var Tutorial = {
         Tutorial.sections[Tutorial.currentChapter].style.display = "none";
         Tutorial.sections[toIndex].style.display = "block";
         Tutorial.currentChapter = toIndex;
+        
+        var prevAnchor = Tutorial.prevAnchor;
+        var nextAnchor = Tutorial.nextAnchor;
+        
+        if (0 == toIndex)
+            prevAnchor.style.color = "#000000";
+        else
+            prevAnchor.style.color = Tutorial.activeLinkColor;
+        
+        if (Tutorial.sections.length - 1 == toIndex)
+            nextAnchor.style.color = "#000000";
+        else
+            nextAnchor.style.color = Tutorial.activeLinkColor;            
     }
 };
 
