@@ -76,6 +76,7 @@ var Initialization = {
     
     setURL : function (_u) {
         Initialization.url = _u;
+        Initialization.initFromURL();
     },
     
     sesionData : {
@@ -106,6 +107,16 @@ var Initialization = {
         EstimationCorrector.init();
         CorrectorUIManager.onLocationOrTimeChanged();
     },
+    
+    initFromURL : function () {
+        if (!Initialization.url || Initialization.url.length < 1)
+            return;
+        
+        if (!Initialization.doneInit)
+            setTimeout (function () {Initialization.initFromURL(); }, 100);
+        
+        // TODO: actual init code
+    }
     
   init: function () {
       try {
@@ -168,6 +179,7 @@ var Initialization = {
     LocationUI.init();
     Initialization.initFromSessionData();
     Initialization.doneInit = true;
+    Initialization.initFromURL();
   }
 };
 
