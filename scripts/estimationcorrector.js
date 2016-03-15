@@ -112,6 +112,8 @@ var EstimationCorrector = {
                 ratingDiv.className = ratingLabels[rating];
             }
         })();
+        
+        return createdObj;
     },
     
     update : function () {

@@ -142,8 +142,34 @@ var Initialization = {
         PhotmetryTable.onInit = function () {
             Initialization.oldOnInitPhtometryTable();
             var urlDataObj = Initialization.urlDataObj;
+
             // set the brightness estimates
+            var copyBrightnessEstimateComp = function (comp, compToAdd) {
+                // stars to add are indices in the photometry table ...
+                comp.first.ui.brightSelector.set (PhotmetryTable.comparisonStars[compToAdd.b]);
+                comp.first.ui.valueLineEdit.value = compToAdd.b2v;
+                comp.first.ui.dimSelector.set (PhotmetryTable.variableStar);
+                comp.second.ui.brightSelector.set (PhotmetryTable.variableStar);
+                comp.second.ui.valueLineEdit.value = compToAdd.v2d;
+                comp.second.ui.dimSelector.set (PhotmetryTable.comparisonStars[compToAdd.d]);
+            }
+            
+            var i = 0;
+            for (i = 0; i < EstimationCorrector.pairedComparisons.length && i < urlDataObj.brightComps.length; i++)
+                copyBrightnessEstimateComp (EstimationCorrector.pairedComparisons[i], urlDataObj.brightComps [i]);
+            
+            // add remaining comparisons
+            for (; i < urlDataObj.brightComps.length; i++) {
+                var addedObject = EstimationCorrector.addNewComparison();
+                // set values via the addedObject.comp
+                copyBrightnessEstimateComp (addedObject.comp, urlDataObj.brightComps [i]);
+            }
+            // after setting all, call update on EstimationCorrector
+            EstimationCorrector.update();
+            
             // set the extinction comparisons
+            // first, set the existing ones in ExtinctionCoefficient.comparisons
+            // then keep adding row by row, and set values to the last comparison in the list.
         }
         // for Hipparcos.onInit, also call Initialization.restoreCallbacks
         Hipparcos.onInit = function () {
