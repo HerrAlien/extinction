@@ -72,13 +72,10 @@ var Initialization = {
 
     doneInit : false,
     url : false,  
-    urlDataObj : false,
-    oldOnInitPhtometryTable : false,
-    oldOnInitHipparcos : false,
     
     setURL : function (_u) {
         Initialization.url = _u;
-        Initialization.initFromURL();
+        DataShareLoader.load(Initialization.url);
     },
     
     sesionData : {
@@ -109,78 +106,7 @@ var Initialization = {
         EstimationCorrector.init();
         CorrectorUIManager.onLocationOrTimeChanged();
     },
-    
-    initFromURL : function () {
-        if (!Initialization.url || Initialization.url.length < 1)
-            return;
         
-        if (!Initialization.doneInit)
-            setTimeout (function () {Initialization.initFromURL(); }, 100);
-        
-        // TODO: actual init code
-        /*
-            var userInput = {dateTime: <dateTimeStr>, lat:<lat>, long:<long>, id: <chartID>, brightComps : [{b: <index>, b2v: <steps>, v2d: <steps>, d: <index>}+], useCoeff: <true|false>, k:<value>, extAlgo: <0|1>, extComps: [({b: <index>, b2d: <steps>, d: <index>} | {b: <index>, b2m: <steps>, m:<index>, m2d: <steps>, d: <index>})+]}
-        */
-        // get the URL fragment
-        var hashes = Initialization.url.split ('#');
-        if (hashes.length != 2)
-            return;
-        
-        // then turn it into an object
-        Initialization.urlDataObj = JSON.parse(hashes[1]);
-        // and now, start setting values and 
-        LocationUI.latitude = Initialization.urlDataObj.lat;
-        LocationUI.longitude = Initialization.urlDataObj.long;
-        LocationUI.dateTime = Initialization.urlDataObj.dateTime;
-        
-        ChartController.ui.variableStarElem = Initialization.urlDataObj.id;
-        
-        // save various callbacks (PhotmetryTable.onInit, Hipparcos.onInit)
-        Initialization.oldOnInitPhtometryTable = PhotmetryTable.onInit;
-        Initialization.oldOnInitHipparcos = Hipparcos.onInit;
-        // set new ones, that rely on the older ones
-        PhotmetryTable.onInit = function () {
-            Initialization.oldOnInitPhtometryTable();
-            var urlDataObj = Initialization.urlDataObj;
-
-            // set the brightness estimates
-            var copyBrightnessEstimateComp = function (comp, compToAdd) {
-                // stars to add are indices in the photometry table ...
-                comp.first.ui.brightSelector.set (PhotmetryTable.comparisonStars[compToAdd.b]);
-                comp.first.ui.valueLineEdit.value = compToAdd.b2v;
-                comp.first.ui.dimSelector.set (PhotmetryTable.variableStar);
-                comp.second.ui.brightSelector.set (PhotmetryTable.variableStar);
-                comp.second.ui.valueLineEdit.value = compToAdd.v2d;
-                comp.second.ui.dimSelector.set (PhotmetryTable.comparisonStars[compToAdd.d]);
-            }
-            
-            var i = 0;
-            for (i = 0; i < EstimationCorrector.pairedComparisons.length && i < urlDataObj.brightComps.length; i++)
-                copyBrightnessEstimateComp (EstimationCorrector.pairedComparisons[i], urlDataObj.brightComps [i]);
-            
-            // add remaining comparisons
-            for (; i < urlDataObj.brightComps.length; i++) {
-                var addedObject = EstimationCorrector.addNewComparison();
-                // set values via the addedObject.comp
-                copyBrightnessEstimateComp (addedObject.comp, urlDataObj.brightComps [i]);
-            }
-            // after setting all, call update on EstimationCorrector
-            EstimationCorrector.update();
-            
-            // set the extinction comparisons
-            // first, set the existing ones in ExtinctionCoefficient.comparisons
-            // then keep adding row by row, and set values to the last comparison in the list.
-        }
-        // for Hipparcos.onInit, also call Initialization.restoreCallbacks
-        Hipparcos.onInit = function () {
-            Initialization.oldOnInitHipparcos();
-            Initialization.restoreCallbacks();
-        }
-        
-        // set ext. coeff, ext. choice, algorithm type
-        ChartController.ui.updateChartButton.onclick();
-    },
-    
     restoreCallbacks : function () {
         PhotmetryTable.onInit = Initialization.oldOnInitPhtometryTable;
         Hipparcos.onInit = Initialization.oldOnInitHipparcos;
@@ -249,7 +175,7 @@ var Initialization = {
     LocationUI.init();
     Initialization.initFromSessionData();
     Initialization.doneInit = true;
-    Initialization.initFromURL();
+    DataShareLoader.load(Initialization.url);
   }
 };
 
