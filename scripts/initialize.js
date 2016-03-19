@@ -106,18 +106,11 @@ var Initialization = {
         EstimationCorrector.init();
         CorrectorUIManager.onLocationOrTimeChanged();
     },
-        
-    restoreCallbacks : function () {
-        PhotmetryTable.onInit = Initialization.oldOnInitPhtometryTable;
-        Hipparcos.onInit = Initialization.oldOnInitHipparcos;
-        Initialization.oldOnInitPhtometryTable = false;
-        Initialization.oldOnInitHipparcos = false;
-    },
     
   init: function () {
       try {
       if (!ChartController || !StarsSelection || !CorrectorUIManager || !SVGChart ||
-          !PhotmetryTable || !InputValidator || !Hipparcos || Initialization.doneInit)
+          !PhotmetryTable || !InputValidator || !Hipparcos || !DataShareLoader || Initialization.doneInit)
         return;
       } catch (err) {
         return;
