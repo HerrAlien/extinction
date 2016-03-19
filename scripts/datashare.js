@@ -124,6 +124,24 @@ var DataShareLoader = {
 
 };
 
+var DataShareSave = {
+    onSaveClicked : function () {
+        /*chrome.app.window.create('share.html', { id: 'share', bounds: { width: 640, height: 120 } },
+        function(win) {
+            // win.contentWindow;
+            // set the link
+            // associate the onclick handler
+        });*/
+    },
+    
+    init: function () {
+        var link = document.getElementById("shareDataLink");
+        link.onclick = function () {
+            DataShareSave.onSaveClicked();
+        }
+    }
+};
+
 try {
 if (Initialization)
     Initialization.init();

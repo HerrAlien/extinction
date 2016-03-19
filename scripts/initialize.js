@@ -119,6 +119,7 @@ var Initialization = {
     ChartController.init();
     StarsSelection.init();
     CorrectorUIManager.init();
+    DataShareSave.init();
 
     PhotmetryTable.onInit = function () {
     	setTimeout (function() {
