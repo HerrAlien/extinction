@@ -53,3 +53,10 @@ function PopupWindow (windowID, captionID) {
         previousEvt = mouseEvt;
     }
 }
+
+
+try {
+if (Initialization)
+    Initialization.init();
+} catch (err) {
+}

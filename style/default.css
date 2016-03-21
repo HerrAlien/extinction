@@ -298,3 +298,40 @@ svg, #svgContainer {
 :-ms-input-placeholder {
    color:    #606060;
 }
+
+
+#datashare {
+    top: 200px;
+    left: 200px;
+    position: absolute;
+    width: 400px;
+	height: 130px;
+    border: solid 2px #000000;
+    /*display: none; */
+    z-index: 999;
+    background-color: #ffffff;
+}
+
+#datashare input {
+	width: 100%;
+}
+
+#datasharecaption {
+    text-align: right;
+    background-color : #dadadf;
+    margin-bottom: 20px;
+    border-bottom: solid 2px #000000;
+    line-height: 50px;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+#closedatashare {
+    margin: 10px;
+}
+
+#closedatashare {
+    text-decoration: underline;
+}
+
+
