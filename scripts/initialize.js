@@ -109,7 +109,7 @@ var Initialization = {
     
   init: function () {
       try {
-      if (!ChartController || !StarsSelection || !CorrectorUIManager || !SVGChart ||
+      if (!ChartController || !StarsSelection || !CorrectorUIManager || !SVGChart || (typeof PopupWindow == 'undefined') ||
           !PhotmetryTable || !InputValidator || !Hipparcos || !DataShareLoader || Initialization.doneInit)
         return;
       } catch (err) {
