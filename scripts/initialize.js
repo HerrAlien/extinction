@@ -110,8 +110,8 @@ var Initialization = {
   init: function () {
       try {
       if (!ChartController || !StarsSelection || !CorrectorUIManager || !SVGChart || 
-	     (typeof PopupWindow == 'undefined') || !PhotmetryTable || !InputValidator || 
-		 !Hipparcos || !DataShareLoader || !DataShareSave || Initialization.doneInit)
+          !PhotmetryTable || !InputValidator || !Hipparcos || !DataShareLoader || 
+          !DataShareSave || Initialization.doneInit)
         return;
       } catch (err) {
         return;

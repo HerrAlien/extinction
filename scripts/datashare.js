@@ -126,20 +126,9 @@ var DataShareLoader = {
 
 var DataShareSave = {
 	
-	popup : null,
 	urlinput : document.getElementById("datashareurl"),
 
     init: function () {
-		DataShareSave.popup = new PopupWindow("datashare", "datasharecaption");
-        var link = document.getElementById("shareDataLink");
-		
-        link.onclick = function () {
-            DataShareSave.popup._window.style.display = "block";
-        }
-		
-		document.getElementById ("closedatashare").onclick = function () {
-			DataShareSave.popup._window.style.display = "none";
-		}
     }
 };
 
