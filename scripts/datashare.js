@@ -34,6 +34,7 @@ var DataShareLoader = {
     },
     
     initFromMembers : function () {
+		DataShareLoader.urlDataObj = false;
         if (!DataShareLoader.url)
             return;
         if (!Initialization.doneInit) {
@@ -42,7 +43,8 @@ var DataShareLoader = {
         }
         
         DataShareLoader.initDataObj();
-        DataShareLoader.loadFromObj();
+		if (DataShareLoader.urlDataObj)
+			DataShareLoader.loadFromObj();
     },
     
     initDataObj : function () {
@@ -53,12 +55,17 @@ var DataShareLoader = {
     },
     
     loadFromObj : function () {
-        LocationUI.latitude.value = DataShareLoader.urlDataObj.lat;
-        LocationUI.longitude.value = DataShareLoader.urlDataObj.long;
-        LocationUI.dateTime.value = DataShareLoader.urlDataObj.dateTime;
+		if (DataShareLoader.urlDataObj.lat)
+			LocationUI.latitude.value = DataShareLoader.urlDataObj.lat;
+		
+		if (DataShareLoader.urlDataObj.long)
+			LocationUI.longitude.value = DataShareLoader.urlDataObj.long;
+		
+		if (DataShareLoader.urlDataObj.dateTime)
+			LocationUI.dateTime.value = DataShareLoader.urlDataObj.dateTime;
         // TODO: user input update
-        
-        ChartController.ui.variableStarElem.value = DataShareLoader.urlDataObj.id;
+        if (DataShareLoader.urlDataObj.id)
+			ChartController.ui.variableStarElem.value = DataShareLoader.urlDataObj.id;
         
         // save various callbacks (PhotmetryTable.onInit, Hipparcos.onInit)
         DataShareLoader.callbacks.AAVSO = PhotmetryTable.onInit;
