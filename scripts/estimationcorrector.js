@@ -554,6 +554,7 @@ var CorrectorUIManager = {
         } catch (err) {
         }
         ExtinctionCoefficient.updateUI();
+        DataShareSave.update();
     }
 };
 

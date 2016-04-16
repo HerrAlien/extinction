@@ -134,8 +134,26 @@ var DataShareLoader = {
 var DataShareSave = {
 	
 	urlinput : document.getElementById("datashareurl"),
+    baseURL : "http://extinction-o-meter.appspot.com/",
 
     init: function () {
+        if (!DataShareSave.urlinput)
+            return;
+        
+        DataShareSave.urlinput.onclick = function () { DataShareSave.urlinput.select(); }
+        
+        DataShareSave.update();
+    },
+    
+    update: function () {
+        if (!DataShareSave.urlinput)
+            return;
+        
+        var dataObj = {};
+        // fetch the data
+        // stringify it, and build the URL
+        var fullURL = DataShareSave.baseURL + "#" + JSON.stringify(dataObj);
+        DataShareSave.urlinput.value = fullURL;
     }
 };
 
