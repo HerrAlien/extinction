@@ -134,6 +134,9 @@ var Initialization = {
                     SVGChart.drawBorder ();
                     CorrectorUIManager.onLocationOrTimeChanged();
                 }, 100);
+			
+			// this sets whatever data we have from the URL.
+			DataShareLoader.setUserInputData();
         }, 100);
     }
 

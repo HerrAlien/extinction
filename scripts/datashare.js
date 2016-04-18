@@ -23,11 +23,6 @@ var DataShareLoader = {
     url : false,
     urlDataObj : false,
     
-    callbacks : {
-        AAVSO : false,
-        HIPPARCOS : false
-    },
-    
     load : function (fromURL) {
         DataShareLoader.url = fromURL;
         DataShareLoader.initFromMembers();
@@ -67,36 +62,27 @@ var DataShareLoader = {
         if (DataShareLoader.urlDataObj.id)
 			ChartController.ui.variableStarElem.value = DataShareLoader.urlDataObj.id;
         
-        // save various callbacks (PhotmetryTable.onInit, Hipparcos.onInit)
-        DataShareLoader.callbacks.AAVSO = PhotmetryTable.onInit;
-        DataShareLoader.callbacks.HIPPARCOS = Hipparcos.onInit;
-        
-        PhotmetryTable.onInit = function () {
-            DataShareLoader.callbacks.AAVSO();
-            DataShareLoader.setUserInputData ();
-        }
-        
-        Hipparcos.onInit = function () {
-            DataShareLoader.callbacks.HIPPARCOS();
-            DataShareLoader.restoreCallbacks();
-        }
         
         ChartController.ui.updateChartButton.onclick();
     },
     
     setUserInputData : function () {
         var urlDataObj = DataShareLoader.urlDataObj;
+		if (!urlDataObj)
+			return;
+		
+		EstimationCorrector.updateAirmassFromInput (PhotmetryTable.variableStar);
 
         // brightness estimates
         var i = 0;
         for (i = 0; i < EstimationCorrector.pairedComparisons.length && i < urlDataObj.brightComps.length; i++)
-            DataShareLoader.copyBrightnessEstimateComp (EstimationCorrector.pairedComparisons[i], urlDataObj.brightComps [i]);
+            DataShareLoader.copyComparisonData (EstimationCorrector.pairedComparisons[i], urlDataObj.brightComps [i]);
             
         // add remaining comparisons
         for (; i < urlDataObj.brightComps.length; i++) {
             var addedObject = EstimationCorrector.addNewComparison();
             // set values via the addedObject.comp
-            DataShareLoader.copyBrightnessEstimateComp (addedObject.comp, urlDataObj.brightComps [i]);
+            DataShareLoader.copyComparisonData (addedObject.comp, urlDataObj.brightComps [i]);
         }
         // after setting all, call update on EstimationCorrector
         EstimationCorrector.update();
@@ -112,21 +98,23 @@ var DataShareLoader = {
         // finally, user input update.
     },
     
-    restoreCallbacks : function () {
-        PhotmetryTable.onInit = DataShareLoader.callbacks.AAVSO;
-        Hipparcos.onInit = DataShareLoader.callbacks.HIPPARCOS;
-        DataShareLoader.callbacks.AAVSO = false;
-        DataShareLoader.callbacks.HIPPARCOS = false;
-    },
     
     copyComparisonData : function (comp, compToAdd) {
         // stars to add are indices in the photometry table ...
-        comp.first.ui.brightSelector.set (PhotmetryTable.comparisonStars[compToAdd.b]);
+		if (compToAdd.b >= 0 && compToAdd.b < PhotmetryTable.comparisonStars.length) {
+			var st = PhotmetryTable.comparisonStars[compToAdd.b]; 
+			EstimationCorrector.updateAirmassFromInput (st);
+			comp.first.ui.brightSelector.set (st);
+		}
         comp.first.ui.valueLineEdit.value = compToAdd.b2v;
         comp.first.ui.dimSelector.set (PhotmetryTable.variableStar);
         comp.second.ui.brightSelector.set (PhotmetryTable.variableStar);
         comp.second.ui.valueLineEdit.value = compToAdd.v2d;
-        comp.second.ui.dimSelector.set (PhotmetryTable.comparisonStars[compToAdd.d]);
+		if (compToAdd.d >= 0 && compToAdd.d < PhotmetryTable.comparisonStars.length){
+			var st = PhotmetryTable.comparisonStars[compToAdd.d]; 
+			EstimationCorrector.updateAirmassFromInput (st);
+			comp.first.ui.dimSelector.set (st);
+		}
     }
 
 };
@@ -151,6 +139,23 @@ var DataShareSave = {
         
         var dataObj = {};
         // fetch the data
+		dataObj["lat"] = LocationUI.latitude.value;
+		dataObj["long"] = LocationUI.longitude.value;
+		dataObj["dateTime"] = LocationUI.dateTime.value;
+		dataObj["id"] = ChartController.ui.variableStarElem.value;
+	    dataObj["brightComps"] = [];
+		var i = 0;
+		for (i = 0; i < EstimationCorrector.pairedComparisons.length; i++) {
+			var objToAdd = {};
+			var comparisonToSave = EstimationCorrector.pairedComparisons[i];
+			// index of the bright star in the PhotmetryTable.comparisonStars
+			objToAdd["b"] = PhotmetryTable.comparisonStars.indexOf(comparisonToSave.first.bright());
+			objToAdd["b2v"] = comparisonToSave.first.value();
+			objToAdd["v2d"] = comparisonToSave.second.value();
+			objToAdd["d"] = PhotmetryTable.comparisonStars.indexOf(comparisonToSave.second.dim());
+			dataObj["brightComps"].push(objToAdd);
+		}
+		
         // stringify it, and build the URL
         var fullURL = DataShareSave.baseURL + "#" + JSON.stringify(dataObj);
         DataShareSave.urlinput.value = fullURL;
