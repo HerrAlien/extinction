@@ -133,11 +133,11 @@ var Initialization = {
                     SVGChart.init (coords[0], coords[1], frame.fov, frame.maglimit);
                     SVGChart.drawBorder ();
                     CorrectorUIManager.onLocationOrTimeChanged();
-                }, 100);
+                }, 1);
 			
 			// this sets whatever data we have from the URL.
 			DataShareLoader.setUserInputData();
-        }, 100);
+        }, 1);
     }
 
     var extinctionCoeffInput = document.getElementById("K");
@@ -155,7 +155,7 @@ var Initialization = {
         SVGChart.updateStars (Hipparcos.chart.stars);   	
     	SVGChart.drawCenterMark();
     	SVGChart.updateComparisonLabels (PhotmetryTable.comparisonStars);
-    	setTimeout(function() { Log.message (PhotmetryTable.variableStar.name + ", lim. mag.=" + PhotmetryTable.frame.maglimit + ", FOV[']=" + PhotmetryTable.frame.fov + "; chart id=" + PhotmetryTable.frame.chartID);}, 1000);
+    	setTimeout(function() { Log.message (PhotmetryTable.variableStar.name + ", lim. mag.=" + PhotmetryTable.frame.maglimit + ", FOV[']=" + PhotmetryTable.frame.fov + "; chart id=" + PhotmetryTable.frame.chartID);}, 1);
     }
     
     document.body.onclick = function (){

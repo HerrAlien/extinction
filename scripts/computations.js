@@ -81,7 +81,9 @@ var Computations = {
         var nstr = n + "";
         // locate the decimal point
         var dotIsAt = nstr.indexOf (".");
-        var slicedNum = nstr.slice (0, dotIsAt + decimals + 1);
+        var slicedNum = nstr;
+		if (dotIsAt > 0)
+			slicedNum = nstr.slice (0, dotIsAt + decimals + 1);
         return Computations.evalNum (slicedNum);
     },
     

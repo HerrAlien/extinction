@@ -26,6 +26,7 @@ var DataShareLoader = {
     load : function (fromURL) {
         DataShareLoader.url = fromURL;
         DataShareLoader.initFromMembers();
+		CorrectorUIManager.onUserInput();
     },
     
     initFromMembers : function () {
@@ -113,8 +114,12 @@ var DataShareLoader = {
 		if (compToAdd.d >= 0 && compToAdd.d < PhotmetryTable.comparisonStars.length){
 			var st = PhotmetryTable.comparisonStars[compToAdd.d]; 
 			EstimationCorrector.updateAirmassFromInput (st);
-			comp.first.ui.dimSelector.set (st);
+			comp.second.ui.dimSelector.set (st);
 		}
+		
+		// do whatever is done when using a new estimate
+		comp.updateUI();
+		comp.updateRating();
     }
 
 };
