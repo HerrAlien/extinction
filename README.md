@@ -13,7 +13,7 @@
 
 [![ZipFile_small.png](https://bitbucket.org/repo/EqEnzq/images/1060774317-ZipFile_small.png)](https://bitbucket.org/herr_alien/extinction-o-meter/downloads/extinction-o-meter-HTA.zip)
 [![ChromeWebStore_Badge_v2_206x58.png](https://bitbucket.org/repo/EqEnzq/images/3446287288-ChromeWebStore_Badge_v2_206x58.png)](https://chrome.google.com/webstore/detail/extinction-o-meter/baigpaagflhnakaihppjcphpjkmnpjll)
-[![firefox-marketplace_badge-orange_172_60.png](https://bitbucket.org/repo/EqEnzq/images/3161810626-firefox-marketplace_badge-orange_172_60.png)](https://marketplace.firefox.com/app/extinction-o-meter/)
+[![firefox-marketplace_badge-orange_172_60.png](https://bitbucket.org/repo/EqEnzq/images/3161810626-firefox-marketplace_badge-orange_172_60.png)](https://wiki.mozilla.org/Marketplace/FutureofMarketplaceFAQ)
 [![Opera_logo_RGB_flat_60px.png](https://bitbucket.org/repo/EqEnzq/images/2101883723-Opera_logo_RGB_flat_60px.png)](https://addons.opera.com/en/extensions/details/extinction-o-meter/)
 [![mbile_60.png](https://bitbucket.org/repo/EqEnzq/images/1509077154-mbile_60.png)](https://extinction-o-meter.appspot.com)
 
