@@ -222,7 +222,7 @@ var ExtinctionCoefficient = {
                     
                     var bracketCompInput = document.createElement ("input");
                     bracketCompInput.style.display = "none";
-                    bracketCompInput.value = Computations.evalNum(pairedComp.first.value) + Computations.evalNum(pairedComp.second.value);
+                    bracketCompInput.value = (function () { var val = Computations.evalNum(pairedComp.first.value()) + Computations.evalNum(pairedComp.second.value()); return val;} ());
                     var bracketComp = ExtinctionCoefficient.SingleComparison (pairedComp.first.bright, 
                                                                               bracketCompInput, 
                                                                               pairedComp.second.dim);
