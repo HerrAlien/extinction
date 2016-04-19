@@ -34,7 +34,7 @@ var DataShareLoader = {
         if (!DataShareLoader.url)
             return;
         if (!Initialization.doneInit) {
-            setTimeout (function () {DataShareLoader.initFromMembers(); }, 100);
+            setTimeout (function () {DataShareLoader.initFromMembers(); }, 1);
             return;
         }
         
@@ -137,6 +137,24 @@ var DataShareSave = {
         
         DataShareSave.update();
     },
+	
+	ArgelanderExtComp2JSON : function (comp) {
+		var obj = {};
+		obj["b"] = PhotmetryTable.comparisonStars.indexOf (comp.bright());
+		obj["b2d"] = comp.value();
+		obj["d"] = PhotmetryTable.comparisonStars.indexOf (comp.dim());
+		return obj;
+	},
+	
+	PairedExtComp2JSON : function (comp) {
+		var obj = {};
+		obj["b"] = PhotmetryTable.comparisonStars.indexOf (comp.first.bright());
+		obj["b2m"] = comp.first.value();
+		obj["m"] = PhotmetryTable.comparisonStars.indexOf (comp.first.dim());
+		obj["m2d"] = comp.second.value();
+		obj["d"] = PhotmetryTable.comparisonStars.indexOf (comp.second.dim());
+		return obj;
+	},
     
     update: function () {
         if (!DataShareSave.urlinput)
@@ -160,6 +178,19 @@ var DataShareSave = {
 			objToAdd["d"] = PhotmetryTable.comparisonStars.indexOf(comparisonToSave.second.dim());
 			dataObj["brightComps"].push(objToAdd);
 		}
+		
+		dataObj["K"] = document.getElementById ("K").value;
+		dataObj["useValueForK"] = document.getElementById ("useValueForK").checked;
+		dataObj["algo"] = CorrectorUIManager.selectedAlgorithm;
+		
+		dataObj["ext"] = [];
+		
+		var serializationFunc = DataShareSave.ArgelanderExtComp2JSON;
+		if (1 ==  CorrectorUIManager.selectedAlgorithm)
+			serializationFunc = DataShareSave.PairedExtComp2JSON;
+		
+		for (i = 0; i < ExtinctionCoefficient.comparisons.length; i++)
+			dataObj["ext"].push(serializationFunc(ExtinctionCoefficient.comparisons[i]));
 		
         // stringify it, and build the URL
         var fullURL = DataShareSave.baseURL + "#" + JSON.stringify(dataObj);

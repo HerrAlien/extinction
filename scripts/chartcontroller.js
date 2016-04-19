@@ -102,7 +102,7 @@ var ChartController = {
                         PhotmetryTable.initFromChartID (starName);
                     else
                         PhotmetryTable.initFromStarName (starName, fov, limittingMag);
-                }, 100);
+                }, 1);
                 
             ChartController.onUpdateChartPressed();
         }
