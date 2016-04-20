@@ -75,6 +75,7 @@ var DataShareLoader = {
 		EstimationCorrector.updateAirmassFromInput (PhotmetryTable.variableStar);
 
         // brightness estimates
+		// ... clear the list up first?
         var i = 0;
         for (i = 0; i < EstimationCorrector.pairedComparisons.length && i < urlDataObj.brightComps.length; i++)
             DataShareLoader.copyComparisonData (EstimationCorrector.pairedComparisons[i], urlDataObj.brightComps [i]);
@@ -89,10 +90,26 @@ var DataShareLoader = {
         EstimationCorrector.update();
         
         // extinction value
+		document.getElementById ("K").value = urlDataObj["K"];
         // extinction value vs. determined
+		document.getElementById ("useValueForK").checked = urlDataObj["useValueForK"];
+
+		
         // extinction algorithm
+		CorrectorUIManager.selectedAlgorithm = urlDataObj["algo"];
+
         // extinction comparisons
+		// ... clear the list up first?
+		// first, 	set the ones already existing
+		for (i = 0; i < urlDataObj["ext"].length && i < ExtinctionCoefficient.comparisons.length; i++)
+		{
+			var sourceObj = urlDataObj["ext"][i];
+			var destinationComp =  ExtinctionCoefficient.comparisons[i];
+			// copy from urlDataObj["ext"][i];
+		}
         
+		
+		
         // clear up member data
         DataShareLoader.url = false;
         DataShareLoader.urlDataObj = false;
