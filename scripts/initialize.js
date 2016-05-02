@@ -155,7 +155,7 @@ var Initialization = {
         SVGChart.updateStars (Hipparcos.chart.stars);   	
     	SVGChart.drawCenterMark();
     	SVGChart.updateComparisonLabels (PhotmetryTable.comparisonStars);
-    	setTimeout(function() { Log.message (PhotmetryTable.variableStar.name + ", lim. mag.=" + PhotmetryTable.frame.maglimit + ", FOV[']=" + PhotmetryTable.frame.fov + "; chart id=" + PhotmetryTable.frame.chartID);}, 1);
+    	Log.message (PhotmetryTable.variableStar.name + ", lim. mag.=" + PhotmetryTable.frame.maglimit + ", FOV[']=" + PhotmetryTable.frame.fov + "; chart id=" + PhotmetryTable.frame.chartID);
     }
     
     document.body.onclick = function (){

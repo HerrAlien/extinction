@@ -38,6 +38,8 @@ var DataShareLoader = {
             return;
         }
         
+        Log.message ("Loading from URL ...");
+        
         DataShareLoader.initDataObj();
 		if (DataShareLoader.urlDataObj)
 			DataShareLoader.loadFromObj();

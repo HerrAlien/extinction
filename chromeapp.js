@@ -9,11 +9,11 @@ chrome.app.runtime.onLaunched.addListener(
                 var loopFunc = function () {
                     var w = win.contentWindow;
                     attemptsCounter = attemptsCounter + 1;
-                    try {
-                        w.Initialization.setURL(lURL);
-                    }catch (ex) {
+                    if (!w.Initialization || !w.Initialization.setURL) {
                         if (attemptsCounter < 500)
                             setTimeout (function() {loopFunc();}, 1);
+                    } else {
+                        w.Initialization.setURL(lURL);
                     }
                 }
                 loopFunc();
