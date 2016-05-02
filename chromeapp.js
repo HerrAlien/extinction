@@ -12,8 +12,8 @@ chrome.app.runtime.onLaunched.addListener(
                     try {
                         w.Initialization.setURL(lURL);
                     }catch (ex) {
-                        if (attemptsCounter < 10)
-                            setTimeout (function() {loopFunc();}, 100);
+                        if (attemptsCounter < 500)
+                            setTimeout (function() {loopFunc();}, 1);
                     }
                 }
                 loopFunc();

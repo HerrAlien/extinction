@@ -173,7 +173,6 @@ var Initialization = {
     LocationUI.init();
     Initialization.initFromSessionData();
     Initialization.doneInit = true;
-    DataShareLoader.load(Initialization.url);
   }
 };
 
