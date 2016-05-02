@@ -94,21 +94,31 @@ var DataShareLoader = {
         // extinction value vs. determined
 		document.getElementById ("useValueForK").checked = urlDataObj["useValueForK"];
 
-		
         // extinction algorithm
 		CorrectorUIManager.selectedAlgorithm = urlDataObj["algo"];
+        CorrectorUIManager.ResetHeader();
 
         // extinction comparisons
-		// ... clear the list up first?
+        var xformFunc = DataShareLoader.copyArgelanderExtComp;
+        if (1 == CorrectorUIManager.selectedAlgorithm)
+            xformFunc = DataShareLoader.copyPairedExtComp;
+        
 		// first, 	set the ones already existing
 		for (i = 0; i < urlDataObj["ext"].length && i < ExtinctionCoefficient.comparisons.length; i++)
 		{
 			var sourceObj = urlDataObj["ext"][i];
 			var destinationComp =  ExtinctionCoefficient.comparisons[i];
 			// copy from urlDataObj["ext"][i];
+            xformFunc (destinationComp, sourceObj);
 		}
         
-		
+        for (; i < urlDataObj["ext"].length; i++) {
+            var sourceObj = urlDataObj["ext"][i];
+            var row = CorrectorUIManager[CorrectorUIManager.algorithms[CorrectorUIManager.selectedAlgorithm]].CreateComparisonUIRow();
+			var destinationComp = ExtinctionCoefficient.comparisons[ExtinctionCoefficient.comparisons.length - 1];
+            // copy from urlDataObj["ext"][i];
+            xformFunc (destinationComp, sourceObj);
+        }
 		
         // clear up member data
         DataShareLoader.url = false;
@@ -137,7 +147,50 @@ var DataShareLoader = {
 		// do whatever is done when using a new estimate
 		comp.updateUI();
 		comp.updateRating();
+    },
+    
+    copyArgelanderExtComp : function (extComp, urlObjComp) {
+        if (urlObjComp.b >= 0 && urlObjComp.b < PhotmetryTable.comparisonStars.length) {
+            var st = PhotmetryTable.comparisonStars[urlObjComp.b]; 
+			EstimationCorrector.updateAirmassFromInput (st);
+			extComp.ui.brightSelector.set (st);
+        }
+        
+        if (urlObjComp.d >= 0 && urlObjComp.d < PhotmetryTable.comparisonStars.length) {
+            var st = PhotmetryTable.comparisonStars[urlObjComp.d]; 
+			EstimationCorrector.updateAirmassFromInput (st);
+			extComp.ui.dimSelector.set (st);
+        }
+        extComp.ui.valueLineEdit.value = urlObjComp["b2d"];
+        extComp.updateUI();
+		extComp.updateRating();
+    },
+    
+    copyPairedExtComp : function (extComp, urlObjComp) {
+
+        if (urlObjComp.b >= 0 && urlObjComp.b < PhotmetryTable.comparisonStars.length) {
+            var st = PhotmetryTable.comparisonStars[urlObjComp.b]; 
+			EstimationCorrector.updateAirmassFromInput (st);
+			extComp.first.ui.brightSelector.set (st);
+        }
+        
+        if (urlObjComp.m >= 0 && urlObjComp.m < PhotmetryTable.comparisonStars.length) {
+            var st = PhotmetryTable.comparisonStars[urlObjComp.m]; 
+			EstimationCorrector.updateAirmassFromInput (st);
+			extComp.first.ui.dimSelector.set (st);
+        }
+
+        if (urlObjComp.d >= 0 && urlObjComp.d < PhotmetryTable.comparisonStars.length) {
+            var st = PhotmetryTable.comparisonStars[urlObjComp.d]; 
+			EstimationCorrector.updateAirmassFromInput (st);
+			extComp.second.ui.dimSelector.set (st);
+        }
+        extComp.first.ui.valueLineEdit.value = urlObjComp["b2m"];
+        extComp.second.ui.valueLineEdit.value = urlObjComp["m2d"];
+        extComp.updateUI();
+		extComp.updateRating();
     }
+
 
 };
 
