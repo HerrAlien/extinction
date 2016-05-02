@@ -38,8 +38,6 @@ var DataShareLoader = {
             return;
         }
         
-        Log.message ("Loading from URL ...");
-        
         DataShareLoader.initDataObj();
 		if (DataShareLoader.urlDataObj)
 			DataShareLoader.loadFromObj();
@@ -53,6 +51,7 @@ var DataShareLoader = {
     },
     
     loadFromObj : function () {
+        Log.message ("Loading from URL ...");
 		if (DataShareLoader.urlDataObj.lat)
 			LocationUI.latitude.value = DataShareLoader.urlDataObj.lat;
 		
@@ -64,7 +63,6 @@ var DataShareLoader = {
         // TODO: user input update
         if (DataShareLoader.urlDataObj.id)
 			ChartController.ui.variableStarElem.value = DataShareLoader.urlDataObj.id;
-        
         
         ChartController.ui.updateChartButton.onclick();
     },

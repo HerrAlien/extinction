@@ -128,6 +128,8 @@ if ($allowAccess)
                 return;
             }
             
+            Initialization.setURL (document.location.href);
+            
             var container = document.getElementById("topmenu");        
             if (!container)
                 return;
