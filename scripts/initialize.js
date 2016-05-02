@@ -71,6 +71,12 @@ var LocationUI = {
 var Initialization = {
 
     doneInit : false,
+    url : false,  
+    
+    setURL : function (_u) {
+        Initialization.url = _u;
+        DataShareLoader.load(Initialization.url);
+    },
     
     sesionData : {
         Photometry : {
@@ -103,8 +109,9 @@ var Initialization = {
     
   init: function () {
       try {
-      if (!ChartController || !StarsSelection || !CorrectorUIManager || !SVGChart ||
-          !PhotmetryTable || !InputValidator || !Hipparcos || Initialization.doneInit)
+      if (!ChartController || !StarsSelection || !CorrectorUIManager || !SVGChart || 
+          !PhotmetryTable || !InputValidator || !Hipparcos || !DataShareLoader || 
+          !DataShareSave || Initialization.doneInit)
         return;
       } catch (err) {
         return;
@@ -113,6 +120,7 @@ var Initialization = {
     ChartController.init();
     StarsSelection.init();
     CorrectorUIManager.init();
+    DataShareSave.init();
 
     PhotmetryTable.onInit = function () {
     	setTimeout (function() {
@@ -125,8 +133,11 @@ var Initialization = {
                     SVGChart.init (coords[0], coords[1], frame.fov, frame.maglimit);
                     SVGChart.drawBorder ();
                     CorrectorUIManager.onLocationOrTimeChanged();
-                }, 100);
-        }, 100);
+                }, 1);
+			
+			// this sets whatever data we have from the URL.
+			DataShareLoader.setUserInputData();
+        }, 1);
     }
 
     var extinctionCoeffInput = document.getElementById("K");
@@ -144,7 +155,7 @@ var Initialization = {
         SVGChart.updateStars (Hipparcos.chart.stars);   	
     	SVGChart.drawCenterMark();
     	SVGChart.updateComparisonLabels (PhotmetryTable.comparisonStars);
-    	setTimeout(function() { Log.message (PhotmetryTable.variableStar.name + ", lim. mag.=" + PhotmetryTable.frame.maglimit + ", FOV[']=" + PhotmetryTable.frame.fov + "; chart id=" + PhotmetryTable.frame.chartID);}, 1000);
+    	Log.message (PhotmetryTable.variableStar.name + ", lim. mag.=" + PhotmetryTable.frame.maglimit + ", FOV[']=" + PhotmetryTable.frame.fov + "; chart id=" + PhotmetryTable.frame.chartID);
     }
     
     document.body.onclick = function (){

@@ -11,5 +11,19 @@
         "background" : {
             "scripts" : ["chromeapp.js"]
         }
+    },
+    "url_handlers": {
+      "handle_data_sharing_secure": {
+        "matches": [
+          "https://extinction-o-meter.appspot.com/*"
+        ],
+        "title": "Extinction-O-Meter"
+      },
+      "handle_data_sharing": {
+        "matches": [
+          "http://extinction-o-meter.appspot.com/*"
+        ],
+        "title": "Extinction-O-Meter"
+      }
     }
 }
