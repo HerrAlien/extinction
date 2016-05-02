@@ -86,6 +86,8 @@ var DataShareLoader = {
             // set values via the addedObject.comp
             DataShareLoader.copyComparisonData (addedObject.comp, urlDataObj.brightComps [i]);
         }
+        
+        EstimationCorrector.pairedComparisons.length = urlDataObj.brightComps.length;
         // after setting all, call update on EstimationCorrector
         EstimationCorrector.update();
         
@@ -119,7 +121,7 @@ var DataShareLoader = {
             // copy from urlDataObj["ext"][i];
             xformFunc (destinationComp, sourceObj);
         }
-		
+		ExtinctionCoefficient.comparisons.length = urlDataObj["ext"].length;
         // clear up member data
         DataShareLoader.url = false;
         DataShareLoader.urlDataObj = false;
