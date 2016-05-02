@@ -94,16 +94,24 @@ var DataShareLoader = {
         // extinction value
 		document.getElementById ("K").value = urlDataObj["K"];
         // extinction value vs. determined
-		document.getElementById ("useValueForK").checked = urlDataObj["useValueForK"];
-
-        // extinction algorithm
-		CorrectorUIManager.selectedAlgorithm = urlDataObj["algo"];
-        CorrectorUIManager.ResetHeader();
+		CorrectorUIManager.useValueForK.checked = urlDataObj["useValueForK"];
+        CorrectorUIManager.computeK.checked = !CorrectorUIManager.useValueForK.checked;
 
         // extinction comparisons
         var xformFunc = DataShareLoader.copyArgelanderExtComp;
-        if (1 == CorrectorUIManager.selectedAlgorithm)
+        CorrectorUIManager.useArgelander.checked = true;
+        CorrectorUIManager.usePaired.checked = !CorrectorUIManager.useArgelander.checked;
+        CorrectorUIManager.useArgelander.onclick();
+        
+        // extinction algorithm
+		CorrectorUIManager.selectedAlgorithm = urlDataObj["algo"];
+
+        if (1 == CorrectorUIManager.selectedAlgorithm){
             xformFunc = DataShareLoader.copyPairedExtComp;
+            CorrectorUIManager.useArgelander.checked = false;
+            CorrectorUIManager.usePaired.checked = !CorrectorUIManager.useArgelander.checked;
+            CorrectorUIManager.usePaired.onclick();
+        }
         
 		// first, 	set the ones already existing
 		for (i = 0; i < urlDataObj["ext"].length && i < ExtinctionCoefficient.comparisons.length; i++)

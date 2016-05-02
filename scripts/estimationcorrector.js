@@ -160,7 +160,9 @@ var CorrectorUIManager = {
             ExtinctionCoefficient.currentAlgorithmID = 0;
             CorrectorUIManager.ClearComparisonsList();
             CorrectorUIManager.ResetHeader();
+            try{
             CorrectorUIManager.onUserInput();
+            } catch (err) {}
         }
         CorrectorUIManager.usePaired.onclick = function () {
             CorrectorUIManager.useArgelander.checked = false;
@@ -168,7 +170,9 @@ var CorrectorUIManager = {
             ExtinctionCoefficient.currentAlgorithmID = 1;
             CorrectorUIManager.ClearComparisonsList();
             CorrectorUIManager.ResetHeader();
+            try{
             CorrectorUIManager.onUserInput();
+            } catch (err) {}
         }
         
         CorrectorUIManager.useArgelander.onclick();
