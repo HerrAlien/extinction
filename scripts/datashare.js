@@ -63,6 +63,12 @@ var DataShareLoader = {
         // TODO: user input update
         if (DataShareLoader.urlDataObj.id)
 			ChartController.ui.variableStarElem.value = DataShareLoader.urlDataObj.id;
+		
+		if (DataShareLoader.urlDataObj.fov)
+				ChartController.ui.fovElem.value = DataShareLoader.urlDataObj.fov;
+			
+		if (DataShareLoader.urlDataObj.maglim)
+				ChartController.ui.limittingMagnitudeElem.value = DataShareLoader.urlDataObj.maglim;
         
         ChartController.ui.updateChartButton.onclick();
     },
@@ -246,6 +252,8 @@ var DataShareSave = {
 		dataObj["long"] = LocationUI.longitude.value;
 		dataObj["dateTime"] = LocationUI.dateTime.value;
 		dataObj["id"] = ChartController.ui.variableStarElem.value;
+		dataObj["fov"] = ChartController.ui.fovElem.value;
+		dataObj["maglim"] = ChartController.ui.limittingMagnitudeElem.value;
 	    dataObj["brightComps"] = [];
 		var i = 0;
 		for (i = 0; i < EstimationCorrector.pairedComparisons.length; i++) {

@@ -103,8 +103,9 @@ var ChartController = {
                     else
                         PhotmetryTable.initFromStarName (starName, fov, limittingMag);
                 }, 1);
-                
-            ChartController.onUpdateChartPressed();
+				
+            if (ChartController.onUpdateChartPressed) 
+				ChartController.onUpdateChartPressed();
         }
         
         ui.orientationElem.onchange = function () {
@@ -118,7 +119,7 @@ var ChartController = {
     
     // this is a callback    
     onUpdateChartPressed : function () {
-        
+        DataShareSave.update();
     }
 };
 
