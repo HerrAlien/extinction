@@ -70,6 +70,12 @@ var DataShareLoader = {
 		if (DataShareLoader.urlDataObj.maglim)
 				ChartController.ui.limittingMagnitudeElem.value = DataShareLoader.urlDataObj.maglim;
         
+        // extinction value
+		document.getElementById ("K").value = DataShareLoader.urlDataObj.K;
+        // extinction value vs. determined
+		CorrectorUIManager.useValueForK.checked = DataShareLoader.urlDataObj.useValueForK;
+        CorrectorUIManager.computeK.checked = !CorrectorUIManager.useValueForK.checked;
+
         ChartController.ui.updateChartButton.onclick();
     },
     
@@ -97,12 +103,6 @@ var DataShareLoader = {
         // after setting all, call update on EstimationCorrector
         EstimationCorrector.update();
         
-        // extinction value
-		document.getElementById ("K").value = urlDataObj["K"];
-        // extinction value vs. determined
-		CorrectorUIManager.useValueForK.checked = urlDataObj["useValueForK"];
-        CorrectorUIManager.computeK.checked = !CorrectorUIManager.useValueForK.checked;
-
         // extinction comparisons
         var xformFunc = DataShareLoader.copyArgelanderExtComp;
         CorrectorUIManager.useArgelander.checked = true;
