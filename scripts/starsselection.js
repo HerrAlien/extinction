@@ -38,8 +38,12 @@ var StarsSelection = {
                 
                 StarsSelection.activeSelector = null;
                 StarsSelection.imageElem.className = "chartSelectionInactive";
-                // now redo displayed values
+                
+				// now redo displayed values
                 CorrectorUIManager.onUserInput();
+				
+				// TODO: replace above with an update on the comparison that owns this - maybe a callback set by the comparison?
+				
 			}
 	},
 	
@@ -64,7 +68,7 @@ var StarsSelection = {
                         if (!st)
                             return;
                         data.star = st;
-                        this.setDisplayedString (data.star.label + "  ( X = " + Computations.Round(data.star.airmass, 3) + " )");
+                        this.update();
                     }   
                     this.get = function () {
                         return data.star;
@@ -83,7 +87,8 @@ var StarsSelection = {
                     }
                     
                     this.update = function () {
-                        this.set(data.star);
+						if (data.star)
+							this.setDisplayedString (data.star.label + "  ( X = " + Computations.Round(data.star.airmass, 3) + " )");
                     }
                     
                     this.setClassName("selectorItem");
