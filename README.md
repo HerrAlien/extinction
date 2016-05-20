@@ -17,7 +17,7 @@
 [![Opera_logo_RGB_flat_60px.png](https://bitbucket.org/repo/EqEnzq/images/2101883723-Opera_logo_RGB_flat_60px.png)](https://addons.opera.com/en/extensions/details/extinction-o-meter/)
 [![mbile_60.png](https://bitbucket.org/repo/EqEnzq/images/1509077154-mbile_60.png)](https://extinction-o-meter.appspot.com)
 
-* If you prefer a **mobile browser (be it on Android, or on iOS) or Safari on a Mac** ... then please use the [online version](https://extinction-o-meter.appspot.com/); it works, but is a tad slower in fetching maps.
+* If you prefer a **mobile browser (be it on Android, or on iOS) or Safari on a Mac** ... then please use the [online version](https://extinction-o-meter.appspot.com/); it works just like the browser extensions, maybe just a tad slower in fetching maps.
 
 ### Who do I talk to? ###
 
