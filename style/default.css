@@ -28,6 +28,7 @@ html, body {
     font-size: 12px;
     text-align: left;
     line-height: 1.5em;
+	-webkit-user-select: text;
 }
     #donate {
         border: solid 2px #000000;
