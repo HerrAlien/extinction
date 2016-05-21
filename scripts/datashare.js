@@ -251,9 +251,10 @@ var DataShareSave = {
 		dataObj["lat"] = LocationUI.latitude.value;
 		dataObj["long"] = LocationUI.longitude.value;
 		dataObj["dateTime"] = LocationUI.dateTime.value;
-		dataObj["id"] = ChartController.ui.variableStarElem.value;
-		dataObj["fov"] = ChartController.ui.fovElem.value;
-		dataObj["maglim"] = ChartController.ui.limittingMagnitudeElem.value;
+        // always, always save data here from the photometry table.
+		dataObj["id"] = PhotmetryTable.frame.chartID;
+		dataObj["fov"] = PhotmetryTable.frame.fov;
+		dataObj["maglim"] = PhotmetryTable.frame.maglimit;
 	    dataObj["brightComps"] = [];
 		var i = 0;
 		for (i = 0; i < EstimationCorrector.pairedComparisons.length; i++) {
