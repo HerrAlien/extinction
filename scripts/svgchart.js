@@ -54,7 +54,23 @@ var SVGChart = {
         // knowing the size, now compute the focal length
         // w/2 = FL * tan (fov/2) => FL = w / 2 * tan (fov/2)
         SVGChart.focalLength = SVGChart.size / (2 * Math.tan (SVGChart.fov * Math.PI / 360));
+		
+		SVGChart.starLabelClick.add (StarsSelection.setSelectedStar);
     },
+	
+	starLabelClick : {
+		handlers : [],
+		
+		notify : function (selectedStar) {
+			for (var i = 0; i < SVGChart.starLabelClick.handlers.length; i++){
+				SVGChart.starLabelClick.handlers[i](selectedStar);
+			}
+		},
+		// anybody can sign up to be notified.
+		add : function (handlerToAdd) {
+			SVGChart.starLabelClick.handlers.push (handlerToAdd);
+		}
+	},
     
     updateStars : function (_stars) {
         SVGChart.stars = _stars;
@@ -137,12 +153,7 @@ var SVGChart = {
         // set the cursor as pointer (style wise)
 		textDOM.style["cursor"] = "pointer";		
         // associate a function for the onclick event
-		textDOM.onclick = (function (_s) {
-			var comparisonStar = _s;
-			return function () {
-				StarsSelection.setSelectedStar (comparisonStar);
-			}
-		})(_star);
+		textDOM.onclick = function () { SVGChart.starLabelClick.notify (_star); }		
 	},
 	
 	isStarVisible : function (_star) {
