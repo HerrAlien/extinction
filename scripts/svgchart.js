@@ -18,6 +18,14 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see https://www.gnu.org/licenses/agpl.html
 */
 
+/*
+    Mostly view, so it needs to subscribe to events launched by the model side:
+        - the photometry table, to redraw labels
+        - the other stars, from HIPPARCOS
+
+    It exposes the "on star label clicked" event, for others to subscribe to it.
+*/
+
 var SVGChart = {
     size : 500,
     focalLength : 0,
@@ -54,8 +62,6 @@ var SVGChart = {
         // knowing the size, now compute the focal length
         // w/2 = FL * tan (fov/2) => FL = w / 2 * tan (fov/2)
         SVGChart.focalLength = SVGChart.size / (2 * Math.tan (SVGChart.fov * Math.PI / 360));
-		
-		SVGChart.starLabelClick.add (StarsSelection.setSelectedStar);
     },
 	
 	starLabelClick : {

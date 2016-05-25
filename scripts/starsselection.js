@@ -25,26 +25,41 @@ var StarsSelection = {
 	selectionJustActivated: false,
    
     init : function () {
+		// set up whatever events we want to be notified
+		SVGChart.starLabelClick.add (StarsSelection.setSelectedStar);
     },
-    
-	setSelectedStar : function (currentlyHoveredStar) {
-            if (StarsSelection.activeSelector) {
-                // hide the div showing the hovered star
-                EstimationCorrector.updateAirmassFromInput (currentlyHoveredStar);
-                StarsSelection.activeSelector.set(currentlyHoveredStar);
-                StarsSelection.activeSelector.setClassName("selectorItem");
-                if (!currentlyHoveredStar)
-                    StarsSelection.activeSelector.setPlaceholder ("click me");
-                
-                StarsSelection.activeSelector = null;
-                StarsSelection.imageElem.className = "chartSelectionInactive";
-                
-				// now redo displayed values
-                CorrectorUIManager.onUserInput();
-				
-				// TODO: replace above with an update on the comparison that owns this - maybe a callback set by the comparison?
-				
+	
+	afterStarSelection : {
+		handlers : [],
+		add : function (handler) {
+			StarsSelection.afterStarSelection.handlers.push(handler);
+		},
+		notify : function (selector, star) {
+			for (var i = 0; i < StarsSelection.afterStarSelection.handlers.length; i++) {
+				StarsSelection.afterStarSelection.handlers[i] (selector, star);
 			}
+		}
+	},
+    
+	changedSelector : function (sel) {
+		StarsSelection.selectionJustActivated = true;
+        if (StarsSelection.activeSelector) {
+			StarsSelection.activeSelector.showAsActive (false);
+        }
+        StarsSelection.activeSelector = sel;
+        StarsSelection.imageElem.className = "chartSelectionActive";
+	},
+	
+	setSelectedStar : function (currentlyHoveredStar) {
+        if (StarsSelection.activeSelector) {
+            // hide the div showing the hovered star
+            EstimationCorrector.updateAirmassFromInput (currentlyHoveredStar);
+            StarsSelection.activeSelector.set(currentlyHoveredStar);
+			StarsSelection.afterStarSelection.notify (StarsSelection.activeSelector, currentlyHoveredStar);
+            StarsSelection.activeSelector.showAsActive (false);
+            StarsSelection.activeSelector = null;
+            StarsSelection.imageElem.className = "chartSelectionInactive";
+		}
 	},
 	
 	setSurrentlyHoveredStar : function (star) {
@@ -56,13 +71,33 @@ var StarsSelection = {
     Selector : {
         build : function (inputElement) {
             return function () {
+
                 var privateData = {
-                    "star" : null,
-                    "uiElement" : inputElement
+                    "star" : null, // model
+                    "uiElement" : inputElement // view + control
                 };
                 
                 return new function () {
+					var _this = this;
                     var data = privateData;
+					
+					var selectorActivated = {
+						handlers : [],
+						add : function (handler) {
+							selectorActivated.handlers.push (handler);
+						},
+						notify : function () {
+							var i = 0;
+							for (i = 0; i < selectorActivated.handlers.length; i++)
+								selectorActivated.handlers[i] (_this);
+						}
+					}
+					
+					// notify the selection manager that we're now active
+					selectorActivated.add (StarsSelection.changedSelector);
+					// change our look to show that we're active
+					selectorActivated.add (function () {_this.showAsActive (true);});
+					
                     this.id = data.uiElement.id;
                     this.set = function (st) {
                         if (!st)
@@ -70,18 +105,11 @@ var StarsSelection = {
                         data.star = st;
                         this.update();
                     }   
+					
                     this.get = function () {
                         return data.star;
                     }
-                    this.addEventHandler = function (eventName, handler) {
-                        data.uiElement[eventName] = handler;
-                    }
-                    this.setClassName = function (cn) {
-                        data.uiElement.className = cn;
-                    }
-                    this.setPlaceholder = function (p) {
-                        data.uiElement.placeholder = p;
-                    }
+
                     this.setDisplayedString = function (s) {
                         data.uiElement.value = s;
                     }
@@ -90,26 +118,30 @@ var StarsSelection = {
 						if (data.star)
 							this.setDisplayedString (data.star.label + "  ( X = " + Computations.Round(data.star.airmass, 3) + " )");
                     }
+					
+					this.showAsActive = function (isActive) {
+						if (isActive) {
+							data.uiElement.className = "selectorItemActive";
+							this.setDisplayedString("");
+							data.uiElement.placeholder = "click a star label";
+						} else {
+		                    data.uiElement.className = "selectorItem";
+							data.uiElement.placeholder = "click me";
+							this.update();
+						}
+					}
+					
+					this.show = function (isShown) {
+						if (isShown)
+							data.uiElement.style.display = "block";
+						else
+							data.uiElement.style.display = "none";
+					}
                     
-                    this.setClassName("selectorItem");
-                    this.setPlaceholder ("click me");
-                    data.uiElement.readOnly = true;
-                    
-                    var sel = this;
-                    this.addEventHandler ("onclick", function () {
-                        StarsSelection.selectionJustActivated = true;
-                        if (StarsSelection.activeSelector) {
-                            StarsSelection.activeSelector.setClassName("selectorItem");
-                            StarsSelection.activeSelector.setPlaceholder ("click me");
-							StarsSelection.activeSelector.update();
-                        }
-                        sel.setClassName("selectorItemActive");
-                        sel.setDisplayedString("");
-                        sel.setPlaceholder ("click a star label");
-                        StarsSelection.activeSelector = sel;
-                        StarsSelection.imageElem.className = "chartSelectionActive";
-
-                    });
+                    data.uiElement.readOnly = true;	
+					this.show (true);
+					this.showAsActive (false);
+                    data.uiElement["onclick"] = function () { selectorActivated.notify();} // trigger the notifications on click evt
                 }
             }();
         }

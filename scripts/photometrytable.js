@@ -18,6 +18,14 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see https://www.gnu.org/licenses/agpl.html
 */
 
+/*
+    Mostly model side.
+    Should expose a few events:
+    - when the table is cleared out
+    - when the table finished getting the data
+    - when it errors out in attempting to get more data.
+*/
+
 var PhotmetryTable = {
     
     variableStar : { 

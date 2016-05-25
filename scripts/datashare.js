@@ -18,6 +18,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see https://www.gnu.org/licenses/agpl.html
 */
 
+// alternate model data, to be parsed and loaded.
 var DataShareLoader = {
     
     url : false,
@@ -210,6 +211,7 @@ var DataShareLoader = {
 
 };
 
+// Other view of the model side, more easily to share and load.
 var DataShareSave = {
 	
 	urlinput : document.getElementById("datashareurl"),

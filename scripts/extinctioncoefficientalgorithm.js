@@ -18,6 +18,8 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see https://www.gnu.org/licenses/agpl.html
 */
 
+/* model side logic, with some control elements */
+
 var ExtinctionCoefficient = {
 
     comparisons : [],
@@ -115,6 +117,7 @@ var ExtinctionCoefficient = {
         return comps;
     },
 
+    /* mostly control side, but has view elements */
     SingleComparison : function (brighterStarSelector, degreesEditor, dimmerStarSelector) {
         return (function () {
             var b = brighterStarSelector;
@@ -158,6 +161,7 @@ var ExtinctionCoefficient = {
         })();
     },
 
+    /* mostly control side, but has view elements */
     PairedComparison : function (brighterStarSelector, b2m_editor, midStarSelector, m2d_editor, dimStarSelector) {
         return (function () {
             var b = brighterStarSelector;

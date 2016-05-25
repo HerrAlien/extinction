@@ -21,6 +21,11 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl.html
 /* http://apm5.ast.cam.ac.uk/cgi-bin/wdb/hipp/tycho/query?max_rows_returned=1000&tab_dec=on&tab_ra=on&tab_box=on&tab_vtmag=on&box=10&ra=18.61578888888889&dec=-28.927722222222222&vtmag=<7
 */
 
+/*
+    Yet another model side class :)
+    Same requirements as for the photometry table.
+*/
+
 var Hipparcos = {
     config : {
         method: "GET",

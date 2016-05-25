@@ -18,8 +18,11 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see https://www.gnu.org/licenses/agpl.html
 */
 
+/* ... a mix of everything. */
 var EstimationCorrector = {
-    
+    // --- model side ------
+    // a collection of comparisons, with airmasses, just to determine the brightness,
+    // given an extinction coefficient.
     pairedComparisons : [],
     
     Estimate : function (k){
@@ -73,13 +76,14 @@ var EstimationCorrector = {
         ExtinctionCoefficient.updateAirmassForStar (star, latitude, longitude, lst);        
     },
     
+    // this is a control side of things.
     addNewComparison : function () {
         var table = CorrectorUIManager.extraEstimatesTable;
         var createdObj = CorrectorUIManager.Utils.AddPairedComparison (table);
         CorrectorUIManager.Utils.AddDeleteLink (createdObj.row, createdObj.tddelete, createdObj.comp, EstimationCorrector.pairedComparisons);
 
         createdObj.midSelector.set (PhotmetryTable.variableStar);
-        createdObj.midSelector.setClassName ("hidden");
+        createdObj.midSelector.show (false);
 
         EstimationCorrector.pairedComparisons.push (createdObj.comp);
         var createdSpan = CorrectorUIManager.Utils.AddChild (createdObj.tdmid, "span");
@@ -92,6 +96,7 @@ var EstimationCorrector = {
             var tdRating = addChild(createdObj.row, "td");
             var ratingDiv = addChild (tdRating, "div");
             ratingDiv.className = "norating";
+            // this is a view thing, for one comparison.
             createdObj.comp["updateRating"] = function ()
             {
                 var initialComparisons = EstimationCorrector.pairedComparisons;
@@ -127,6 +132,7 @@ var EstimationCorrector = {
     }
 };
 
+// control, mostly
 var CorrectorUIManager = {
     table : document.getElementById("extinctionEstimates"),
     tableHeader : document.getElementById("extinctionEstimatesHeader"), 
@@ -142,6 +148,9 @@ var CorrectorUIManager = {
     selectedAlgorithm : 0,
     
     init : function () {
+		
+		StarsSelection.afterStarSelection.add (CorrectorUIManager.onUserInput);
+		
         CorrectorUIManager.useValueForK.onclick = function () {
             CorrectorUIManager.computeK.checked = false;
             CorrectorUIManager.onUserInput();
