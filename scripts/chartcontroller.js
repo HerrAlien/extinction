@@ -27,11 +27,43 @@ var ChartController = {
         updateChartButton : document.getElementById("updateChart")
     },
     
+    onChartOrientationChanged : {
+        _handlers : [],
+        add: function (handler) {
+            ChartController.onChartOrientationChanged._handlers.push (handler);
+        },
+        notify : function () {
+            var i = 0;
+            for (i = 0; i < ChartController.onChartOrientationChanged._handlers.length; i++)
+                ChartController.onChartOrientationChanged._handlers[i]();
+        }
+    },
+    
+    onUpdateChartClicked : {
+        _handlers : [],
+        add: function (handler) {
+            ChartController.onUpdateChartClicked._handlers.push (handler);
+        },
+        notify : function () {
+            var i = 0;
+            for (i = 0; i < ChartController.onUpdateChartClicked._handlers.length; i++)
+                ChartController.onUpdateChartClicked._handlers[i]();
+        }
+    },
+    
     init : function () {
+        
+        ChartController.onChartOrientationChanged.add ( function () { 
+            SVGChart.chartOrientation = ChartController.ui.orientationElem.value;
+    	    SVGChart.redraw(); });
+        
         var ui = ChartController.ui;
         var starNameInput = ui.variableStarElem;
         var fovInput = ui.fovElem;
         var magInput = ui.limittingMagnitudeElem;
+        
+        ui.orientationElem.onchange = ChartController.onChartOrientationChanged.notify;
+
 
         InputValidator.AddNumberRangeValidator (magInput, 0, 20);
         InputValidator.AddNumberRangeValidator (fovInput, 0, 1200);
@@ -76,7 +108,9 @@ var ChartController = {
             }
         }
         
-        ui.updateChartButton.onclick = function () {            
+        ui.updateChartButton.onclick = ChartController.onUpdateChartClicked.notify;
+        ChartController.onUpdateChartClicked.add (SVGChart.clear);
+        ChartController.onUpdateChartClicked.add ( function () {            
             if (!InputValidator.validate (starNameInput))
                 return;
             
@@ -95,28 +129,15 @@ var ChartController = {
                     return;
             }
             
-        	  Log.message ("Loading photometry table ...");
-        	  setTimeout (
-                function(){
+        	Log.message ("Loading photometry table ...");
+        	setTimeout ( function(){
                     if (PhotmetryTable.AAVSO.IsChartID(starName))
                         PhotmetryTable.initFromChartID (starName);
                     else
                         PhotmetryTable.initFromStarName (starName, fov, limittingMag);
                 }, 1);
-				
-            if (ChartController.onUpdateChartPressed) 
-				ChartController.onUpdateChartPressed();
-        }
-        
-        ui.orientationElem.onchange = function () {
-    	    SVGChart.chartOrientation = this.value;
-    	    SVGChart.redraw();
-        }
-    },
-    
-    // this is a callback    
-    onUpdateChartPressed : function () {
-        DataShareSave.update();
+        });
+        ChartController.onUpdateChartClicked.add (DataShareSave.update);
     }
 };
 

@@ -133,7 +133,6 @@ var Initialization = {
             setTimeout (function() {
                     Hipparcos.init(coords[0], coords[1], frame.fov, frame.maglimit);
                     SVGChart.init (coords[0], coords[1], frame.fov, frame.maglimit);
-                    SVGChart.drawBorder ();
                     // TODO also set the comparison labels here
                     SVGChart.labels = PhotmetryTable.comparisonStars;
                     CorrectorUIManager.onLocationOrTimeChanged();
