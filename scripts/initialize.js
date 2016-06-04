@@ -122,7 +122,8 @@ var Initialization = {
     CorrectorUIManager.init();
     DataShareSave.init();
 
-    PhotmetryTable.onInit = function () {
+	// TODO: ensure this happens only once
+    PhotmetryTable.onTableRetrieved.add(function () {
     	setTimeout (function() {
             var coords = [PhotmetryTable.variableStar.ra, PhotmetryTable.variableStar.dec];
             var frame = PhotmetryTable.frame;   
@@ -138,7 +139,7 @@ var Initialization = {
 			// this sets whatever data we have from the URL.
 			DataShareLoader.setUserInputData();
         }, 1);
-    }
+    });
 
     var extinctionCoeffInput = document.getElementById("K");
     InputValidator.AddNumberMinimumValidator (extinctionCoeffInput, 0);

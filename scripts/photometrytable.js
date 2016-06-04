@@ -44,6 +44,19 @@ var PhotmetryTable = {
     },
 	
 	comparisonStars : [],
+	
+	onTableRetrieved : {
+		handlers : [],
+		add : function (handler) {
+			PhotmetryTable.onTableRetrieved.handlers.push(handler);
+		},
+		notify : function () {
+			var i = 0;
+			for (i = 0; i < PhotmetryTable.onTableRetrieved.handlers.length; i++) {
+				PhotmetryTable.onTableRetrieved.handlers[i]();
+			}
+		}
+	},
 
     // namespace holding utilities to access the VSP data
     AAVSO : {
@@ -112,9 +125,6 @@ var PhotmetryTable = {
             return isAlphanumeric;
         }        
     },
-
-    onInit : function () {        
-    },
     
     initFromStarName : function (starName, fov, limitingMag) {
         var xmlHttpReq = new XMLHttpRequest({mozSystem: true});
@@ -176,7 +186,7 @@ var PhotmetryTable = {
                 }            
 
                 PhotmetryTable.AAVSO.GetData (starsData);
-                PhotmetryTable.onInit();
+                PhotmetryTable.onTableRetrieved.notify();
 			}
 	}
 };

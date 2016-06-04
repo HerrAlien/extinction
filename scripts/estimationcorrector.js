@@ -30,21 +30,21 @@ var EstimationCorrector = {
         var i = 0;
         var values = [];
         for (i = 0; i < EstimationCorrector.pairedComparisons.length; i++) {
-            var pairedComparison = EstimationCorrector.pairedComparisons[i];
-            var bright = pairedComparison.first.bright();
-            var b2v = pairedComparison.first.value();
-            var variable = pairedComparison.first.dim(); // or second.bright () ...
-            var v2d = pairedComparison.second.value();
-            var dim = pairedComparison.second.dim(); 
-            
-            // provide corrections for the difference airmass
-            var brightMag = bright.mag + k * (bright.airmass - variable.airmass);
-            var dimMag = dim.mag + k * (dim.airmass - variable.airmass);
-            
-            if (b2v == 0 && v2d == 0)
-                values.push(brightMag);
-            else
-                values.push (brightMag + b2v * (dimMag - brightMag) / (b2v + v2d));
+			var pairedComparison = EstimationCorrector.pairedComparisons[i];
+			var bright = pairedComparison.first.bright();
+			var b2v = pairedComparison.first.value();
+			var variable = pairedComparison.first.dim(); // or second.bright () ...
+			var v2d = pairedComparison.second.value();
+			var dim = pairedComparison.second.dim(); 
+				
+			// provide corrections for the difference airmass
+			var brightMag = bright.mag + k * (bright.airmass - variable.airmass);
+			var dimMag = dim.mag + k * (dim.airmass - variable.airmass);
+				
+			if (b2v == 0 && v2d == 0)
+				values.push(brightMag);
+			else
+				values.push (brightMag + b2v * (dimMag - brightMag) / (b2v + v2d));
         }
         
         return values;
@@ -126,7 +126,11 @@ var EstimationCorrector = {
         for (i = 0; i < EstimationCorrector.pairedComparisons.length; i++) {
             var pairedComparison = EstimationCorrector.pairedComparisons[i];
             pairedComparison.updateUI();
-            pairedComparison.updateRating();
+			try {
+				pairedComparison.updateRating();
+			} catch (err) {
+				;
+			}
         }
     
     }
