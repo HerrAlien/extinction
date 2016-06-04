@@ -109,7 +109,6 @@ var ChartController = {
         }
         
         ui.updateChartButton.onclick = ChartController.onUpdateChartClicked.notify;
-        ChartController.onUpdateChartClicked.add (SVGChart.clear);
         ChartController.onUpdateChartClicked.add ( function () {            
             if (!InputValidator.validate (starNameInput))
                 return;
@@ -118,8 +117,7 @@ var ChartController = {
         	  var limittingMag = magInput.value;
         	  var starName = starNameInput.value;
             if (!PhotmetryTable.AAVSO.IsChartID(starName)) {
-                var c = {};
-        		    c.elemToMoveTo = magInput;
+                var c = { "elemToMoveTo" : magInput };
                 if (!InputValidator.validate_internal (c, function() { if ("" == limittingMag) return "Value required"; return ""; } ) ||
                     !InputValidator.validate(magInput))
                     return;
@@ -128,7 +126,7 @@ var ChartController = {
                     !InputValidator.validate(fovInput))
                     return;
             }
-            
+            SVGChart.clear();
         	Log.message ("Loading photometry table ...");
         	setTimeout ( function(){
                     if (PhotmetryTable.AAVSO.IsChartID(starName))
