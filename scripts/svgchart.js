@@ -293,8 +293,8 @@ var SVGChart = {
     redraw : function () {
         SVGChart.redrawStars();
         SVGChart.drawCenterMark();
-    	SVGChart.redrawLabels ();
         SVGChart.drawBorder ();
+    	SVGChart.redrawLabels ();
     }
 };
 

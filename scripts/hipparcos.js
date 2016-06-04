@@ -47,6 +47,18 @@ var Hipparcos = {
         config : { "ra" : 0, "dec" : 0, "fov" : 0, "mag" : 0 }
     },
     
+    onStarsRetrieved : {
+        _handlers : [],
+        add : function (handler) {
+            Hipparcos.onStarsRetrieved._handlers.push (handler);
+        },
+        notify : function () {
+            var i = 0;
+            for (i = 0; i < Hipparcos.onStarsRetrieved._handlers.length; i++)
+                Hipparcos.onStarsRetrieved._handlers[i]();
+        }
+    },
+    
     init : function (ra_deg, dec_deg, fov_arcmin, maglim) {
         var xmlHttpReq = new XMLHttpRequest({mozSystem: true});
         Hipparcos.chart.config.ra = ra_deg;
@@ -62,7 +74,7 @@ var Hipparcos = {
                     return;
                 }
                 Hipparcos.ParseStarsFromText (doc);
-                Hipparcos.onInit();
+                Hipparcos.onStarsRetrieved.notify();
             }
         }
         Hipparcos.sendRequest (xmlHttpReq, ra_deg, dec_deg, fov_arcmin, maglim);
@@ -88,10 +100,6 @@ var Hipparcos = {
         xmlHttpReq.send(null); 
     },
 
-    onInit : function () {
-        
-    },
-    
     ParseStarsFromText : function (text) {
         var stars = [];
 

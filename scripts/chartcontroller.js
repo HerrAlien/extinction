@@ -109,7 +109,7 @@ var ChartController = {
         }
         
         ui.updateChartButton.onclick = ChartController.onUpdateChartClicked.notify;
-        ChartController.onUpdateChartClicked.add ( function () {            
+        ChartController.onUpdateChartClicked.add ( function () { // keep it private ...
             if (!InputValidator.validate (starNameInput))
                 return;
             
@@ -129,11 +129,11 @@ var ChartController = {
             SVGChart.clear();
         	Log.message ("Loading photometry table ...");
         	setTimeout ( function(){
-                    if (PhotmetryTable.AAVSO.IsChartID(starName))
-                        PhotmetryTable.initFromChartID (starName);
-                    else
-                        PhotmetryTable.initFromStarName (starName, fov, limittingMag);
-                }, 1);
+                            if (PhotmetryTable.AAVSO.IsChartID(starName))
+                                PhotmetryTable.initFromChartID (starName);
+                            else
+                                PhotmetryTable.initFromStarName (starName, fov, limittingMag);
+                        }, 1);
         });
         ChartController.onUpdateChartClicked.add (DataShareSave.update);
     }

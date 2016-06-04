@@ -103,7 +103,7 @@ var Initialization = {
         SVGChart.init (PhotmetryTable.variableStar.ra, PhotmetryTable.variableStar.dec, PhotmetryTable.frame.fov, PhotmetryTable.frame.maglimit);
         SVGChart.labels = PhotmetryTable.comparisonStars;
         SVGChart.drawBorder ();
-        Hipparcos.onInit();
+        Hipparcos.onStarsRetrieved.notify();
         EstimationCorrector.init();
         CorrectorUIManager.onLocationOrTimeChanged();
     },
@@ -142,6 +142,12 @@ var Initialization = {
 			DataShareLoader.setUserInputData();
         }, 1);
     });
+    
+    Hipparcos.onStarsRetrieved.add (function () {
+        SVGChart.setStars (Hipparcos.chart.stars);  
+        SVGChart.redraw();
+    	Log.message ("Done! " + PhotmetryTable.variableStar.name + ", lim. mag.=" + PhotmetryTable.frame.maglimit + ", FOV[']=" + PhotmetryTable.frame.fov + "; chart id=" + PhotmetryTable.frame.chartID);
+    });
 
     var extinctionCoeffInput = document.getElementById("K");
     InputValidator.AddNumberMinimumValidator (extinctionCoeffInput, 0);
@@ -152,12 +158,6 @@ var Initialization = {
 
     document.documentElement.onscroll = InputValidator.UpdateErrorLabelPosition;
     window.onresize = InputValidator.UpdateErrorLabelPosition;
-
-    Hipparcos.onInit = function () {
-        SVGChart.setStars (Hipparcos.chart.stars);  
-        SVGChart.redraw();
-    	Log.message ("Done! " + PhotmetryTable.variableStar.name + ", lim. mag.=" + PhotmetryTable.frame.maglimit + ", FOV[']=" + PhotmetryTable.frame.fov + "; chart id=" + PhotmetryTable.frame.chartID);
-    }
     
     document.body.onclick = function (){
         if (StarsSelection.selectionJustActivated) 
