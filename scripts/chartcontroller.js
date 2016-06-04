@@ -109,11 +109,8 @@ var ChartController = {
         }
         
         ui.orientationElem.onchange = function () {
-    	     SVGChart.chartOrientation = this.value;
-    	     SVGChart.drawBorder ();
-    	     SVGChart.redrawStars();
-    	     SVGChart.drawCenterMark();
-    	     SVGChart.redrawLabels();	
+    	    SVGChart.chartOrientation = this.value;
+    	    SVGChart.redraw();
         }
     },
     

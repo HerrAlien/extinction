@@ -78,7 +78,7 @@ var SVGChart = {
 		}
 	},
     
-    updateStars : function (_stars) {
+    setStars : function (_stars) {
         SVGChart.stars = _stars;
         SVGChart.stars.sort(function(a, b) { 
                 if (a.mag < b.mag)
@@ -88,7 +88,6 @@ var SVGChart = {
                 return 0;
             } 
         );
-        SVGChart.redrawStars();
     },
 	
 	redrawStars : function () {
@@ -120,11 +119,6 @@ var SVGChart = {
         circleElem.setAttribute ("stroke", "white");
         circleElem.setAttribute ("stroke-width", 1);
     },
-    
-    updateComparisonLabels : function (_stars) {
-		SVGChart.labels = _stars;
-		SVGChart.redrawLabels();
-	},
     
 	redrawLabels : function () {
 		if (SVGChart.labelsDOM)
@@ -290,7 +284,14 @@ var SVGChart = {
 		txt.textContent = textToPlace;
 		txt.style["fontSize"] = (size - 1) + "px";
 		txt.style["fontFamily"] = "Arial";
-	}
+	},
+    
+    redraw : function () {
+        SVGChart.redrawStars();
+        SVGChart.drawCenterMark();
+    	SVGChart.redrawLabels ();
+        SVGChart.drawBorder ();
+    }
 };
 
 try {

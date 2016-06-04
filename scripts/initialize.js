@@ -101,6 +101,7 @@ var Initialization = {
         starNameInput.oninput();
         
         SVGChart.init (PhotmetryTable.variableStar.ra, PhotmetryTable.variableStar.dec, PhotmetryTable.frame.fov, PhotmetryTable.frame.maglimit);
+        SVGChart.labels = PhotmetryTable.comparisonStars;
         SVGChart.drawBorder ();
         Hipparcos.onInit();
         EstimationCorrector.init();
@@ -133,6 +134,8 @@ var Initialization = {
                     Hipparcos.init(coords[0], coords[1], frame.fov, frame.maglimit);
                     SVGChart.init (coords[0], coords[1], frame.fov, frame.maglimit);
                     SVGChart.drawBorder ();
+                    // TODO also set the comparison labels here
+                    SVGChart.labels = PhotmetryTable.comparisonStars;
                     CorrectorUIManager.onLocationOrTimeChanged();
                 }, 1);
 			
@@ -152,11 +155,9 @@ var Initialization = {
     window.onresize = InputValidator.UpdateErrorLabelPosition;
 
     Hipparcos.onInit = function () {
-    	Log.message ("Done!");
-        SVGChart.updateStars (Hipparcos.chart.stars);   	
-    	SVGChart.drawCenterMark();
-    	SVGChart.updateComparisonLabels (PhotmetryTable.comparisonStars);
-    	Log.message (PhotmetryTable.variableStar.name + ", lim. mag.=" + PhotmetryTable.frame.maglimit + ", FOV[']=" + PhotmetryTable.frame.fov + "; chart id=" + PhotmetryTable.frame.chartID);
+        SVGChart.setStars (Hipparcos.chart.stars);  
+        SVGChart.redraw();
+    	Log.message ("Done! " + PhotmetryTable.variableStar.name + ", lim. mag.=" + PhotmetryTable.frame.maglimit + ", FOV[']=" + PhotmetryTable.frame.fov + "; chart id=" + PhotmetryTable.frame.chartID);
     }
     
     document.body.onclick = function (){
