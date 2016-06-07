@@ -100,7 +100,7 @@ var Initialization = {
         starNameInput.value = PhotmetryTable.frame.chartID;
         starNameInput.oninput();
         
-        SVGChart.init (PhotmetryTable.variableStar.ra, PhotmetryTable.variableStar.dec, PhotmetryTable.frame.fov, PhotmetryTable.frame.maglimit);
+        SVGChart.setFrameData (PhotmetryTable.variableStar.ra, PhotmetryTable.variableStar.dec, PhotmetryTable.frame.fov, PhotmetryTable.frame.maglimit);
         SVGChart.labels = PhotmetryTable.comparisonStars;
         SVGChart.drawBorder ();
         Hipparcos.onStarsRetrieved.notify();
@@ -112,17 +112,20 @@ var Initialization = {
       try {
       if (!ChartController || !StarsSelection || !CorrectorUIManager || !SVGChart || 
           !PhotmetryTable || !InputValidator || !Hipparcos || !DataShareLoader || 
-          !DataShareSave || Initialization.doneInit)
+		  !Notifications || !DataShareSave || Initialization.doneInit)
         return;
-      } catch (err) {
+
+	} catch (err) {
         return;
     }
-      
-    ChartController.init();
-    StarsSelection.init();
-    CorrectorUIManager.init();
-    DataShareSave.init();
 
+	PhotmetryTable.init();	
+	ChartController.init();
+	StarsSelection.init();
+	CorrectorUIManager.init();
+	DataShareSave.init();
+	Hipparcos.init();
+		
 	// TODO: ensure this happens only once
     PhotmetryTable.onTableRetrieved.add(function () {
     	setTimeout (function() {
@@ -131,8 +134,8 @@ var Initialization = {
             EstimationCorrector.init();
             Log.message ("Loading stars from Tycho catalogue ...");
             setTimeout (function() {
-                    Hipparcos.init(coords[0], coords[1], frame.fov, frame.maglimit);
-                    SVGChart.init (coords[0], coords[1], frame.fov, frame.maglimit);
+                    Hipparcos.setFrameData(coords[0], coords[1], frame.fov, frame.maglimit);
+                    SVGChart.setFrameData (coords[0], coords[1], frame.fov, frame.maglimit);
                     // TODO also set the comparison labels here
                     SVGChart.labels = PhotmetryTable.comparisonStars;
                     CorrectorUIManager.onLocationOrTimeChanged();

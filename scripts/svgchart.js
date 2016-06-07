@@ -43,7 +43,7 @@ var SVGChart = {
 	borderDOM : null,
 	centerMarkDOM : null,
     
-    init : function (ra, dec, _fov_arcmin, _mag) {
+    setFrameData : function (ra, dec, _fov_arcmin, _mag) {
         SVGChart.clear();
         // save the data
         SVGChart.ra = ra;

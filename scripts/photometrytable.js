@@ -43,19 +43,11 @@ var PhotmetryTable = {
       "chartID" : "unknown"
     },
 	
-	comparisonStars : [],
+	comparisonStars : [],	
+	onTableRetrieved : false,
 	
-	onTableRetrieved : {
-		handlers : [],
-		add : function (handler) {
-			PhotmetryTable.onTableRetrieved.handlers.push(handler);
-		},
-		notify : function () {
-			var i = 0;
-			for (i = 0; i < PhotmetryTable.onTableRetrieved.handlers.length; i++) {
-				PhotmetryTable.onTableRetrieved.handlers[i]();
-			}
-		}
+	init : function () {
+		PhotmetryTable.onTableRetrieved = Notifications.NewNoParameter();
 	},
 
     // namespace holding utilities to access the VSP data

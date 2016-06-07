@@ -27,32 +27,15 @@ var ChartController = {
         updateChartButton : document.getElementById("updateChart")
     },
     
-    onChartOrientationChanged : {
-        _handlers : [],
-        add: function (handler) {
-            ChartController.onChartOrientationChanged._handlers.push (handler);
-        },
-        notify : function () {
-            var i = 0;
-            for (i = 0; i < ChartController.onChartOrientationChanged._handlers.length; i++)
-                ChartController.onChartOrientationChanged._handlers[i]();
-        }
-    },
+    onChartOrientationChanged : false,
     
-    onUpdateChartClicked : {
-        _handlers : [],
-        add: function (handler) {
-            ChartController.onUpdateChartClicked._handlers.push (handler);
-        },
-        notify : function () {
-            var i = 0;
-            for (i = 0; i < ChartController.onUpdateChartClicked._handlers.length; i++)
-                ChartController.onUpdateChartClicked._handlers[i]();
-        }
-    },
+    onUpdateChartClicked : false,
     
     init : function () {
         
+		ChartController.onChartOrientationChanged = Notifications.NewNoParameter();
+		ChartController.onUpdateChartClicked = Notifications.NewNoParameter();
+		
         ChartController.onChartOrientationChanged.add ( function () { 
             SVGChart.chartOrientation = ChartController.ui.orientationElem.value;
     	    SVGChart.redraw(); });

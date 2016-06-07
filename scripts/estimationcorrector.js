@@ -345,6 +345,8 @@ var CorrectorUIManager = {
             var midSelector = StarsSelection.Selector.build (midImput);
             var dimSelector = StarsSelection.Selector.build (dimInput);
             
+            // TODO: get notified about selection, to update stats.
+            
 			InputValidator.AddNumberMinimumValidator (b2m, 0);
 			InputValidator.AddNumberMinimumValidator (m2d, 0);
 			
