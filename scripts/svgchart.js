@@ -190,32 +190,17 @@ var SVGChart = {
 			SVGChart.image.removeChild (SVGChart.centerMarkDOM);
         SVGChart.centerMarkDOM = SVGChart.image.ownerDocument.createElementNS (SVGChart.namespace, "g");
         SVGChart.image.appendChild (SVGChart.centerMarkDOM);	
-		var parentDOM = SVGChart.centerMarkDOM;
 
 		var center = SVGChart.size / 2;
 		var offset = 7;
-		var line = parentDOM.ownerDocument.createElementNS(SVGChart.namespace, "line");
-		parentDOM.appendChild (line);
-        line.setAttribute ("x1", center - offset);
-        line.setAttribute ("y1", center);
-        line.setAttribute ("x2", center + offset);
-        line.setAttribute ("y2", center);
-        line.setAttribute ("stroke", "black");
-        line.setAttribute ("stroke-width", 1);
-
-		line = parentDOM.ownerDocument.createElementNS(SVGChart.namespace, "line");
-		parentDOM.appendChild (line);
-        line.setAttribute ("x1", center);
-        line.setAttribute ("y1", center - offset);
-        line.setAttribute ("x2", center);
-        line.setAttribute ("y2", center + offset);
-        line.setAttribute ("stroke", "black");
-        line.setAttribute ("stroke-width", 1);
 		
-		var circleElem = parentDOM.ownerDocument.createElementNS (SVGChart.namespace, "circle");
-        parentDOM.appendChild (circleElem);
-        circleElem.setAttribute ("cx", SVGChart.size / 2);
-        circleElem.setAttribute ("cy", SVGChart.size / 2);
+        SVGChart.Draw.line (SVGChart.centerMarkDOM, center - offset, center, center + offset, center, "black", 1);
+        SVGChart.Draw.line (SVGChart.centerMarkDOM, center, center - offset, center, center + offset, "black", 1);
+		
+		var circleElem = SVGChart.centerMarkDOM.ownerDocument.createElementNS (SVGChart.namespace, "circle");
+        SVGChart.centerMarkDOM.appendChild (circleElem);
+        circleElem.setAttribute ("cx", center);
+        circleElem.setAttribute ("cy", center);
         circleElem.setAttribute ("r", 3);
         circleElem.setAttribute ("fill", "white");
         circleElem.setAttribute ("stroke", "black");
@@ -228,73 +213,78 @@ var SVGChart = {
 			SVGChart.image.removeChild (SVGChart.borderDOM);
 		SVGChart.borderDOM = SVGChart.image.ownerDocument.createElementNS (SVGChart.namespace, "g");
 		SVGChart.image.appendChild (SVGChart.borderDOM);
-		var targetDOM = SVGChart.borderDOM;
-		
-		var half = SVGChart.size / 2;
+
 		var margin = 1;
-		var border = targetDOM.ownerDocument.createElementNS(SVGChart.namespace, "rect");
-		targetDOM.appendChild (border);
-		
-		border.setAttribute ("x", margin);
-		border.setAttribute ("y", margin);
-		
-		border.setAttribute ("width", SVGChart.size - 2 * margin);
-		border.setAttribute ("height", SVGChart.size - 2 * margin);
-		
-		border.setAttribute ("stroke", "black");
-		border.setAttribute ("stroke-width",  margin );
-		
-		border.setAttribute ("fill-opacity",  0);
-		
+        var lineLen = SVGChart.size - margin;
+        SVGChart.Draw.line(SVGChart.borderDOM, margin, margin, lineLen, margin, "black", margin);
+        SVGChart.Draw.line(SVGChart.borderDOM, margin, margin, margin, lineLen, "black", margin);
+        SVGChart.Draw.line(SVGChart.borderDOM, lineLen, lineLen, lineLen, margin, "black", margin);
+        SVGChart.Draw.line(SVGChart.borderDOM, lineLen, lineLen, margin, lineLen, "black", margin);
+                
 		// now, draw NEWS ...
+        var half = SVGChart.size/2;
 		var textSize = 10;
 		var x = half;
 		var y = 0; // north up
 		if (SVGChart.chartOrientation == 1 || SVGChart.chartOrientation == 3)
 			y = SVGChart.size - textSize; // south up
-    SVGChart.drawCoordinateMarker ("N", x, y, textSize);
+        SVGChart.Draw.coordinateMarker (SVGChart.borderDOM, "N", x, y, textSize);
 		
 		y = half;
 		x = 0; // west to the right
 		if (SVGChart.chartOrientation == 1 || SVGChart.chartOrientation == 2)
 			x = SVGChart.size - textSize; // east to the right
-    SVGChart.drawCoordinateMarker ("E", x, y, textSize);
+        SVGChart.Draw.coordinateMarker (SVGChart.borderDOM, "E", x, y, textSize);
 
 		x = SVGChart.size - textSize; //west to the right
 		if (SVGChart.chartOrientation == 1 || SVGChart.chartOrientation == 2)
 			x = 0; // east to the right
-    SVGChart.drawCoordinateMarker ("W", x, y, textSize);
+        SVGChart.Draw.coordinateMarker (SVGChart.borderDOM, "W", x, y, textSize);
 
 		x = half;
 		y = SVGChart.size - textSize; // north up
 		if (SVGChart.chartOrientation == 1 || SVGChart.chartOrientation == 3)
 			y = 0; // south up
-    SVGChart.drawCoordinateMarker ("S", x, y, textSize);
+        SVGChart.Draw.coordinateMarker (SVGChart.borderDOM, "S", x, y, textSize);
 	},
 	
-	drawCoordinateMarker : function (textToPlace, posx, posy, size) {
-		var targetDOM = SVGChart.borderDOM;
-		var bg = targetDOM.ownerDocument.createElementNS(SVGChart.namespace, "rect");
-		targetDOM.appendChild (bg);
-		bg.setAttribute ("fill", "white");
-		bg.setAttribute ("x", posx);
-		bg.setAttribute ("y", posy);
-		bg.setAttribute ("width", size);
-		bg.setAttribute ("height", size);
-		var txt = targetDOM.ownerDocument.createElementNS(SVGChart.namespace, "text");
-		targetDOM.appendChild (txt);
-		txt.setAttribute("x", posx + 1);
-		txt.setAttribute("y", posy + 3 + size/2);
-		txt.textContent = textToPlace;
-		txt.style["fontSize"] = (size - 1) + "px";
-		txt.style["fontFamily"] = "Arial";
-	},
-    
     redraw : function () {
         SVGChart.redrawStars();
         SVGChart.drawCenterMark();
-        SVGChart.drawBorder ();
     	SVGChart.redrawLabels ();
+        SVGChart.drawBorder ();
+    },
+    
+    Draw : { 
+        line : function (parent, x1, y1, x2, y2, color, width){
+            var line = parent.ownerDocument.createElementNS(SVGChart.namespace, "line");
+            parent.appendChild (line);
+            line.setAttribute ("x1", x1);
+            line.setAttribute ("y1", y1);
+            line.setAttribute ("x2", x2);
+            line.setAttribute ("y2", y2);
+            line.setAttribute ("stroke", color);
+            line.setAttribute ("stroke-width", width);
+            parent.appendChild (line);
+        },
+        
+        coordinateMarker : function (parent, textToPlace, posx, posy, size) {
+            var bg = parent.ownerDocument.createElementNS(SVGChart.namespace, "rect");
+            parent.appendChild (bg);
+            bg.setAttribute ("fill", "white");
+            bg.setAttribute ("x", posx);
+            bg.setAttribute ("y", posy);
+            bg.setAttribute ("width", size);
+            bg.setAttribute ("height", size);
+            var txt = parent.ownerDocument.createElementNS(SVGChart.namespace, "text");
+            parent.appendChild (txt);
+            txt.setAttribute("x", posx + 1);
+            txt.setAttribute("y", posy + 3 + size/2);
+            txt.textContent = textToPlace;
+            txt.style["fontSize"] = (size - 1) + "px";
+            txt.style["fontFamily"] = "Arial";
+        }
+        
     }
 };
 
