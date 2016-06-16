@@ -22,6 +22,8 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl.html
 
 var ExtinctionCoefficient = {
 
+// this is the model side.
+// keeps all comparisons that are used to compute K
     comparisons : [],
     
     validValuesRange : [0.0 , 10.0],
@@ -187,6 +189,7 @@ var ExtinctionCoefficient = {
         })();
     },
     
+    // algo, model side
     Argelander : {
         /** used to get an array of K constants. Assumes all comparisons are of single type */
         getKValues : function () {
@@ -212,7 +215,8 @@ var ExtinctionCoefficient = {
             return kvals;
         }
     },
-
+    
+    // algo, model side
     Paired : {
         /** used to get an array of K constants. Assumes all comparisons are of paired type */
         getKValues : function () {
@@ -251,6 +255,7 @@ var ExtinctionCoefficient = {
         }
     },
     
+    // controller side.
     updateUI : function () {
         var i = 0;
         var comps = ExtinctionCoefficient.comparisons; // avoid long names

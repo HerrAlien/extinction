@@ -78,6 +78,7 @@ var EstimationCorrector = {
     
     // this is a control side of things.
     addNewComparison : function () {
+		// this is view-ish ... should not be here.
         var table = CorrectorUIManager.extraEstimatesTable;
         var createdObj = CorrectorUIManager.Utils.AddPairedComparison (table);
         CorrectorUIManager.Utils.AddDeleteLink (createdObj.row, createdObj.tddelete, createdObj.comp, EstimationCorrector.pairedComparisons);
@@ -136,11 +137,19 @@ var EstimationCorrector = {
     }
 };
 
+var CorrectorTableView = {
+	// should contain the table
+	// should register to the "add row" link clicked
+};
+
 // control, mostly
 var CorrectorUIManager = {
+	
+	// should be split to a sepparate UI manager, for actual brightness estimates
     table : document.getElementById("extinctionEstimates"),
     tableHeader : document.getElementById("extinctionEstimatesHeader"), 
     
+	// and only this should be the controller for the corrector.
     useValueForK : document.getElementById ("useValueForK"),
     computeK : document.getElementById ("computeK"),
     useArgelander : document.getElementById ("useArgelander"),
@@ -150,6 +159,8 @@ var CorrectorUIManager = {
     extraEstimatesTable : document.getElementById ("extraEstimates"), 
     
     selectedAlgorithm : 0,
+	
+	// should have a notification object for adding a correction entry
     
     init : function () {
 		
@@ -360,6 +371,8 @@ var CorrectorUIManager = {
             m2d.onmouseenter = m2d.onfocus;
 
             var comp = ExtinctionCoefficient.PairedComparison(brightSelector, b2m, midSelector, m2d, dimSelector);
+			// this is the view object.
+			// should interrogate the model side (the comp object) when being notified by the controller
             return { "comp": comp, "midSelector" : midSelector, "tdmid" : tdmid, "row" :  row, "tddelete" : tddelete};
         }
     },
