@@ -268,7 +268,8 @@ var SVGChart = {
             txt.textContent = textToPlace;
             txt.style["fontSize"] = (size - 1) + "px";
             txt.style["fontFamily"] = "Arial";
-	}
+        }
+    }
 };
 
 try {
