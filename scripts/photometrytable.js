@@ -174,6 +174,7 @@ var PhotmetryTable = {
 				var doc =  xmlHttpReq.responseText;
 				if (doc == ""){
 					// bad connection?
+					// TODO: this should be a notification
 					Log.message ("Could not retrieve the photometry table; check your internet connection.");
 					return;
 				}
@@ -196,6 +197,7 @@ var PhotmetryTable = {
 					if (detail != null)
 						errorsStr = errorsStr + "\n" + detail
 					
+					// TODO: this should be a notification
 					Log.message (errorsStr);
 					return;
 				}            
