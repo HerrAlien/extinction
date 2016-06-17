@@ -73,7 +73,7 @@ var EstimationCorrector = {
         var timeString = document.getElementById ("dateTime").value;
             
         var lst = Computations.LSTFromTimeString (timeString, longitude);
-        ExtinctionCoefficient.updateAirmassForStar (star, latitude, longitude, lst);        
+        star.updateAirmass(latitude, longitude, lst);
     },
     
     // this is a control side of things.

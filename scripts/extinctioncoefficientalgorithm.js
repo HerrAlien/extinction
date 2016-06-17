@@ -48,19 +48,8 @@ var ExtinctionCoefficient = {
         var stars = comp.getStars();
         var starIndex = 0;
         for (starIndex = 0; starIndex < stars.length; starIndex++) {
-            ExtinctionCoefficient.updateAirmassForStar (stars[starIndex], _lat, _long, lst);
+            stars[starIndex].updateAirmass(_lat, _long, lst);
         }
-    },
-    
-    updateAirmassForStar : function (star,  _lat, _long, lst) {
-        if (!star)
-            return;
-        // for each star, compute altitude
-        var alt = Computations.Alt (star.ra, star.dec, lst, _lat, _long);
-        // then airmass
-        if (isNaN (alt))
-            return;
-        star.airmass = Computations.Airmass (alt);
     },
     
     rebuildValues : function () {

@@ -113,9 +113,9 @@ var ChartController = {
         	Log.message ("Loading photometry table ...");
         	setTimeout ( function(){
                             if (PhotmetryTable.AAVSO.IsChartID(starName))
-                                PhotmetryTable.initFromChartID (starName);
+                                PhotmetryTable.AAVSO.initFromChartID (starName);
                             else
-                                PhotmetryTable.initFromStarName (starName, fov, limittingMag);
+                                PhotmetryTable.AAVSO.initFromStarName (starName, fov, limittingMag);
                         }, 1);
         });
         ChartController.onUpdateChartClicked.add (DataShareSave.update);

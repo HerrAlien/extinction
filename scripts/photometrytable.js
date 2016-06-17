@@ -28,14 +28,7 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl.html
 
 var PhotmetryTable = {
     
-    variableStar : { 
-        "ra" : 0, 
-        "dec" : 0, 
-        "mag" : "unknown", 
-        "label" : "V",
-        "airmass" : 1,
-        "name" : "unknown"
-    },
+    variableStar : false,
     
     frame: {
       "fov" : 400,
@@ -46,10 +39,44 @@ var PhotmetryTable = {
 	comparisonStars : [],	
 	onTableRetrieved : false,
 	
+	setUpdateX : function (star) {
+		if (!star["updateAirmass"]) {
+			star["updateAirmass"] = function (_lat, _long, lst) { 
+				var alt = Computations.Alt (this.ra, this.dec, lst, _lat, _long);
+				// then airmass
+				if (!isNaN (alt))
+					this.airmass = Computations.Airmass (alt);
+			}
+		}
+	},
+	
+	buildStar : function () {
+		var star = {};
+		star["ra"]      = 0;
+		star["dec"]     = 0;
+		star["mag"]     = "unknown", 
+        star["label"]   = "V",
+        star["airmass"] = 1,
+        star["name"]    = "unknown",
+		PhotmetryTable.setUpdateX (star);
+		return star;
+	},
+	
 	init : function () {
 		PhotmetryTable.onTableRetrieved = Notifications.NewNoParameter();
 	},
-
+	
+	initFromJSON : function (photometryData) {
+		PhotmetryTable.frame = photometryData.frame;
+        PhotmetryTable.variableStar = photometryData.variableStar;
+        PhotmetryTable.comparisonStars = photometryData.comparisonStars;
+		for (i = 0; i < PhotmetryTable.comparisonStars.length; i++) {
+			var star = PhotmetryTable.comparisonStars[i];
+			PhotmetryTable.setUpdateX (star);
+		}
+		PhotmetryTable.setUpdateX (PhotmetryTable.variableStar);
+	},
+	
     // namespace holding utilities to access the VSP data
     AAVSO : {
         configFromStarName : { // 
@@ -66,8 +93,6 @@ var PhotmetryTable = {
             url_suffix : "/?format=json&proxyfor=aavso-vsp-chart-id"
         },        
         
-        
-
         GetData : function (starsData) {
             PhotmetryTable.comparisonStars = [];
             var i = 0;
@@ -84,16 +109,15 @@ var PhotmetryTable = {
                     }
                 }
                 
-                PhotmetryTable.comparisonStars.push ( 
-                    { 
-                        "ra" : Computations.parseCoordinate(starJSON.ra, ":") * 15,
-                        "dec" : Computations.parseCoordinate(starJSON.dec, ":"),
-                        "mag" : mag,
-                        "label" : starJSON.label
-                    }
-                );
+				var star = PhotmetryTable.buildStar();
+				star.ra = Computations.parseCoordinate(starJSON.ra, ":") * 15;
+				star.dec = Computations.parseCoordinate(starJSON.dec, ":");
+				star.mag = mag;
+                star.label =starJSON.label;
+                PhotmetryTable.comparisonStars.push ( star);
             }
             
+			PhotmetryTable.variableStar = PhotmetryTable.buildStar();
             PhotmetryTable.variableStar.ra = Computations.parseCoordinate(starsData.ra, ":") * 15;
             PhotmetryTable.variableStar.dec = Computations.parseCoordinate(starsData.dec, ":");                
             PhotmetryTable.variableStar.name = starsData.star;                
@@ -115,71 +139,71 @@ var PhotmetryTable = {
                                   (code >= 97 && code <= 122))
             }
             return isAlphanumeric;
-        }        
-    },
+        },
     
-    initFromStarName : function (starName, fov, limitingMag) {
-        var xmlHttpReq = new XMLHttpRequest({mozSystem: true});
-        xmlHttpReq.onreadystatechange = function() {
-            if (4 != xmlHttpReq.readyState)
-                return;
-			PhotmetryTable.onDataRetrieved (this);
-		}
-   		var cfg = PhotmetryTable.AAVSO.configFromStarName;
-        xmlHttpReq.open(cfg.method, cfg.url + "&" + cfg.params[0] + "=" + starName + 
-						"&" + cfg.params[1] + "=" + fov +
-   						"&" + cfg.params[2] + "=" + limitingMag +
-                        "&proxyfor=aavso-vsp", true);
-        xmlHttpReq.send(null);
-    },
-    
-    initFromChartID : function (chartID) {
-        var xmlHttpReq = new XMLHttpRequest({mozSystem: true});
-        xmlHttpReq.onreadystatechange = function() {
-            if (4 != xmlHttpReq.readyState)
-                return;
-    	   PhotmetryTable.onDataRetrieved (this);
-    	}
-       	
-        var cfg = PhotmetryTable.AAVSO.configFromChartID;
-        xmlHttpReq.open(cfg.method, cfg.url_prefix + chartID + cfg.url_suffix, true);
-        xmlHttpReq.send(null);
-    },
-    
-	onDataRetrieved : function (xmlHttpReq) {
-            if(xmlHttpReq.readyState == 4) {
-                var doc =  xmlHttpReq.responseText;
-                if (doc == ""){
-                    // bad connection?
-                    Log.message ("Could not retrieve the photometry table; check your internet connection.");
-                    return;
-                }
-                 
-                // this is now JSON!
-                var starsData = JSON.parse (doc);
-                var hasPhotometry = (starsData.photometry != null) && (starsData.photometry.length > 0);
-    
-                if (!hasPhotometry){
-                    // check for errors reported by aavso
-                    var errorsStr = "Could not retrieve the photometry data:";
-                    var errors = starsData["errors"];
-                    if (errors != null) {
-                        var i = 0;
-                        for (i = 0; i < errors.length; i++)
-                            errorsStr = errorsStr + "\n" + errors[i];
-                    }
-
-                    var detail = starsData["detail"];
-                    if (detail != null)
-                        errorsStr = errorsStr + "\n" + detail
-
-                    Log.message (errorsStr);
-                    return;
-                }            
-
-                PhotmetryTable.AAVSO.GetData (starsData);
-                PhotmetryTable.onTableRetrieved.notify();
+		initFromStarName : function (starName, fov, limitingMag) {
+			var xmlHttpReq = new XMLHttpRequest({mozSystem: true});
+			xmlHttpReq.onreadystatechange = function() {
+				if (4 != xmlHttpReq.readyState)
+					return;
+				PhotmetryTable.AAVSO.onDataRetrieved (this);
 			}
+			var cfg = PhotmetryTable.AAVSO.configFromStarName;
+			xmlHttpReq.open(cfg.method, cfg.url + "&" + cfg.params[0] + "=" + starName + 
+							"&" + cfg.params[1] + "=" + fov +
+							"&" + cfg.params[2] + "=" + limitingMag +
+							"&proxyfor=aavso-vsp", true);
+			xmlHttpReq.send(null);
+		},
+		
+		initFromChartID : function (chartID) {
+			var xmlHttpReq = new XMLHttpRequest({mozSystem: true});
+			xmlHttpReq.onreadystatechange = function() {
+				if (4 != xmlHttpReq.readyState)
+					return;
+			   PhotmetryTable.AAVSO.onDataRetrieved (this);
+			}
+			
+			var cfg = PhotmetryTable.AAVSO.configFromChartID;
+			xmlHttpReq.open(cfg.method, cfg.url_prefix + chartID + cfg.url_suffix, true);
+			xmlHttpReq.send(null);
+		},
+		
+		onDataRetrieved : function (xmlHttpReq) {
+			if(xmlHttpReq.readyState == 4) {
+				var doc =  xmlHttpReq.responseText;
+				if (doc == ""){
+					// bad connection?
+					Log.message ("Could not retrieve the photometry table; check your internet connection.");
+					return;
+				}
+					 
+				// this is now JSON!
+				var starsData = JSON.parse (doc);
+				var hasPhotometry = (starsData.photometry != null) && (starsData.photometry.length > 0);
+		
+				if (!hasPhotometry){
+					// check for errors reported by aavso
+					var errorsStr = "Could not retrieve the photometry data:";
+					var errors = starsData["errors"];
+					if (errors != null) {
+						var i = 0;
+						for (i = 0; i < errors.length; i++)
+							errorsStr = errorsStr + "\n" + errors[i];
+					}
+
+					var detail = starsData["detail"];
+					if (detail != null)
+						errorsStr = errorsStr + "\n" + detail
+					
+					Log.message (errorsStr);
+					return;
+				}            
+
+				PhotmetryTable.AAVSO.GetData (starsData);
+				PhotmetryTable.onTableRetrieved.notify();
+			}
+		}
 	}
 };
 

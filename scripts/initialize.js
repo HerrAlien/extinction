@@ -90,10 +90,7 @@ var Initialization = {
     },
 
     initFromSessionData : function() {
-        var Photometry = Initialization.sesionData.Photometry;
-        PhotmetryTable.frame = Photometry.frame;
-        PhotmetryTable.variableStar = Photometry.variableStar;
-        PhotmetryTable.comparisonStars = Photometry.comparisonStars;
+		PhotmetryTable.initFromJSON (Initialization.sesionData.Photometry);
         Hipparcos.chart = Initialization.sesionData.Hipparcos.chart;
         
         var starNameInput = ChartController.ui.variableStarElem;
