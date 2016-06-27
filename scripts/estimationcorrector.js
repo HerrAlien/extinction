@@ -171,15 +171,8 @@ var CorrectorTableView = {
 
         var tdadd =  addChild (CorrectorTableView.tableHeader, "td");
 		// this is part of the control,
-        var anch = addChild(tdadd, "a");
-        anch.textContent = "(+) Add row";
-        anch.noref="";
-        anch.className = "addAnchor";
-        anch.onclick = function () { // this should call notifications
-									 // should register to the "add row" link clicked
-                CorrectorUIManager[CorrectorUIManager.algorithms[CorrectorUIManager.selectedAlgorithm]].CreateComparisonUIRow();
-        }
-        
+        CorrectorUIManager.createAddAnchor (tdadd);
+		
         var tdRating = addChild (CorrectorTableView.tableHeader, "td");
         tdRating.style["background"] = "#ffffff";
         CorrectorUIManager[CorrectorUIManager.algorithms[CorrectorUIManager.selectedAlgorithm]].CreateComparisonUIRow(); // one compariso is enough for pairs
@@ -206,6 +199,17 @@ var CorrectorUIManager = {
     extraEstimatesTable : document.getElementById ("extraEstimates"), 
     
     selectedAlgorithm : 0,
+	addRowAnchor : false,
+	
+	createAddAnchor : function (parentElem) {
+		CorrectorUIManager.addRowAnchor = CorrectorUIManager.Utils.AddChild(parentElem, "a");
+        CorrectorUIManager.addRowAnchor.textContent = "(+) Add row";
+        CorrectorUIManager.addRowAnchor.noref="";
+        CorrectorUIManager.addRowAnchor.className = "addAnchor";
+        CorrectorUIManager.addRowAnchor.onclick = function () { // this should call notifications ...
+            CorrectorUIManager[CorrectorUIManager.algorithms[CorrectorUIManager.selectedAlgorithm]].CreateComparisonUIRow();
+        }
+	},
 	
 	// should have a notification object for adding a correction entry
     
