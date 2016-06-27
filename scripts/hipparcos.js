@@ -64,6 +64,7 @@ var Hipparcos = {
                 var doc =  xmlHttpReq.responseText;
                 if (doc == ""){
                     // bad connection?
+                    // TODO: should be a notification
                     Log.message ("Could not retrieve the position of stars; check your internet connection.");
                     return;
                 }

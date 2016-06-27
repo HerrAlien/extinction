@@ -62,7 +62,7 @@ var EstimationCorrector = {
 
 		// reset the estimates for extinction
 		CorrectorUIManager.ClearComparisonsList();
-        CorrectorUIManager.ResetHeader();	
+        CorrectorTableView.ResetHeader();	
 		CorrectorUIManager.useArgelander.onclick();
         CorrectorUIManager.useArgelander.checked = true;
     },
@@ -139,15 +139,62 @@ var EstimationCorrector = {
 
 var CorrectorTableView = {
 	// should contain the table
-	// should register to the "add row" link clicked
+    table : document.getElementById("extinctionEstimates"),
+    tableHeader : document.getElementById("extinctionEstimatesHeader"),
+	
+	// should probably be in CorrectorTableView
+	// should be called from a notification (algo change)
+    ResetHeader : function () {
+        var addChild = CorrectorUIManager.Utils.AddChild;
+        CorrectorUIManager.Utils.ClearDOM(CorrectorTableView.tableHeader);
+        if (0 == CorrectorUIManager.selectedAlgorithm) {
+            var tdbright =  addChild (CorrectorTableView.tableHeader, "td");
+            var tdval =  addChild (CorrectorTableView.tableHeader, "td");
+            var tddim =  addChild (CorrectorTableView.tableHeader, "td");
+
+            tdbright.textContent = "Bright star"; 
+            tddim.textContent = "Dim star"; 
+            tdval.textContent = "steps"; 
+        } else {
+            var tdbright =  addChild (CorrectorTableView.tableHeader, "td");
+            var tdval_bm =  addChild (CorrectorTableView.tableHeader, "td");
+            var tdmid =  addChild (CorrectorTableView.tableHeader, "td");
+            var tdval_md =  addChild (CorrectorTableView.tableHeader, "td");
+            var tddim =  addChild (CorrectorTableView.tableHeader, "td");
+
+            tdbright.textContent = "Bright star"; 
+            tdval_bm.textContent = "steps"; 
+            tddim.textContent = "Dim star"; 
+            tdval_md.textContent = "steps"; 
+            tdmid.textContent = "Middle star"; 
+        }
+
+        var tdadd =  addChild (CorrectorTableView.tableHeader, "td");
+		// this is part of the control,
+        var anch = addChild(tdadd, "a");
+        anch.textContent = "(+) Add row";
+        anch.noref="";
+        anch.className = "addAnchor";
+        anch.onclick = function () { // this should call notifications
+									 // should register to the "add row" link clicked
+                CorrectorUIManager[CorrectorUIManager.algorithms[CorrectorUIManager.selectedAlgorithm]].CreateComparisonUIRow();
+        }
+        
+        var tdRating = addChild (CorrectorTableView.tableHeader, "td");
+        tdRating.style["background"] = "#ffffff";
+        CorrectorUIManager[CorrectorUIManager.algorithms[CorrectorUIManager.selectedAlgorithm]].CreateComparisonUIRow(); // one compariso is enough for pairs
+        if (0 == CorrectorUIManager.selectedAlgorithm)
+            CorrectorUIManager[CorrectorUIManager.algorithms[CorrectorUIManager.selectedAlgorithm]].CreateComparisonUIRow(); // two, for Argelander
+    }
+
 };
 
 // control, mostly
 var CorrectorUIManager = {
 	
 	// should be split to a sepparate UI manager, for actual brightness estimates
-    table : document.getElementById("extinctionEstimates"),
-    tableHeader : document.getElementById("extinctionEstimatesHeader"), 
+    //table : document.getElementById("extinctionEstimates"),
+    //tableHeader : document.getElementById("extinctionEstimatesHeader"), 
     
 	// and only this should be the controller for the corrector.
     useValueForK : document.getElementById ("useValueForK"),
@@ -183,7 +230,7 @@ var CorrectorUIManager = {
             CorrectorUIManager.selectedAlgorithm = 0;
             ExtinctionCoefficient.currentAlgorithmID = 0;
             CorrectorUIManager.ClearComparisonsList();
-            CorrectorUIManager.ResetHeader();
+            CorrectorTableView.ResetHeader();
             try{
             CorrectorUIManager.onUserInput();
             } catch (err) {}
@@ -193,7 +240,7 @@ var CorrectorUIManager = {
             CorrectorUIManager.selectedAlgorithm = 1;
             ExtinctionCoefficient.currentAlgorithmID = 1;
             CorrectorUIManager.ClearComparisonsList();
-            CorrectorUIManager.ResetHeader();
+            CorrectorTableView.ResetHeader();
             try{
             CorrectorUIManager.onUserInput();
             } catch (err) {}
@@ -244,52 +291,12 @@ var CorrectorUIManager = {
         }
     },
     
-    ResetHeader : function () {
-        var addChild = CorrectorUIManager.Utils.AddChild;
-        CorrectorUIManager.Utils.ClearDOM(CorrectorUIManager.tableHeader);
-        if (0 == CorrectorUIManager.selectedAlgorithm) {
-            var tdbright =  addChild (CorrectorUIManager.tableHeader, "td");
-            var tdval =  addChild (CorrectorUIManager.tableHeader, "td");
-            var tddim =  addChild (CorrectorUIManager.tableHeader, "td");
-
-            tdbright.textContent = "Bright star"; 
-            tddim.textContent = "Dim star"; 
-            tdval.textContent = "steps"; 
-        } else {
-            var tdbright =  addChild (CorrectorUIManager.tableHeader, "td");
-            var tdval_bm =  addChild (CorrectorUIManager.tableHeader, "td");
-            var tdmid =  addChild (CorrectorUIManager.tableHeader, "td");
-            var tdval_md =  addChild (CorrectorUIManager.tableHeader, "td");
-            var tddim =  addChild (CorrectorUIManager.tableHeader, "td");
-
-            tdbright.textContent = "Bright star"; 
-            tdval_bm.textContent = "steps"; 
-            tddim.textContent = "Dim star"; 
-            tdval_md.textContent = "steps"; 
-            tdmid.textContent = "Middle star"; 
-        }
-
-        var tdadd =  addChild (CorrectorUIManager.tableHeader, "td");
-        var anch = addChild(tdadd, "a");
-        anch.textContent = "(+) Add row";
-        anch.noref="";
-        anch.className = "addAnchor";
-        anch.onclick = function () {
-                CorrectorUIManager[CorrectorUIManager.algorithms[CorrectorUIManager.selectedAlgorithm]].CreateComparisonUIRow();
-        }
-        
-        var tdRating = addChild (CorrectorUIManager.tableHeader, "td");
-        tdRating.style["background"] = "#ffffff";
-        CorrectorUIManager[CorrectorUIManager.algorithms[CorrectorUIManager.selectedAlgorithm]].CreateComparisonUIRow(); // one compariso is enough for pairs
-        if (0 == CorrectorUIManager.selectedAlgorithm)
-            CorrectorUIManager[CorrectorUIManager.algorithms[CorrectorUIManager.selectedAlgorithm]].CreateComparisonUIRow(); // two, for Argelander
-    },
-    
     algorithms : ["Argelander", "Paired"],
     
     ClearComparisonsList : function () {
         ExtinctionCoefficient.comparisons = [];
-        CorrectorUIManager.Utils.ClearDOM (CorrectorUIManager.table);
+		// this should be in view
+        CorrectorUIManager.Utils.ClearDOM (CorrectorTableView.table);
     },
     
     Utils : {
@@ -378,8 +385,9 @@ var CorrectorUIManager = {
     },
     
     Argelander : {
+		// should be a notif. handler
         CreateComparisonUIRow : function () {
-            var table = CorrectorUIManager.table;
+            var table = CorrectorTableView.table;
             var addChild = CorrectorUIManager.Utils.AddChild;
             
             var row = addChild (table, "tr");
@@ -411,8 +419,9 @@ var CorrectorUIManager = {
     },
     
     Paired : {
+		// should be a notif. handler
         CreateComparisonUIRow : function () {
-            var table = CorrectorUIManager.table;
+            var table = CorrectorTableView.table;
             var createdObj = CorrectorUIManager.Utils.AddPairedComparison (table);
             CorrectorUIManager.Utils.AddDeleteLink (createdObj.row, createdObj.tddelete, createdObj.comp, ExtinctionCoefficient.comparisons);
             ExtinctionCoefficient.comparisons.push (createdObj.comp);
