@@ -180,7 +180,10 @@ var CorrectorTableView = {
         CorrectorUIManager[CorrectorUIManager.algorithms[CorrectorUIManager.selectedAlgorithm]].CreateComparisonUIRow(); // one compariso is enough for pairs
         if (0 == CorrectorUIManager.selectedAlgorithm)
             CorrectorUIManager[CorrectorUIManager.algorithms[CorrectorUIManager.selectedAlgorithm]].CreateComparisonUIRow(); // two, for Argelander
-    }
+    },
+	
+	// function to add the argerlander row here
+	// and function to add the paired row here
 
 };
 
@@ -212,6 +215,8 @@ var CorrectorUIManager = {
             CorrectorUIManager[CorrectorUIManager.algorithms[CorrectorUIManager.selectedAlgorithm]].CreateComparisonUIRow();
         }
 	},
+	
+	onSelectedArgelanderNotif : {},
 	
 	// should have a notification object for adding a correction entry
     
@@ -491,138 +496,11 @@ var CorrectorUIManager = {
     }, 
     
     onLocationOrTimeChanged : function () {
-        try {
-            // update all airmasses
-            var latitude = Computations.evalNum (document.getElementById ("lat").value);
-            var longitude = Computations.evalNum (document.getElementById ("long").value);
-            var timeString = document.getElementById ("dateTime").value;
-            var lst = Computations.LSTFromTimeString (timeString, longitude);
-        } catch (err) {
-        }
-            
-        try {
-            // update the variable comparison aimass,
-            var comps = EstimationCorrector.pairedComparisons;
-            var i = 0;
-            for (i = 0; i < comps.length; i++) {
-                ExtinctionCoefficient.updateAirmassForComparison(comps[i], latitude, longitude, lst);
-            }
-            // display the airmasses
-        } catch (err) {
-        }
-            
-        try {
-            ExtinctionCoefficient.updateAirmass (latitude, longitude, timeString);
-            // then call the user input callbavck
-        } catch (err) {
-        }
-        
-        try {
-            CorrectorUIManager.onUserInput();
-        } catch (err) {
-        }
+        Results.onLocationOrTimeChanged();
     },
     
     onUserInput : function () {
-        
-        var coeffInput = document.getElementById ("K");
-        
-        try {
-        
-            try {
-                EstimationCorrector.update();
-            } catch (err) {
-            }
-
-            // this is the main callback ...
-            // compute estimate with K = 0
-            var K = 0;
-            var variableBrightness = 0;
-            try {
-                var variableBrightnessArr = EstimationCorrector.Estimate (K);
-                var variableMagStats = Computations.AverageAndStdDev (variableBrightnessArr);
-                document.getElementById("brightnessNoExtinction").textContent = Computations.Round (variableMagStats.avg, 2) + 
-                                                                                " (std. dev. " + 
-                                                                                Computations.Round (variableMagStats.stdDev, 2) + 
-                                                                                ")";
-            } catch (err) {
-            }
-            
-            try {
-                // update airmass of V - it never gets selected by the user
-                EstimationCorrector.updateAirmassFromInput (PhotmetryTable.variableStar);
-            } catch (err) {
-            }
-            
-            // display airmasses
-            var airmassA = "unknown";
-            var airmassB = "unknown";
-            var airmassV = "unknown";
-            try {
-                airmassA =  EstimationCorrector.pairedComparisons[0].first.bright().airmass;
-            } catch (err) {
-                airmassA = "unknown";
-            }
-
-            try {
-                airmassB = EstimationCorrector.pairedComparisons[0].second.dim().airmass;
-            } catch (err) {
-                airmassB = "unknown";
-            }
-
-            try {
-                airmassV = EstimationCorrector.pairedComparisons[0].first.dim().airmass;
-            } catch (err) {
-                airmassV = "unknown";
-            }
-            
-            document.getElementById ("airmassV").textContent = Computations.Round (airmassV, 3);
-            
-            var extinctionCorrectionRequired = Math.abs (airmassA - airmassB) > 0.2 ||
-                                               Math.abs (airmassA - airmassV) > 0.2 ||
-                                               Math.abs (airmassV - airmassB) > 0.2;
-            if (extinctionCorrectionRequired)
-                document.getElementById ("shouldComputeExtinction").className = "hidden";
-            else
-                document.getElementById ("shouldComputeExtinction").className = "";
-            
-            var variableBrightnessArr = [];
-            // get K:
-            //  - this can be a constant
-            if (document.getElementById ("useValueForK").checked) {
-                coeffInput.readOnly = false;
-                K = parseFloat (coeffInput.value);
-                
-                try {
-                    variableBrightnessArr = EstimationCorrector.Estimate (K);
-                } catch (err) {
-                }
-            } else {
-            //  - or it must be determined from observations
-                coeffInput.readOnly = true;
-                var kvals = ExtinctionCoefficient.rebuildValues();
-
-                var kstats = Computations.AverageAndStdDev (kvals);
-                coeffInput.value = Computations.Round (kstats.avg, 4);
-                
-                InputValidator.validate (coeffInput);
-
-                var i = 0;
-                for (i = 0; i < kvals.length; i++) {
-                    variableBrightnessArr = variableBrightnessArr.concat (EstimationCorrector.Estimate (kvals[i]));
-                }
-            }
-            
-            var variableMagStats = Computations.AverageAndStdDev (variableBrightnessArr);
-            document.getElementById("brightnessWithExtinction").textContent = Computations.Round (variableMagStats.avg, 2) + 
-                                                                              " (std. dev. " + 
-                                                                              Computations.Round (variableMagStats.stdDev, 2) + 
-                                                                              ")";
-            
-        } catch (err) {
-        }
-        ExtinctionCoefficient.updateUI();
-        DataShareSave.update();
+        Results.onUserInput();
     }
 };
 

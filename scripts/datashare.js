@@ -244,6 +244,8 @@ var DataShareSave = {
 		return obj;
 	},
     
+	// this is basically a handler
+	// that should be registered with a bunch of notifications.
     update: function () {
         if (!DataShareSave.urlinput)
             return;
