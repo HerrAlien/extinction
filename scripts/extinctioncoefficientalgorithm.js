@@ -31,24 +31,21 @@ var ExtinctionCoefficient = {
     algorithms : ["Argelander", "Paired"],
     currentAlgorithmID : 0,
 
-    updateAirmass : function (_lat, _long, _time){
-        
-        var lst = Computations.LSTFromTimeString (_time, _long);
-        
+    updateAirmass : function (){
         var compIndex = 0;
         var comps = ExtinctionCoefficient.comparisons;
         for (compIndex = 0; compIndex < comps.length; compIndex++) {
-            ExtinctionCoefficient.updateAirmassForComparison(comps[compIndex], _lat, _long, lst);
+            ExtinctionCoefficient.updateAirmassForComparison(comps[compIndex]);
         }
     },
     
-    updateAirmassForComparison : function (comp, _lat, _long, lst) {
+    updateAirmassForComparison : function (comp) {
         if (!comp)
             return;
         var stars = comp.getStars();
         var starIndex = 0;
         for (starIndex = 0; starIndex < stars.length; starIndex++) {
-            stars[starIndex].updateAirmass(_lat, _long, lst);
+            stars[starIndex].updateAirmass(Location.latitude, Location.longitude, Location.lst);
         }
     },
     
@@ -258,7 +255,6 @@ var ExtinctionCoefficient = {
 };
 
 try {
-if (Initialization)
     Initialization.init();
 } catch (err) {
 }

@@ -211,7 +211,6 @@ var InputValidator = {
 };
 
 try {
-if (Initialization)
     Initialization.init();
 } catch (err) {
 }

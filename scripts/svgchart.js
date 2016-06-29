@@ -289,7 +289,6 @@ var SVGChart = {
 };
 
 try {
-if (Initialization)
     Initialization.init();
 } catch (err) {
 }

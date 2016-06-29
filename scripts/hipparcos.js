@@ -125,7 +125,6 @@ var Hipparcos = {
 };
 
 try {
-if (Initialization)
     Initialization.init();
 } catch (err) {
 }

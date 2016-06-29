@@ -54,14 +54,15 @@ var DataShareLoader = {
     loadFromObj : function () {
         Log.message ("Loading from URL ...");
 		if (DataShareLoader.urlDataObj.lat)
-			LocationUI.latitude.value = DataShareLoader.urlDataObj.lat;
+			Location.Controls.lat.value = DataShareLoader.urlDataObj.lat;
 		
 		if (DataShareLoader.urlDataObj.long)
-			LocationUI.longitude.value = DataShareLoader.urlDataObj.long;
+			Location.Controls.long.value = DataShareLoader.urlDataObj.long;
 		
 		if (DataShareLoader.urlDataObj.dateTime)
-			LocationUI.dateTime.value = DataShareLoader.urlDataObj.dateTime;
-        // TODO: user input update
+			Location.Controls.time.value = DataShareLoader.urlDataObj.dateTime;
+        
+		// TODO: user input update
         if (DataShareLoader.urlDataObj.id)
 			ChartController.ui.variableStarElem.value = DataShareLoader.urlDataObj.id;
 		
@@ -252,9 +253,9 @@ var DataShareSave = {
         
         var dataObj = {};
         // fetch the data
-		dataObj["lat"] = LocationUI.latitude.value;
-		dataObj["long"] = LocationUI.longitude.value;
-		dataObj["dateTime"] = LocationUI.dateTime.value;
+		dataObj["lat"] = Location.latitude;
+		dataObj["long"] = Location.longitude;
+		dataObj["dateTime"] = Location.enteredTime;
         // always, always save data here from the photometry table.
 		dataObj["id"] = PhotmetryTable.frame.chartID;
 		dataObj["fov"] = PhotmetryTable.frame.fov;
@@ -292,7 +293,6 @@ var DataShareSave = {
 };
 
 try {
-if (Initialization)
     Initialization.init();
 } catch (err) {
 }

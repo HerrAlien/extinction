@@ -34,3 +34,8 @@ var Notifications = {
 		return a;
 	}
 };
+
+try {
+    Initialization.init();
+} catch (err) {
+}

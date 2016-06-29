@@ -146,7 +146,6 @@ var Computations = {
 };
 
 try {
-if (Initialization)
     Initialization.init();
 } catch (err) {
 }

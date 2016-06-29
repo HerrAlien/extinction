@@ -26,32 +26,23 @@ var Results = {
 	shouldComputeExtinction : document.getElementById("shouldComputeExtinction"),
 	
     onLocationOrTimeChanged : function () {
-		var latitude = 0;
-		var longitude = 0;
-		var timeString = "";
-		var lst = 0;
+		var latitude = Location.latitude;
+		var longitude = Location.longitude;
+		var lst = Location.lst;
 		
-        try {
-            latitude = Computations.evalNum (document.getElementById ("lat").value);
-            longitude = Computations.evalNum (document.getElementById ("long").value);
-            timeString = document.getElementById ("dateTime").value;
-            lst = Computations.LSTFromTimeString (timeString, longitude);
-        } catch (err) {
-        }
-            
         // update all airmasses
         try {
             // update the variable comparison aimass,
             var comps = EstimationCorrector.pairedComparisons;
             var i = 0;
             for (i = 0; i < comps.length; i++) {
-                ExtinctionCoefficient.updateAirmassForComparison(comps[i], latitude, longitude, lst);
+                ExtinctionCoefficient.updateAirmassForComparison(comps[i]);
             }
         } catch (err) {
         }
             
         try {
-            ExtinctionCoefficient.updateAirmass (latitude, longitude, timeString);
+            ExtinctionCoefficient.updateAirmass ();
         } catch (err) {
         }
 		
@@ -169,7 +160,6 @@ var Results = {
 };
 
 try {
-if (Initialization)
     Initialization.init();
 } catch (err) {
 }

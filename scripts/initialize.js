@@ -47,27 +47,6 @@ var AppVersion = {
     }
 };
 
-var LocationUI = {
-    dateTime : document.getElementById("dateTime"),
-    latitude  : document.getElementById("lat"),
-    longitude : document.getElementById("long"),
-      
-      init : function () {
-        var lat = LocationUI.latitude;
-        var long = LocationUI.longitude;
-        LocationUI.dateTime.oninput = CorrectorUIManager.onLocationOrTimeChanged;
-
-        InputValidator.AddNumberRangeValidator (lat, -90, 90);
-        InputValidator.AddNumberRangeValidator (long, -180, 180);
-        lat.onfocus = function () { InputValidator.validate (this); }
-        long.onfocus = function () { InputValidator.validate (this); }
-        lat.oninput = function () { this.onfocus(); CorrectorUIManager.onLocationOrTimeChanged(); }
-        long.oninput = function () { this.onfocus(); CorrectorUIManager.onLocationOrTimeChanged(); }
-        lat.onmouseenter = lat.onfocus;
-        long.onmouseenter = long.onfocus;
-    }
-};
-
 var Initialization = {
 
     doneInit : false,
@@ -102,14 +81,15 @@ var Initialization = {
         SVGChart.drawBorder ();
         Hipparcos.onStarsRetrieved.notify();
         EstimationCorrector.init();
-        CorrectorUIManager.onLocationOrTimeChanged();
+        Results.onLocationOrTimeChanged();
     },
     
   init: function () {
       try {
       if (!ChartController || !StarsSelection || !CorrectorUIManager || !SVGChart || 
           !PhotmetryTable || !InputValidator || !Hipparcos || !DataShareLoader || 
-		  !Notifications || !DataShareSave || !Results || Initialization.doneInit)
+		  !Notifications || !DataShareSave || !Results || !Location ||
+		  Initialization.doneInit)
         return;
 
 	} catch (err) {
@@ -122,7 +102,10 @@ var Initialization = {
 	CorrectorUIManager.init();
 	DataShareSave.init();
 	Hipparcos.init();
+	Location.init();
 		
+    Location.onLocationUpdated.add (Results.onLocationOrTimeChanged);    
+        
 	// TODO: ensure this happens only once
     PhotmetryTable.onTableRetrieved.add(function () {
     	setTimeout (function() {
@@ -135,7 +118,7 @@ var Initialization = {
                     SVGChart.setFrameData (coords[0], coords[1], frame.fov, frame.maglimit);
                     // TODO also set the comparison labels here
                     SVGChart.labels = PhotmetryTable.comparisonStars;
-                    CorrectorUIManager.onLocationOrTimeChanged();
+                    Results.onLocationOrTimeChanged();
                 }, 1);
 			
 			// this sets whatever data we have from the URL.
@@ -154,7 +137,7 @@ var Initialization = {
 
     extinctionCoeffInput.onfocus =  function () { InputValidator.validate (this); }
     extinctionCoeffInput.onmouseenter =  extinctionCoeffInput.onfocus;
-    extinctionCoeffInput.oninput = function () { this.onfocus(); CorrectorUIManager.onLocationOrTimeChanged(); }
+    extinctionCoeffInput.oninput = function () { this.onfocus(); Results.onLocationOrTimeChanged(); }
 
     document.documentElement.onscroll = InputValidator.UpdateErrorLabelPosition;
     window.onresize = InputValidator.UpdateErrorLabelPosition;
@@ -171,10 +154,12 @@ var Initialization = {
     }
         
     AppVersion.updateVersionString();
-    LocationUI.init();
     Initialization.initFromSessionData();
     Initialization.doneInit = true;
   }
 };
 
-Initialization.init();
+try {
+    Initialization.init();
+} catch (err) {
+}
