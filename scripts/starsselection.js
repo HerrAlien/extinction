@@ -53,7 +53,6 @@ var StarsSelection = {
 	setSelectedStar : function (currentlyHoveredStar) {
         if (StarsSelection.activeSelector) {
             // hide the div showing the hovered star
-            EstimationCorrector.updateAirmassFromInput (currentlyHoveredStar);
             StarsSelection.activeSelector.set(currentlyHoveredStar);
 			StarsSelection.afterStarSelection.notify (StarsSelection.activeSelector, currentlyHoveredStar);
             StarsSelection.activeSelector.showAsActive (false);
@@ -102,6 +101,7 @@ var StarsSelection = {
                     this.set = function (st) {
                         if (!st)
                             return;
+						EstimationCorrector.updateAirmassFromInput (st);
                         data.star = st;
                         this.update();
                     }   
