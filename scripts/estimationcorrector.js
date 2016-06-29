@@ -169,10 +169,12 @@ var CorrectorTableView = {
             tdmid.textContent = "Middle star"; 
         }
 
+		// set up a destination for the add link
         var tdadd =  addChild (CorrectorTableView.tableHeader, "td");
-		// this is part of the control,
+		// have the control create the link
         CorrectorUIManager.createAddAnchor (tdadd);
-		
+
+		// add a column for the rating view.
         var tdRating = addChild (CorrectorTableView.tableHeader, "td");
         tdRating.style["background"] = "#ffffff";
         CorrectorUIManager[CorrectorUIManager.algorithms[CorrectorUIManager.selectedAlgorithm]].CreateComparisonUIRow(); // one compariso is enough for pairs
@@ -229,22 +231,39 @@ var CorrectorUIManager = {
             EstimationCorrector.addNewComparison ();
         }
         
+		// this should be handled by an array of functions
         CorrectorUIManager.useArgelander.onclick = function () {
+			// one handler ...
             CorrectorUIManager.usePaired.checked = false;
+			// one handler ...
             CorrectorUIManager.selectedAlgorithm = 0;
+			// one handler ...
             ExtinctionCoefficient.currentAlgorithmID = 0;
+			// one handler ...
             CorrectorUIManager.ClearComparisonsList();
+			// one handler ...
             CorrectorTableView.ResetHeader();
+			// one handler ...
+			// this one should just update the results view, with a K = 0 
+			// or equal to the value from the input field.
             try{
             CorrectorUIManager.onUserInput();
             } catch (err) {}
         }
         CorrectorUIManager.usePaired.onclick = function () {
+			// one handler ...
             CorrectorUIManager.useArgelander.checked = false;
+			// one handler ...
             CorrectorUIManager.selectedAlgorithm = 1;
+			// one handler ...
             ExtinctionCoefficient.currentAlgorithmID = 1;
+			// one handler ...
             CorrectorUIManager.ClearComparisonsList();
+			// one handler ...
             CorrectorTableView.ResetHeader();
+			// one handler ...
+			// this one should just update the results view, with a K = 0 
+			// or equal to the value from the input field.
             try{
             CorrectorUIManager.onUserInput();
             } catch (err) {}
@@ -252,7 +271,10 @@ var CorrectorUIManager = {
         
         CorrectorUIManager.useArgelander.onclick();
         CorrectorUIManager.useArgelander.checked = true;
-        
+		
+        ////////////////////////////////////////////////////////////////
+		// this should be broken into another view-controller, 
+		// for date and location
         var currentDate = new Date();
         
         var month = currentDate.getMonth() + 1;
@@ -293,6 +315,7 @@ var CorrectorUIManager = {
                });
             }
         }
+		////////////////////////////////////////////////////////////////
     },
     
     algorithms : ["Argelander", "Paired"],
