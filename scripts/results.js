@@ -36,13 +36,13 @@ var Results = {
             var comps = EstimationCorrector.pairedComparisons;
             var i = 0;
             for (i = 0; i < comps.length; i++) {
-                ExtinctionCoefficient.updateAirmassForComparison(comps[i]);
+                ExtinctionCoefficient.updateAirmassForComparison(comps[i], latitude, longitude, lst);
             }
         } catch (err) {
         }
             
         try {
-            ExtinctionCoefficient.updateAirmass ();
+            ExtinctionCoefficient.updateAirmass (latitude, longitude, lst);
         } catch (err) {
         }
 		
@@ -81,12 +81,7 @@ var Results = {
             } catch (err) {
             }
             
-            try {
-                // update airmass of V - it never gets selected by the user
-                // EstimationCorrector.updateAirmassFromInput (PhotmetryTable.variableStar);
-            } catch (err) {
-            }
-            
+			// this is no longer relevant - you may have more than one brightness estimate ...
             // display airmasses
             var airmassA = "unknown";
             var airmassB = "unknown";

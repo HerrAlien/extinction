@@ -99,8 +99,7 @@ var Location = {
             if (s < 10)
                 s = "0" + s;
 
-            this.time.value = currentDate.getUTCFullYear() + "/" + month + "/" + day +
-                                                        " " + h + ":" + m + ":" + s;
+            this.time.value = currentDate.getUTCFullYear() + "/" + month + "/" + day + " " + h + ":" + m + ":" + s;
 		}
 	},
 	
