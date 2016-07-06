@@ -38,10 +38,12 @@ var Location = {
 		
 		init : function (){
 			this.lat.oninput = function () {
+				InputValidator.validate (this);
                 Location.latitude = Computations.evalNum(Location.Controls.lat.value);
                 Location.onLocationUpdated.notify(); // notify airmass recomputes ...
             }
 			this.long.oninput = function () {
+				InputValidator.validate (this);
                 Location.longitude = Computations.evalNum(Location.Controls.long.value);
                 // recompute LST
                 Location.enteredTime = Location.Controls.time.value;
