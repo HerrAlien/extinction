@@ -119,17 +119,25 @@ var ExtinctionCoefficient = {
             deg.oninput = function () { this.onfocus(); compChanged.notify(); };
             deg.onmuseenter = deg.onfocus;
 			
+			StarsSelection.afterStarSelection.add (function (sel, star) {
+				if (sel == b || sel == d)
+					compChanged.notify();
+			});
             
             return {
+				//! returns the star selected as bright
                 "bright" : function () { return this.ui.brightSelector.get(); },
+				//! returns the number of brightness steps between the two stars
                 "value" : function () { return Computations.evalNum(this.ui.valueLineEdit.value); } ,
-                "dim" : function () { return this.ui.dimSelector.get(); },
+                //! returns the star selected as dim
+				"dim" : function () { return this.ui.dimSelector.get(); },
                 "ui" : {
                     "brightSelector" : b,
                     "valueLineEdit" : deg,
                     "dimSelector" : d
                 },
-                
+                //! returns true if the comparison is valid (all star selection fields set,
+				//! and all brightness steps filled in)
                 "isValid" : function () {
                     var valid = false;
                     try {
@@ -140,16 +148,17 @@ var ExtinctionCoefficient = {
                     }
                     return valid;
                 },
-                
+                //! Returns all stars used by this comparison
                 "getStars" : function () {
                     return [this.bright(), this.dim()];
                 },
-                
+ 				//! Does what says on the box - updates the UI               
                 "updateUI" : function () {
                     this.ui.brightSelector.update();
                     this.ui.dimSelector.update();
                 },
-				
+				//! notification when either the selected stars
+				//! or the brightness between them is changed.
 				"onComparisonChanged" : compChanged
             };
         })();
@@ -172,18 +181,26 @@ var ExtinctionCoefficient = {
 			_second.onComparisonChanged.add (compChanged.notify);
             
             return {
+				//! the first simple comparison (bright to mid)
                 "first" : _first,
+				//! the second comparison - mid to dim stars
                 "second" : _second,
+				//! returns true if the comparison is valid (all star selection fields set,
+				//! and all brightness steps filled in)
                 "isValid" : function () {
                     return this.first.isValid() && this.second.isValid();
                 },
+				//! Returns all stars used by this comparison
                 "getStars" : function () {
                     return ((this.first.getStars()).concat(this.second.getStars()));
                 },
+				//! Does what says on the box - updates the UI
                 "updateUI" : function () {
                     this.first.updateUI();
                     this.second.updateUI();
                 },
+				//! notification when either the selected stars
+				//! or the brightness between them is changed.
 				"onComparisonChanged" : compChanged
             };
         })();
