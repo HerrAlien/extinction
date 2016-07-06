@@ -111,10 +111,14 @@ var ExtinctionCoefficient = {
             var b = brighterStarSelector;
             var deg = degreesEditor;
             var d = dimmerStarSelector;
+			var compChanged = Notifications.NewNoParameter();
+			compChanged.add(CorrectorUIManager.onUserInput);
+
             InputValidator.AddNumberMinimumValidator (deg, 0);
             deg.onfocus = function () { InputValidator.validate(this); }
-            deg.oninput = function () { this.onfocus(); CorrectorUIManager.onUserInput(); };
+            deg.oninput = function () { this.onfocus(); compChanged.notify(); };
             deg.onmuseenter = deg.onfocus;
+			
             
             return {
                 "bright" : function () { return this.ui.brightSelector.get(); },
@@ -144,7 +148,9 @@ var ExtinctionCoefficient = {
                 "updateUI" : function () {
                     this.ui.brightSelector.update();
                     this.ui.dimSelector.update();
-                }
+                },
+				
+				"onComparisonChanged" : compChanged
             };
         })();
     },
@@ -157,10 +163,17 @@ var ExtinctionCoefficient = {
             var m = midStarSelector;
             var deg2 = m2d_editor;
             var d = dimStarSelector;
+			
+			var _first = ExtinctionCoefficient.SingleComparison (b, deg1, m);
+			var _second = ExtinctionCoefficient.SingleComparison (m, deg2, d);
+			
+			var compChanged = Notifications.NewNoParameter();
+			_first.onComparisonChanged.add (compChanged.notify);
+			_second.onComparisonChanged.add (compChanged.notify);
             
             return {
-                "first" : ExtinctionCoefficient.SingleComparison (b, deg1, m),
-                "second" : ExtinctionCoefficient.SingleComparison (m, deg2, d),
+                "first" : _first,
+                "second" : _second,
                 "isValid" : function () {
                     return this.first.isValid() && this.second.isValid();
                 },
@@ -170,7 +183,8 @@ var ExtinctionCoefficient = {
                 "updateUI" : function () {
                     this.first.updateUI();
                     this.second.updateUI();
-                }
+                },
+				"onComparisonChanged" : compChanged
             };
         })();
     },
