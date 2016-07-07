@@ -68,7 +68,7 @@ var EstimationCorrector = {
     },
     
     updateAirmassFromInput : function (star) {
-        star.updateAirmass(Location.latitude, Location.longitude, Location.Slst);
+        star.updateAirmass(Location.latitude, Location.longitude, Location.lst);
     },
     
     // this is a control side of things.

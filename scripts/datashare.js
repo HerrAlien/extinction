@@ -54,13 +54,13 @@ var DataShareLoader = {
     loadFromObj : function () {
         Log.message ("Loading from URL ...");
 		if (DataShareLoader.urlDataObj.lat)
-			Location.Controls.lat.value = DataShareLoader.urlDataObj.lat;
+			Location.setLatitude(DataShareLoader.urlDataObj.lat);
 		
 		if (DataShareLoader.urlDataObj.long)
-			Location.Controls.long.value = DataShareLoader.urlDataObj.long;
+			Location.setLongitude(DataShareLoader.urlDataObj.long);
 		
 		if (DataShareLoader.urlDataObj.dateTime)
-			Location.Controls.time.value = DataShareLoader.urlDataObj.dateTime;
+			Location.setTime(DataShareLoader.urlDataObj.dateTime);
         
 		// TODO: user input update
         if (DataShareLoader.urlDataObj.id)

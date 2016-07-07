@@ -28,6 +28,20 @@ var Location = {
 	
 	// all airmass recompute subscribe to this one
 	onLocationUpdated: Notifications.NewNoParameter(),
+
+	setLatitude : function (val) {
+		this.set(val, "lat");
+	},
+	setLongitude : function (val) {
+		this.set(val, "long");
+	},
+	setTime : function (val) {
+		this.set(val, "time");
+	},
+	set : function (val, displayedBy) {
+		this.Controls[displayedBy].value = val;
+		this.Controls[displayedBy].oninput();
+	},
 	
 	// these are the controls
 	Controls : {
