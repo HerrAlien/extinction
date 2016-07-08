@@ -29,8 +29,8 @@ var EstimationCorrector = {
         
         var i = 0;
         var values = [];
-        for (i = 0; i < EstimationCorrector.pairedComparisons.length; i++) {
-			var pairedComparison = EstimationCorrector.pairedComparisons[i];
+        for (i = 0; i < this.pairedComparisons.length; i++) {
+			var pairedComparison = this.pairedComparisons[i];
 			var bright = pairedComparison.first.bright();
 			var b2v = pairedComparison.first.value();
 			var variable = pairedComparison.first.dim(); // or second.bright () ...
@@ -52,13 +52,13 @@ var EstimationCorrector = {
     
     init : function () {
 		// reset estimates
-        EstimationCorrector.pairedComparisons = [];
+        this.pairedComparisons = [];
 		// empty the table of estimates ...
 		var table = CorrectorUIManager.extraEstimatesTable;
 		while (table.hasChildNodes())
 			table.removeChild (table.firstChild);
 		// add the first estimate
-        EstimationCorrector.addNewComparison ();
+        this.addNewComparison ();
 
 		// reset the estimates for extinction
 		CorrectorUIManager.ClearComparisonsList();
@@ -81,7 +81,7 @@ var EstimationCorrector = {
         createdObj.midSelector.set (PhotmetryTable.variableStar);
         createdObj.midSelector.show (false);
 
-        EstimationCorrector.pairedComparisons.push (createdObj.comp);
+        this.pairedComparisons.push (createdObj.comp);
         var createdSpan = CorrectorUIManager.Utils.AddChild (createdObj.tdmid, "span");
         createdSpan.textContent = "V";
         
@@ -119,8 +119,8 @@ var EstimationCorrector = {
     
     update : function () {
         var i = 0;
-        for (i = 0; i < EstimationCorrector.pairedComparisons.length; i++) {
-            var pairedComparison = EstimationCorrector.pairedComparisons[i];
+        for (i = 0; i < this.pairedComparisons.length; i++) {
+            var pairedComparison = this.pairedComparisons[i];
             pairedComparison.updateUI();
 			try {
 				pairedComparison.updateRating();
@@ -141,21 +141,21 @@ var CorrectorTableView = {
 	// should be called from a notification (algo change)
     ResetHeader : function () {
         var addChild = CorrectorUIManager.Utils.AddChild;
-        CorrectorUIManager.Utils.ClearDOM(CorrectorTableView.tableHeader);
+        CorrectorUIManager.Utils.ClearDOM(this.tableHeader);
         if (0 == CorrectorUIManager.selectedAlgorithm) {
-            var tdbright =  addChild (CorrectorTableView.tableHeader, "td");
-            var tdval =  addChild (CorrectorTableView.tableHeader, "td");
-            var tddim =  addChild (CorrectorTableView.tableHeader, "td");
+            var tdbright =  addChild (this.tableHeader, "td");
+            var tdval =  addChild (this.tableHeader, "td");
+            var tddim =  addChild (this.tableHeader, "td");
 
             tdbright.textContent = "Bright star"; 
             tddim.textContent = "Dim star"; 
             tdval.textContent = "steps"; 
         } else {
-            var tdbright =  addChild (CorrectorTableView.tableHeader, "td");
-            var tdval_bm =  addChild (CorrectorTableView.tableHeader, "td");
-            var tdmid =  addChild (CorrectorTableView.tableHeader, "td");
-            var tdval_md =  addChild (CorrectorTableView.tableHeader, "td");
-            var tddim =  addChild (CorrectorTableView.tableHeader, "td");
+            var tdbright =  addChild (this.tableHeader, "td");
+            var tdval_bm =  addChild (this.tableHeader, "td");
+            var tdmid =  addChild (this.tableHeader, "td");
+            var tdval_md =  addChild (this.tableHeader, "td");
+            var tddim =  addChild (this.tableHeader, "td");
 
             tdbright.textContent = "Bright star"; 
             tdval_bm.textContent = "steps"; 
@@ -165,12 +165,12 @@ var CorrectorTableView = {
         }
 
 		// set up a destination for the add link
-        var tdadd =  addChild (CorrectorTableView.tableHeader, "td");
+        var tdadd =  addChild (this.tableHeader, "td");
 		// have the control create the link
         CorrectorUIManager.createAddAnchor (tdadd);
 
 		// add a column for the rating view.
-        var tdRating = addChild (CorrectorTableView.tableHeader, "td");
+        var tdRating = addChild (this.tableHeader, "td");
         tdRating.style["background"] = "#ffffff";
         CorrectorUIManager[CorrectorUIManager.algorithms[CorrectorUIManager.selectedAlgorithm]].CreateComparisonUIRow(); // one compariso is enough for pairs
         if (0 == CorrectorUIManager.selectedAlgorithm)
