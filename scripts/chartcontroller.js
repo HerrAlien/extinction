@@ -33,19 +33,19 @@ var ChartController = {
     
     init : function () {
         
-		ChartController.onChartOrientationChanged = Notifications.NewNoParameter();
-		ChartController.onUpdateChartClicked = Notifications.NewNoParameter();
+		this.onChartOrientationChanged = Notifications.NewNoParameter();
+		this.onUpdateChartClicked = Notifications.NewNoParameter();
 		
-        ChartController.onChartOrientationChanged.add ( function () { 
+        this.onChartOrientationChanged.add ( function () { 
             SVGChart.chartOrientation = ChartController.ui.orientationElem.value;
     	    SVGChart.redraw(); });
         
-        var ui = ChartController.ui;
+        var ui = this.ui;
         var starNameInput = ui.variableStarElem;
         var fovInput = ui.fovElem;
         var magInput = ui.limittingMagnitudeElem;
         
-        ui.orientationElem.onchange = ChartController.onChartOrientationChanged.notify;
+        ui.orientationElem.onchange = this.onChartOrientationChanged.notify;
 
 
         InputValidator.AddNumberRangeValidator (magInput, 0, 20);
@@ -91,8 +91,8 @@ var ChartController = {
             }
         }
         
-        ui.updateChartButton.onclick = ChartController.onUpdateChartClicked.notify;
-        ChartController.onUpdateChartClicked.add ( function () { // keep it private ...
+        ui.updateChartButton.onclick = this.onUpdateChartClicked.notify;
+        this.onUpdateChartClicked.add ( function () { // keep it private ...
             if (!InputValidator.validate (starNameInput))
                 return;
             
@@ -118,7 +118,7 @@ var ChartController = {
                                 PhotmetryTable.AAVSO.initFromStarName (starName, fov, limittingMag);
                         }, 1);
         });
-        ChartController.onUpdateChartClicked.add (DataShareSave.update);
+        this.onUpdateChartClicked.add (DataShareSave.update);
     }
 };
 
