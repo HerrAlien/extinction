@@ -54,14 +54,15 @@ var DataShareLoader = {
     loadFromObj : function () {
         Log.message ("Loading from URL ...");
 		if (DataShareLoader.urlDataObj.lat)
-			Location.setLatitude(DataShareLoader.urlDataObj.lat);
+			Location.latitude = Computations.evalNum(DataShareLoader.urlDataObj.lat);
 		
 		if (DataShareLoader.urlDataObj.long)
-			Location.setLongitude(DataShareLoader.urlDataObj.long);
+			Location.longitude = Computations.evalNum(DataShareLoader.urlDataObj.long);
 		
 		if (DataShareLoader.urlDataObj.dateTime)
-			Location.setTime(DataShareLoader.urlDataObj.dateTime);
+			Location.enteredTime = DataShareLoader.urlDataObj.dateTime;
         
+		Location.Controls.update();		
 		// TODO: user input update
         if (DataShareLoader.urlDataObj.id)
 			ChartController.ui.variableStarElem.value = DataShareLoader.urlDataObj.id;

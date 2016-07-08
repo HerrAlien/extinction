@@ -27,28 +27,23 @@ var Location = {
 	lst : 0,
 	
 	// all airmass recompute subscribe to this one
-	onLocationUpdated: Notifications.NewNoParameter(),
+	onLocationUpdated: false,
 
-	setLatitude : function (val) {
-		this.set(val, "lat");
-	},
-	setLongitude : function (val) {
-		this.set(val, "long");
-	},
-	setTime : function (val) {
-		this.set(val, "time");
-	},
-	set : function (val, displayedBy) {
-		this.Controls[displayedBy].value = val;
-		this.Controls[displayedBy].oninput();
-	},
-	
 	// these are the controls
 	Controls : {
 		lat : document.getElementById ("lat"),
 		long: document.getElementById ("long"),
 		time: document.getElementById ("dateTime"),
         geolocation : document.getElementById("geolocation"),
+		
+		update: function () {
+			var attrMap = {"lat" : "latitude", "long" : "longitude", "time" : "enteredTime"};
+			for (var k in attrMap)
+				this[k].value = Location[attrMap[k]];
+
+            Location.lst = Computations.LSTFromTimeString (Location.enteredTime, Location.longitude);
+            Location.onLocationUpdated.notify(); // notify airmass recomputes ...
+		},
 		
 		init : function (){
 			this.lat.oninput = function () {
@@ -60,7 +55,6 @@ var Location = {
 				InputValidator.validate (this);
                 Location.longitude = Computations.evalNum(Location.Controls.long.value);
                 // recompute LST
-                Location.enteredTime = Location.Controls.time.value;
                 Location.lst = Computations.LSTFromTimeString (Location.enteredTime, Location.longitude);
                 Location.onLocationUpdated.notify(); // notify airmass recomputes ...
             }
@@ -120,6 +114,7 @@ var Location = {
 	},
 	
 	init : function () {
+		this.onLocationUpdated = Notifications.NewNoParameter();
 		this.Controls.init();
 	}
 };
