@@ -25,65 +25,65 @@ var DataShareLoader = {
     urlDataObj : false,
     
     load : function (fromURL) {
-        DataShareLoader.url = fromURL;
-        DataShareLoader.initFromMembers();
+        this.url = fromURL;
+        this.initFromMembers();
 		CorrectorUIManager.onUserInput();
     },
     
     initFromMembers : function () {
-		DataShareLoader.urlDataObj = false;
-        if (!DataShareLoader.url)
+		this.urlDataObj = false;
+        if (!this.url)
             return;
         if (!Initialization.doneInit) {
             setTimeout (function () {DataShareLoader.initFromMembers(); }, 1);
             return;
         }
         
-        DataShareLoader.initDataObj();
-		if (DataShareLoader.urlDataObj)
-			DataShareLoader.loadFromObj();
+        this.initDataObj();
+		if (this.urlDataObj)
+			this.loadFromObj();
     },
     
     initDataObj : function () {
-        var hashes = DataShareLoader.url.split ('#');
+        var hashes = this.url.split ('#');
         if (hashes.length != 2)
             return;
-        DataShareLoader.urlDataObj = JSON.parse (hashes[1])
+        this.urlDataObj = JSON.parse (hashes[1])
     },
     
     loadFromObj : function () {
         Log.message ("Loading from URL ...");
-		if (DataShareLoader.urlDataObj.lat)
-			Location.latitude = Computations.evalNum(DataShareLoader.urlDataObj.lat);
+		if (this.urlDataObj.lat)
+			Location.latitude = Computations.evalNum(this.urlDataObj.lat);
 		
-		if (DataShareLoader.urlDataObj.long)
-			Location.longitude = Computations.evalNum(DataShareLoader.urlDataObj.long);
+		if (this.urlDataObj.long)
+			Location.longitude = Computations.evalNum(this.urlDataObj.long);
 		
-		if (DataShareLoader.urlDataObj.dateTime)
-			Location.enteredTime = DataShareLoader.urlDataObj.dateTime;
+		if (this.urlDataObj.dateTime)
+			Location.enteredTime = this.urlDataObj.dateTime;
         
-		Location.Controls.update();		
+		Location.Controls.update();	
 		// TODO: user input update
-        if (DataShareLoader.urlDataObj.id)
-			ChartController.ui.variableStarElem.value = DataShareLoader.urlDataObj.id;
+        if (this.urlDataObj.id)
+			ChartController.ui.variableStarElem.value = this.urlDataObj.id;
 		
-		if (DataShareLoader.urlDataObj.fov)
-				ChartController.ui.fovElem.value = DataShareLoader.urlDataObj.fov;
+		if (this.urlDataObj.fov)
+				ChartController.ui.fovElem.value = this.urlDataObj.fov;
 			
-		if (DataShareLoader.urlDataObj.maglim)
-				ChartController.ui.limittingMagnitudeElem.value = DataShareLoader.urlDataObj.maglim;
+		if (this.urlDataObj.maglim)
+				ChartController.ui.limittingMagnitudeElem.value = this.urlDataObj.maglim;
         
         // extinction value
-		document.getElementById ("K").value = DataShareLoader.urlDataObj.K;
+		document.getElementById ("K").value = this.urlDataObj.K;
         // extinction value vs. determined
-		CorrectorUIManager.useValueForK.checked = DataShareLoader.urlDataObj.useValueForK;
+		CorrectorUIManager.useValueForK.checked = this.urlDataObj.useValueForK;
         CorrectorUIManager.computeK.checked = !CorrectorUIManager.useValueForK.checked;
 
         ChartController.ui.updateChartButton.onclick();
     },
     
     setUserInputData : function () {
-        var urlDataObj = DataShareLoader.urlDataObj;
+        var urlDataObj = this.urlDataObj;
 		if (!urlDataObj)
 			return;
 		
@@ -93,13 +93,13 @@ var DataShareLoader = {
 		// ... clear the list up first?
         var i = 0;
         for (i = 0; i < EstimationCorrector.pairedComparisons.length && i < urlDataObj.brightComps.length; i++)
-            DataShareLoader.copyComparisonData (EstimationCorrector.pairedComparisons[i], urlDataObj.brightComps [i]);
+            this.copyComparisonData (EstimationCorrector.pairedComparisons[i], urlDataObj.brightComps [i]);
             
         // add remaining comparisons
         for (; i < urlDataObj.brightComps.length; i++) {
             var addedObject = EstimationCorrector.addNewComparison();
             // set values via the addedObject.comp
-            DataShareLoader.copyComparisonData (addedObject.comp, urlDataObj.brightComps [i]);
+            this.copyComparisonData (addedObject.comp, urlDataObj.brightComps [i]);
         }
         
         EstimationCorrector.pairedComparisons.length = urlDataObj.brightComps.length;
@@ -140,8 +140,8 @@ var DataShareLoader = {
         }
 		ExtinctionCoefficient.comparisons.length = urlDataObj["ext"].length;
         // clear up member data
-        DataShareLoader.url = false;
-        DataShareLoader.urlDataObj = false;
+        this.url = false;
+        this.urlDataObj = false;
         // finally, user input update.
     },
     
@@ -220,12 +220,12 @@ var DataShareSave = {
     baseURL : "http://extinction-o-meter.appspot.com/",
 
     init: function () {
-        if (!DataShareSave.urlinput)
+        if (!this.urlinput)
             return;
         
-        DataShareSave.urlinput.onclick = function () { DataShareSave.urlinput.select(); }
+        this.urlinput.onclick = function () { DataShareSave.urlinput.select(); }
         
-        DataShareSave.update();
+        this.update();
     },
 	
 	ArgelanderExtComp2JSON : function (comp) {
@@ -249,7 +249,7 @@ var DataShareSave = {
 	// this is basically a handler
 	// that should be registered with a bunch of notifications.
     update: function () {
-        if (!DataShareSave.urlinput)
+        if (!this.urlinput)
             return;
         
         var dataObj = {};
@@ -280,16 +280,16 @@ var DataShareSave = {
 		
 		dataObj["ext"] = [];
 		
-		var serializationFunc = DataShareSave.ArgelanderExtComp2JSON;
+		var serializationFunc = this.ArgelanderExtComp2JSON;
 		if (1 ==  CorrectorUIManager.selectedAlgorithm)
-			serializationFunc = DataShareSave.PairedExtComp2JSON;
+			serializationFunc = this.PairedExtComp2JSON;
 		
 		for (i = 0; i < ExtinctionCoefficient.comparisons.length; i++)
 			dataObj["ext"].push(serializationFunc(ExtinctionCoefficient.comparisons[i]));
 		
         // stringify it, and build the URL
-        var fullURL = DataShareSave.baseURL + "#" + JSON.stringify(dataObj);
-        DataShareSave.urlinput.value = fullURL;
+        var fullURL = this.baseURL + "#" + JSON.stringify(dataObj);
+        this.urlinput.value = fullURL;
     }
 };
 

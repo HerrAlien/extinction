@@ -87,35 +87,37 @@ var Location = {
 			this.lat.onmouseenter = this.onfocus;
 			this.long.onmouseenter = this.onfocus;
             
-            var currentDate = new Date();
-        
-            var month = currentDate.getMonth() + 1;
-            if (month < 10)
-                month = "0" + month;
-            
-            var day = currentDate.getUTCDate();
-            if (day < 10)
-                day = "0" + day;
-            
-            var h = currentDate.getUTCHours();
-            if (h < 10)
-                h = "0" + h;
-            
-            var m = currentDate.getUTCMinutes();
-            if (m < 10)
-                m = "0" + m;
-
-            var s = currentDate.getUTCSeconds();
-            if (s < 10)
-                s = "0" + s;
-
-            this.time.value = currentDate.getUTCFullYear() + "/" + month + "/" + day + " " + h + ":" + m + ":" + s;
 		}
 	},
 	
 	init : function () {
 		this.onLocationUpdated = Notifications.NewNoParameter();
 		this.Controls.init();
+		
+		var currentDate = new Date();
+        
+        var month = currentDate.getMonth() + 1;
+        if (month < 10)
+            month = "0" + month;
+            
+        var day = currentDate.getUTCDate();
+        if (day < 10)
+            day = "0" + day;
+            
+        var h = currentDate.getUTCHours();
+        if (h < 10)
+            h = "0" + h;
+            
+        var m = currentDate.getUTCMinutes();
+        if (m < 10)
+            m = "0" + m;
+
+        var s = currentDate.getUTCSeconds();
+        if (s < 10)
+            s = "0" + s;
+
+        this.enteredTime = currentDate.getUTCFullYear() + "/" + month + "/" + day + " " + h + ":" + m + ":" + s;
+		this.Controls.update();
 	}
 };
 
