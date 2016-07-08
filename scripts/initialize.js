@@ -53,8 +53,8 @@ var Initialization = {
     url : false,  
     
     setURL : function (_u) {
-        Initialization.url = _u;
-        DataShareLoader.load(Initialization.url);
+        this.url = _u;
+        DataShareLoader.load(this.url);
     },
     
     sesionData : {
@@ -69,8 +69,8 @@ var Initialization = {
     },
 
     initFromSessionData : function() {
-		PhotmetryTable.initFromJSON (Initialization.sesionData.Photometry);
-        Hipparcos.chart = Initialization.sesionData.Hipparcos.chart;
+		PhotmetryTable.initFromJSON (this.sesionData.Photometry);
+        Hipparcos.chart = this.sesionData.Hipparcos.chart;
         
         var starNameInput = ChartController.ui.variableStarElem;
         starNameInput.value = PhotmetryTable.frame.chartID;
@@ -154,8 +154,8 @@ var Initialization = {
     }
         
     AppVersion.updateVersionString();
-    Initialization.initFromSessionData();
-    Initialization.doneInit = true;
+    this.initFromSessionData();
+    this.doneInit = true;
   }
 };
 
