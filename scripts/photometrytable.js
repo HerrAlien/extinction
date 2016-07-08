@@ -58,23 +58,23 @@ var PhotmetryTable = {
         star["label"]   = "V",
         star["airmass"] = 1,
         star["name"]    = "unknown",
-		PhotmetryTable.setUpdateX (star);
+		this.setUpdateX (star);
 		return star;
 	},
 	
 	init : function () {
-		PhotmetryTable.onTableRetrieved = Notifications.NewNoParameter();
+		this.onTableRetrieved = Notifications.NewNoParameter();
 	},
 	
 	initFromJSON : function (photometryData) {
-		PhotmetryTable.frame = photometryData.frame;
-        PhotmetryTable.variableStar = photometryData.variableStar;
-        PhotmetryTable.comparisonStars = photometryData.comparisonStars;
-		for (i = 0; i < PhotmetryTable.comparisonStars.length; i++) {
-			var star = PhotmetryTable.comparisonStars[i];
-			PhotmetryTable.setUpdateX (star);
+		this.frame = photometryData.frame;
+        this.variableStar = photometryData.variableStar;
+        this.comparisonStars = photometryData.comparisonStars;
+		for (i = 0; i < this.comparisonStars.length; i++) {
+			var star = this.comparisonStars[i];
+			this.setUpdateX (star);
 		}
-		PhotmetryTable.setUpdateX (PhotmetryTable.variableStar);
+		this.setUpdateX (this.variableStar);
 	},
 	
     // namespace holding utilities to access the VSP data
@@ -202,7 +202,7 @@ var PhotmetryTable = {
 					return;
 				}            
 
-				PhotmetryTable.AAVSO.GetData (starsData);
+				this.GetData (starsData);
 				PhotmetryTable.onTableRetrieved.notify();
 			}
 		}
