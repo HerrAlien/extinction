@@ -157,7 +157,7 @@ var SVGChart = {
         // set the cursor as pointer (style wise)
 		textDOM.style["cursor"] = "pointer";		
         // associate a function for the onclick event
-		textDOM.onclick = function () { this.starLabelClick.notify (_star); }		
+		textDOM.onclick = function () { SVGChart.starLabelClick.notify (_star); }		
 	},
 	
 	isStarVisible : function (_star) {
