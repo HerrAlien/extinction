@@ -26,17 +26,17 @@ var StarsSelection = {
    
     init : function () {
 		// set up whatever events we want to be notified
-		SVGChart.starLabelClick.add (StarsSelection.setSelectedStar);
+		SVGChart.starLabelClick.add (this.setSelectedStar);
     },
 	
 	afterStarSelection : {
 		handlers : [],
 		add : function (handler) {
-			StarsSelection.afterStarSelection.handlers.push(handler);
+			this.handlers.push(handler);
 		},
 		notify : function (selector, star) {
-			for (var i = 0; i < StarsSelection.afterStarSelection.handlers.length; i++) {
-				StarsSelection.afterStarSelection.handlers[i] (selector, star);
+			for (var i = 0; i < this.handlers.length; i++) {
+				this.handlers[i] (selector, star);
 			}
 		}
 	},
@@ -60,13 +60,7 @@ var StarsSelection = {
             StarsSelection.imageElem.className = "chartSelectionInactive";
 		}
 	},
-	
-	setSurrentlyHoveredStar : function (star) {
-		if (star) {
-			StarsSelection.currentlyHoveredStar = star;
-		}
-	},
-	
+		
     Selector : {
         build : function (inputElement) {
             return function () {
