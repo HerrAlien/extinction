@@ -32,14 +32,14 @@ var InputValidator = {
 	validate : function (inp, cfg) {
 		var i = 0;
         var valid = true;
-		for (i = 0; i < InputValidator.inputsWithValidators.length; i++){
-			var currentEntry = InputValidator.inputsWithValidators[i];
+		for (i = 0; i < this.inputsWithValidators.length; i++){
+			var currentEntry = this.inputsWithValidators[i];
 			if (currentEntry.input == inp && currentEntry.func) {
 				var c = {};
 				if (cfg)
 					c = cfg;
 				c.elemToMoveTo = inp;
-                var isValid = InputValidator.validate_internal (c, currentEntry.func);
+                var isValid = this.validate_internal (c, currentEntry.func);
                 if (valid)
                     valid = isValid;
 			}
@@ -54,7 +54,7 @@ var InputValidator = {
 	},
     
     hideError : function () {
-		var lbl = InputValidator.getErrorLabel();
+		var lbl = this.getErrorLabel();
 		lbl.style["display"] = "none";
     },
 	
@@ -63,8 +63,8 @@ var InputValidator = {
 		var hideError = false;
 		var elemToMoveTo = null;
 		var prependMsg = "";
-        InputValidator.hideError();
-        var lbl = InputValidator.getErrorLabel();
+        this.hideError();
+        var lbl = this.getErrorLabel();
 
 		if (c) {
 			appendMessage = c.appendMessage;
@@ -89,7 +89,7 @@ var InputValidator = {
 				lbl.style["display"] = "block";
 				
 			if (elemToMoveTo) {
-				var coords = InputValidator.ComputeLabelPos(elemToMoveTo);
+				var coords = this.ComputeLabelPos(elemToMoveTo);
 				lbl.style["left"] = coords[0] + "px";
 				lbl.style["top"] = coords[1] + "px";
 			}
@@ -99,14 +99,14 @@ var InputValidator = {
 	},
 	
 	getErrorLabel : function () {
-		if (InputValidator.errorLabel == null) {
+		if (this.errorLabel == null) {
 			var lbl = document.createElement ("div");
-			InputValidator.errorLabel = lbl;
+			this.errorLabel = lbl;
 			document.documentElement.appendChild (lbl);
 			lbl.setAttribute ("class", "errorBox");
 			lbl.style["display"] = "none";
 		}
-		return InputValidator.errorLabel;
+		return this.errorLabel;
 	},
 	
 	AddNumberRangeValidator : function (input, min, max) {
@@ -189,7 +189,7 @@ var InputValidator = {
 	},
     
     ComputeLabelPos : function (_i) {
-		InputValidator.lastObjectToPositionLabel = _i;
+		this.lastObjectToPositionLabel = _i;
 		if (!_i)
 			return [0, 0];
         var r = _i.getBoundingClientRect();
@@ -200,8 +200,8 @@ var InputValidator = {
     },
 	
 	UpdateErrorLabelPosition : function() {
-		var pos = InputValidator.ComputeLabelPos (InputValidator.lastObjectToPositionLabel);
-		var lbl = InputValidator.errorLabel;
+		var pos = this.ComputeLabelPos (this.lastObjectToPositionLabel);
+		var lbl = this.errorLabel;
 		if (!lbl)
 			return;
 		
