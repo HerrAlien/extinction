@@ -202,11 +202,11 @@ var CorrectorUIManager = {
 	addRowAnchor : false,
 	
 	createAddAnchor : function (parentElem) {
-		CorrectorUIManager.addRowAnchor = CorrectorUIManager.Utils.AddChild(parentElem, "a");
-        CorrectorUIManager.addRowAnchor.textContent = "(+) Add row";
-        CorrectorUIManager.addRowAnchor.noref="";
-        CorrectorUIManager.addRowAnchor.className = "addAnchor";
-        CorrectorUIManager.addRowAnchor.onclick = function () { // this should call notifications ...
+		this.addRowAnchor = this.Utils.AddChild(parentElem, "a");
+        this.addRowAnchor.textContent = "(+) Add row";
+        this.addRowAnchor.noref="";
+        this.addRowAnchor.className = "addAnchor";
+        this.addRowAnchor.onclick = function () { // this should call notifications ...
             CorrectorUIManager[CorrectorUIManager.algorithms[CorrectorUIManager.selectedAlgorithm]].CreateComparisonUIRow();
         }
 	},
@@ -217,22 +217,22 @@ var CorrectorUIManager = {
     
     init : function () {
 		
-		StarsSelection.afterStarSelection.add (CorrectorUIManager.onUserInput);
+		StarsSelection.afterStarSelection.add (this.onUserInput);
 		
-        CorrectorUIManager.useValueForK.onclick = function () {
+        this.useValueForK.onclick = function () {
             CorrectorUIManager.computeK.checked = false;
             CorrectorUIManager.onUserInput();
         }
-        CorrectorUIManager.computeK.onclick = function () {
+        this.computeK.onclick = function () {
             CorrectorUIManager.useValueForK.checked = false;
             CorrectorUIManager.onUserInput();
         }
-        CorrectorUIManager.addVariableEstimateLink.onclick = function () {
+        this.addVariableEstimateLink.onclick = function () {
             EstimationCorrector.addNewComparison ();
         }
         
 		// this should be handled by an array of functions
-        CorrectorUIManager.useArgelander.onclick = function () {
+        this.useArgelander.onclick = function () {
 			// one handler ...
             CorrectorUIManager.usePaired.checked = false;
 			// one handler ...
@@ -250,7 +250,7 @@ var CorrectorUIManager = {
             CorrectorUIManager.onUserInput();
             } catch (err) {}
         }
-        CorrectorUIManager.usePaired.onclick = function () {
+        this.usePaired.onclick = function () {
 			// one handler ...
             CorrectorUIManager.useArgelander.checked = false;
 			// one handler ...
@@ -269,8 +269,8 @@ var CorrectorUIManager = {
             } catch (err) {}
         }
         
-        CorrectorUIManager.useArgelander.onclick();
-        CorrectorUIManager.useArgelander.checked = true;
+        this.useArgelander.onclick();
+        this.useArgelander.checked = true;
     },
     
     algorithms : ["Argelander", "Paired"],
@@ -278,7 +278,7 @@ var CorrectorUIManager = {
     ClearComparisonsList : function () {
         ExtinctionCoefficient.comparisons = [];
 		// this should be in view
-        CorrectorUIManager.Utils.ClearDOM (CorrectorTableView.table);
+        this.Utils.ClearDOM (CorrectorTableView.table);
     },
     
     Utils : {
@@ -296,7 +296,7 @@ var CorrectorUIManager = {
         
         AddDeleteLink : function (_row, _tddelete, _comp, 
                                   _arrayToRemoveComparisonFrom) {
-            var addChild = CorrectorUIManager.Utils.AddChild;
+            var addChild = this.AddChild;
             (function (r, t, c, a) {
                 var tddelete = t;
                 var deleteAnchor = addChild (tddelete, "a");
@@ -320,7 +320,7 @@ var CorrectorUIManager = {
         },
         
         AddPairedComparison : function (table) {
-            var addChild = CorrectorUIManager.Utils.AddChild;
+            var addChild = this.AddChild;
             
             var row = addChild (table, "tr");
             var tdbright =  addChild (row, "td");
@@ -414,7 +414,7 @@ var CorrectorUIManager = {
     },
     
     AddRatingIndicatorForExtinctionEstimate : function (comp, row) {
-               var addChild = CorrectorUIManager.Utils.AddChild; 
+               var addChild = this.Utils.AddChild; 
                (function(){
                 var tdRating = addChild (row, "td");
                 var div = addChild (tdRating, "div");
