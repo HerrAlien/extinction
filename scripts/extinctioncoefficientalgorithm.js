@@ -33,9 +33,9 @@ var ExtinctionCoefficient = {
 
     updateAirmass : function (lat, long, lst){
         var compIndex = 0;
-        var comps = ExtinctionCoefficient.comparisons;
+        var comps = this.comparisons;
         for (compIndex = 0; compIndex < comps.length; compIndex++) {
-            ExtinctionCoefficient.updateAirmassForComparison(comps[compIndex], lat, long, lst);
+            this.updateAirmassForComparison(comps[compIndex], lat, long, lst);
         }
     },
     
@@ -50,11 +50,11 @@ var ExtinctionCoefficient = {
     },
     
     rebuildValues : function () {
-        if (ExtinctionCoefficient.currentAlgorithmID < 0 || ExtinctionCoefficient.currentAlgorithmID > ExtinctionCoefficient.algorithms.length)
+        if (this.currentAlgorithmID < 0 || this.currentAlgorithmID > this.algorithms.length)
             throw "invalid algorithm selected";
         
-        var algo = ExtinctionCoefficient.algorithms[ExtinctionCoefficient.currentAlgorithmID];
-        var values_beforeFilter = ExtinctionCoefficient[algo].getKValues();
+        var algo = this.algorithms[this.currentAlgorithmID];
+        var values_beforeFilter = this[algo].getKValues();
         
         if (values_beforeFilter.length == 0)
             return 0;
@@ -62,8 +62,8 @@ var ExtinctionCoefficient = {
         var i = 0;
         var usedValues = [];
         for (i = 0; i < values_beforeFilter.length; i++) {
-            if (values_beforeFilter[i] > ExtinctionCoefficient.validValuesRange [0] && 
-                values_beforeFilter[i] < ExtinctionCoefficient.validValuesRange [1]) {
+            if (values_beforeFilter[i] > this.validValuesRange [0] && 
+                values_beforeFilter[i] < this.validValuesRange [1]) {
                 usedValues.push (values_beforeFilter[i]);
             }
         }
@@ -79,10 +79,10 @@ var ExtinctionCoefficient = {
     getkValue : function (firstSingleComparison, secondSingleComparison) {
         
         if (firstSingleComparison.value() == 0)
-            return ExtinctionCoefficient.getkValueFromSingleComparison (firstSingleComparison);
+            return this.getkValueFromSingleComparison (firstSingleComparison);
         
         if (secondSingleComparison.value() == 0) 
-            return ExtinctionCoefficient.getkValueFromSingleComparison (secondSingleComparison);
+            return this.getkValueFromSingleComparison (secondSingleComparison);
         
         var a = firstSingleComparison.value() * (secondSingleComparison.bright().mag - secondSingleComparison.dim().mag);
         var b = secondSingleComparison.value() * (firstSingleComparison.bright().mag - firstSingleComparison.dim().mag);
@@ -94,7 +94,7 @@ var ExtinctionCoefficient = {
     },
     
     getValidComparisons : function () {
-        var initial_comps = ExtinctionCoefficient.comparisons; // avoid long names
+        var initial_comps = this.comparisons; // avoid long names
         var comps = [];
             
         var i = 0;
@@ -275,7 +275,7 @@ var ExtinctionCoefficient = {
     // controller side.
     updateUI : function () {
         var i = 0;
-        var comps = ExtinctionCoefficient.comparisons; // avoid long names
+        var comps = this.comparisons; // avoid long names
         for (; i < comps.length; i++) {
             comps[i].updateUI();
             comps[i].updateRating();
