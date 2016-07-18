@@ -45,10 +45,14 @@ var InputValidator = {
 			}
 		}
 		
-		if (valid)
-		  inp.className = "";
-		else
+		if (valid){
+			if (!!inp["oldClass"])
+				inp.className = inp["oldClass"];
+		}
+		else {
+		  inp["oldClass"] = inp.className;
 		  inp.className = "invalidInput";
+		}
 		  
         return valid;
 	},

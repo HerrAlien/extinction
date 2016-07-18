@@ -335,9 +335,10 @@ var CorrectorUIManager = {
             var dimInput = addChild (tddim, "input");
             var tddelete =  addChild (row, "td");
             
-            b2m.size = 3;
-            m2d.size = 3;
-            
+           
+		   b2m.className = "brightnessInput";
+		   m2d.className = "brightnessInput";
+		   
             b2m.placeholder = "[number]";
             m2d.placeholder = "[number]";
             
@@ -381,11 +382,11 @@ var CorrectorUIManager = {
             var dimInput = addChild (tddim, "input");
             var tddelete =  addChild (row, "td");
             
-            compImput.size = 3;
-            
             var brightSelector = StarsSelection.Selector.build (brightInput);
             var dimSelector = StarsSelection.Selector.build (dimInput);
 			InputValidator.AddNumberMinimumValidator (compImput, 0);
+			
+			compImput.className = "brightnessInput";
             compImput.onfocus = function() { InputValidator.validate(this); }
             compImput.oninput = function() { this.onfocus(); CorrectorUIManager.onUserInput(); }
             compImput.placeholder = "[number]";
