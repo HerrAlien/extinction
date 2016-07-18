@@ -55,7 +55,7 @@ html, body {
     margin: 0px auto 0px auto;
     text-align: left;
     max-width: 998px;
-    width: 998px;
+    width: 100%;
 	padding: 5px;
 }
 
@@ -70,11 +70,12 @@ html, body {
     font-size : 24pt;
     padding: 20px 0px 20px 0px;
     text-align: center;
+	width: 100%;
 }
     
 #chart {
-    width: 500px;
-    height: 500px;
+    max-width: 500px;
+    max-height: 500px;
 }
 
 .clear {
@@ -104,7 +105,8 @@ pre {
 #wizard {
     float: left;
     margin: 25px 3px 0px 0px;
-    width: 495px;
+    max-width: 495px;
+	width: 100%;
     text-align: left;
 }
 
@@ -128,8 +130,9 @@ span.title {
 }
 
 #mainarea {
-    width: 998px;
+    max-width: 998px;
     margin: 0px;
+	width: 100%;
 }
 
 .selectorItem, .selectorItemActive {
@@ -161,6 +164,9 @@ span.title {
 
 #debug {
     color: #5050C0;
+	max-width: 500px;
+	width: 100%;
+	float: left;
 }
 
 #extinctionEstimatesHeader, .header {
@@ -193,12 +199,14 @@ span.title {
 }
 
 #poweredBy {
-	width: 800px;
+	max-width: 800px;
+	width:100%;
 }
 
 #license  {
 	padding: 5px;
 	max-width: 998px;
+	width: 100%;
 }
 
 #poweredBy div {
@@ -221,7 +229,8 @@ text-align: center;
 #footer {
 	margin: 0px;
 	text-align: left;
-	width: 998px;
+	max-width: 998px;
+	width: 100%;
 }
 
 #topmenu {
@@ -260,7 +269,8 @@ td {
     font-weight: bold;
     margin: 0px auto 20px auto;
     padding: 5px;
-    width: 980px;
+    max-width: 980px;
+	width: 100%;
     border: 2px solid #000000;
 }
 
@@ -269,11 +279,12 @@ svg, #svgContainer {
 }
 
 #svgContainer {
-    width : 500px;
-    height : 500px;
+    max-width : 500px;
+    max-height : 500px;
+	width: 100%;
     padding: 0px;
     margin: 0px;
-    float: right;
+    float: left;
 }
 
 .errorBox {
