@@ -30,6 +30,12 @@ html, body {
     line-height: 1.5em;
 	-webkit-user-select: text;
 }
+
+.brightnessInput {
+	max-width: 55px;
+	width: 100%;
+}
+
     #donate {
         border: solid 2px #000000;
         font-family : "Arial";
@@ -137,7 +143,8 @@ span.title {
 
 .selectorItem, .selectorItemActive {
   cursor: pointer;
-  width: 105px;
+  max-width: 105px;
+  width: 100%;
 }
 
 .selectorItem {
@@ -316,7 +323,6 @@ svg, #svgContainer {
 :-ms-input-placeholder {
    color:    #606060;
 }
-
 
 #datashareurl{
 	width: 100%;
