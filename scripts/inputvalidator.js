@@ -193,7 +193,7 @@ var InputValidator = {
 	},
     
     ComputeLabelPos : function (_i) {
-		this.lastObjectToPositionLabel = _i;
+		InputValidator.lastObjectToPositionLabel = _i;
 		if (!_i)
 			return [0, 0];
         var r = _i.getBoundingClientRect();
@@ -204,8 +204,8 @@ var InputValidator = {
     },
 	
 	UpdateErrorLabelPosition : function() {
-		var pos = this.ComputeLabelPos (this.lastObjectToPositionLabel);
-		var lbl = this.errorLabel;
+		var pos = InputValidator.ComputeLabelPos (InputValidator.lastObjectToPositionLabel);
+		var lbl = InputValidator.errorLabel;
 		if (!lbl)
 			return;
 		
