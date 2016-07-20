@@ -129,7 +129,7 @@ var Initialization = {
     Hipparcos.onStarsRetrieved.add (function () {
         SVGChart.setStars (Hipparcos.chart.stars);  
         SVGChart.redraw();
-    	Log.message ("Done! " + PhotmetryTable.variableStar.name + ", lim. mag.=" + PhotmetryTable.frame.maglimit + ", FOV[']=" + PhotmetryTable.frame.fov + "; chart id=" + PhotmetryTable.frame.chartID);
+        Log.message ("Done! " + PhotmetryTable.variableStar.name + ", lim. mag.=" + PhotmetryTable.frame.maglimit + ", FOV[']=" + PhotmetryTable.frame.fov + ";\nchart id=" + PhotmetryTable.frame.chartID);
     });
 
     var extinctionCoeffInput = document.getElementById("K");
@@ -142,6 +142,7 @@ var Initialization = {
     document.documentElement.onscroll = InputValidator.UpdateErrorLabelPosition;
     window.onresize = InputValidator.UpdateErrorLabelPosition;
     
+
     document.body.onclick = function (){
         if (StarsSelection.selectionJustActivated) 
             StarsSelection.selectionJustActivated = false;
