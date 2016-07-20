@@ -27,6 +27,10 @@ var InputValidator = {
 	lastObjectToPositionLabel: null,
 	
 	validate : function (inp, cfg) {
+		
+		if (!inp["oldClass"])
+			inp["oldClass"] = inp.className + " ";
+		
 		var i = 0;
         var valid = true;
 		for (i = 0; i < InputValidator.inputsWithValidators.length; i++){
@@ -43,12 +47,10 @@ var InputValidator = {
 		}
 		
 		if (valid){
-			if (!!inp["oldClass"])
-				inp.className = inp["oldClass"];
+			inp.className = inp["oldClass"];
 		}
 		else {
-		  inp["oldClass"] = inp.className;
-		  inp.className = "invalidInput";
+		  inp.className = inp["oldClass"] + "invalidInput";
 		}
 		  
         return valid;
