@@ -212,7 +212,6 @@ span.title {
 
 #license  {
 	padding: 5px;
-	max-width: 998px;
 	width: 100%;
 }
 
@@ -276,7 +275,6 @@ td {
     font-weight: bold;
     margin: 0px auto 20px auto;
     padding: 5px;
-    max-width: 980px;
 	width: 100%;
     border: 2px solid #000000;
 }
