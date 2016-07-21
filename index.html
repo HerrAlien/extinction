@@ -48,25 +48,25 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl.html
         <div id="wizard">        
         <ol>
           <li class="alt">
-            <span class="title">Date & time</span> (JD or UTC yyyy/mm/dd hh:mm:ss):  <input placeholder="[JD or yyyy/mm/dd hh:mm:ss]" id="dateTime" size="13">
+            <label><span class="title">Date & time</span> (JD or UTC yyyy/mm/dd hh:mm:ss):  <input placeholder="[JD or yyyy/mm/dd hh:mm:ss]" id="dateTime" size="13"></label>
           </li>
           <li>
             <span class="title">Location</span> (0.5 degree accuracy is enough):<br>
-            Latitude: <input placeholder="[degrees]" id="lat" size="7">, longitude: <input placeholder="[degrees]" id="long" size="7"> (or <a class="addAnchor" nohref id="geolocation">get them from Geolocation</a>).
+            <label>Latitude: <input placeholder="[degrees]" id="lat" size="7"></label>, <label>longitude: <input placeholder="[degrees]" id="long" size="7"></label> (or <a class="addAnchor" nohref id="geolocation">get them from Geolocation</a>).
           </li>
 
           <li class="alt">
               <span class="title">Chart:</span><br>
-              Name of the variable star, or AAVSO chart ID: <input placeholder="[name of star or AAVSO chart ID]" id="variableStarName" size="24"><br>
-              Limiting magnitude: <input placeholder="[number]" id="mag" size="7">,
-              FOV [arc minutes]: <input placeholder="[number]" id="fov" size="7"><br>
-         Chart orientation: 
+              <label>Name of the variable star, or AAVSO chart ID: <input placeholder="[name of star or AAVSO chart ID]" id="variableStarName" size="24"></label><br>
+              <label>Limiting magnitude: <input placeholder="[number]" id="mag" size="7"></label>,
+              <label>FOV [arc minutes]: <input placeholder="[number]" id="fov" size="7"></label><br>
+         <label>Chart orientation: 
          <select id="chartOrientation" value="0"> 
         <option value="0">North-up, West-right (bins & spectives)</option>
         <option value="1">South-up, East-right (Newts, refractors, SCTs)</option>
         <option value="2">North-up, East-right (using diagonals, from above)</option>
         <option value="3">South-up, West-right (using diagonals, from lateral)</option>
-         </select>
+         </select></label>
          <br>
                 <input type="button" value="Update Chart" id="updateChart">
           </li>
@@ -126,8 +126,8 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl.html
               <span id="brightnessNoExtinction">unknown</span>.
           <span class="title">Considering extinction</span>, brightness of <span id="varname2">V</span> is:
           <span id="brightnessWithExtinction">unknown</span>. <br>
-        Share data using the URL below:<br>
-		 <input id="datashareurl"/>          
+        <label>Share data using the URL below:<br>
+		 <input id="datashareurl"/> </label>         
             </div>
             
 	  <div id="footer">
