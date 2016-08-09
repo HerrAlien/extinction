@@ -326,3 +326,9 @@ svg, #svgContainer {
 	width: 100%;
 }
 
+@media (min-width: 0px) and (max-width: 1020px) {
+    #container, #banner, #results, #footer{
+        max-width: 500px;
+        width: 100%;
+    }
+}

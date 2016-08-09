@@ -114,12 +114,6 @@ if ($allowAccess)
         {
             require('index.html');
     ?>
-	<style>
-		.halfWidth {
-			max-width: 500px;
-			width: 100%;
-		}
-	</style>
 	
 	<script type="text/javascript" async>
         // do some alterations to the page and objects
@@ -186,41 +180,6 @@ if ($allowAccess)
         }
         
         reassignURLs();
-		
-		
-		
-(function () {
-
-var windowResizeHandler = (function() { 
-    var resizeWidthThreshold = 998;
-    var initialMaxWidth = resizeWidthThreshold + "px";
-
-    var oldWidth = resizeWidthThreshold;
-    var main = document.getElementById("container");
-    var itemsToRestyle = [document.getElementById("banner"), 
-                          document.getElementById("results"), 
-                          document.getElementById("footer")];
-    return function () {  
-        var width = document.body.clientWidth;
-        if (width < resizeWidthThreshold && oldWidth >= resizeWidthThreshold) {
-            main.style["max-width"] = resizeWidthThreshold/2 + "px";
-            for (var i in itemsToRestyle)
-               itemsToRestyle[i].className = "halfWidth";
-        } 
-        if (width > resizeWidthThreshold && oldWidth <= resizeWidthThreshold) {
-            main.style["max-width"] = initialMaxWidth;
-            for (var i in itemsToRestyle)
-                itemsToRestyle[i].className = " ";                
-        }
-        oldWidth = width;
-    }
-	})();
-
-window.addEventListener ("resize",  windowResizeHandler);
-windowResizeHandler();
-})();
-
-		
         
     </script><?php        
         }
