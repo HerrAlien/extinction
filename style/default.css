@@ -62,7 +62,7 @@ html, body {
     text-align: left;
     max-width: 998px;
     width: 100%;
-	padding: 5px;
+	padding:5px 0px 5px 0px;
 }
 
 #banner, #poweredBy div, #license {
@@ -77,6 +77,7 @@ html, body {
     padding: 20px 0px 20px 0px;
     text-align: center;
 	width: 100%;
+    max-width: 994px;
 }
     
 #chart {
@@ -235,7 +236,7 @@ text-align: center;
 #footer {
 	margin: 0px;
 	text-align: left;
-	max-width: 998px;
+	max-width: 984px;
 	width: 100%;
 }
 
@@ -277,6 +278,7 @@ td {
     padding: 5px;
 	width: 100%;
     border: 2px solid #000000;
+    max-width:984px;
 }
 
 svg, #svgContainer {
@@ -327,8 +329,13 @@ svg, #svgContainer {
 }
 
 @media (min-width: 0px) and (max-width: 1020px) {
-    #container, #banner, #results, #footer{
+    #container, #banner{
         max-width: 500px;
-        width: 100%;
+    }
+     #results, #footer{
+        max-width: 486px;
+    }
+    #banner{
+        max-width: 496px;
     }
 }
