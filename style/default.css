@@ -328,6 +328,10 @@ svg, #svgContainer {
 	width: 100%;
 }
 
+    .mobileOnly {
+        display: none;
+    }
+
 @media (min-width: 0px) and (max-width: 1020px) {
     #container, #banner{
         max-width: 500px;
@@ -338,4 +342,13 @@ svg, #svgContainer {
     #banner{
         max-width: 496px;
     }
+    
+    .selectorItem, .selectorItemActive, .brightnessInput {
+        margin-top: 10px;
+    }
+    
+    .mobileOnly {
+        display: block;
+    }
+
 }
