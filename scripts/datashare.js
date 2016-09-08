@@ -48,7 +48,7 @@ var DataShareLoader = {
         var hashes = this.url.split ('#');
         if (hashes.length != 2)
             return;
-        this.urlDataObj = JSON.parse (hashes[1])
+        this.urlDataObj = JSON.parse (decodeURIComponent(hashes[1]));
     },
     
     loadFromObj : function () {
