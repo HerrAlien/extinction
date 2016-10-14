@@ -2,7 +2,7 @@
 Extinction-O-Meter - an HTML & JavaScript utility to apply differential 
 extinction corrections to brightness estimates
                
-Copyright 2015  Herr_Alien <garone80@yahoo.com>
+Copyright 2015  Herr_Alien <alexandru.garofide@gmail.com>
                 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published by
