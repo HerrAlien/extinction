@@ -92,8 +92,8 @@ var DataShareLoader = {
         // brightness estimates
 		// ... clear the list up first?
         var i = 0;
-        for (i = 0; i < EstimationCorrector.pairedComparisons.length && i < urlDataObj.brightComps.length; i++)
-            this.copyComparisonData (EstimationCorrector.pairedComparisons[i], urlDataObj.brightComps [i]);
+        for (i = 0; i < EstimationCorrector.Model.pairedComparisons.length && i < urlDataObj.brightComps.length; i++)
+            this.copyComparisonData (EstimationCorrector.Model.pairedComparisons[i], urlDataObj.brightComps [i]);
             
         // add remaining comparisons
         for (; i < urlDataObj.brightComps.length; i++) {
@@ -102,7 +102,7 @@ var DataShareLoader = {
             this.copyComparisonData (addedObject.comp, urlDataObj.brightComps [i]);
         }
         
-        EstimationCorrector.pairedComparisons.length = urlDataObj.brightComps.length;
+        EstimationCorrector.Model.pairedComparisons.length = urlDataObj.brightComps.length;
         // after setting all, call update on EstimationCorrector
         EstimationCorrector.update();
         
@@ -263,9 +263,9 @@ var DataShareSave = {
 		dataObj["maglim"] = PhotmetryTable.frame.maglimit;
 	    dataObj["brightComps"] = [];
 		var i = 0;
-		for (i = 0; i < EstimationCorrector.pairedComparisons.length; i++) {
+		for (i = 0; i < EstimationCorrector.Model.pairedComparisons.length; i++) {
 			var objToAdd = {};
-			var comparisonToSave = EstimationCorrector.pairedComparisons[i];
+			var comparisonToSave = EstimationCorrector.Model.pairedComparisons[i];
 			// index of the bright star in the PhotmetryTable.comparisonStars
 			objToAdd["b"] = PhotmetryTable.comparisonStars.indexOf(comparisonToSave.first.bright());
 			objToAdd["b2v"] = comparisonToSave.first.value();

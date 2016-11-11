@@ -23,14 +23,16 @@ var EstimationCorrector = {
     // --- model side ------
     // a collection of comparisons, with airmasses, just to determine the brightness,
     // given an extinction coefficient.
-    pairedComparisons : [],
+        Model : {
+        pairedComparisons : []
+    },
     
     Estimate : function (k){
         
         var i = 0;
         var values = [];
-        for (i = 0; i < this.pairedComparisons.length; i++) {
-			var pairedComparison = this.pairedComparisons[i];
+        for (i = 0; i < EstimationCorrector.Model.pairedComparisons.length; i++) {
+			var pairedComparison = EstimationCorrector.Model.pairedComparisons[i];
 			var bright = pairedComparison.first.bright();
 			var b2v = pairedComparison.first.value();
 			var variable = pairedComparison.first.dim(); // or second.bright () ...
@@ -52,7 +54,7 @@ var EstimationCorrector = {
     
     init : function () {
 		// reset estimates
-        this.pairedComparisons = [];
+        EstimationCorrector.Model.pairedComparisons = [];
 		// empty the table of estimates ...
 		var table = CorrectorUIManager.extraEstimatesTable;
 		while (table.hasChildNodes())
@@ -62,7 +64,7 @@ var EstimationCorrector = {
 
 		// reset the estimates for extinction
 		CorrectorUIManager.ClearComparisonsList();
-        CorrectorTableView.ResetHeader();	
+        CorrectorTableView.ResetHeader();
 		CorrectorUIManager.useArgelander.onclick();
         CorrectorUIManager.useArgelander.checked = true;
     },
@@ -74,14 +76,20 @@ var EstimationCorrector = {
     // this is a control side of things.
     addNewComparison : function () {
 		// this is view-ish ... should not be here.
+        // todo: refactor as a callback on the model change.
+        // ask the model to start adding a comparison
+        // => the view gets notified and starts prepairing the DOM elements for the request
+        // => then notifies that the GUI for the request is done
+        // => then the model side wraps up creation of the comparison, notifies of completion
+        // => then the view wraps up with the delete link creation
         var table = CorrectorUIManager.extraEstimatesTable;
         var createdObj = CorrectorUIManager.Utils.AddPairedComparison (table);
-        CorrectorUIManager.Utils.AddDeleteLink (createdObj.row, createdObj.tddelete, createdObj.comp, EstimationCorrector.pairedComparisons);
+        CorrectorUIManager.Utils.AddDeleteLink (createdObj.row, createdObj.tddelete, createdObj.comp, EstimationCorrector.Model.pairedComparisons);
 
         createdObj.midSelector.set (PhotmetryTable.variableStar);
         createdObj.midSelector.show (false);
 
-        this.pairedComparisons.push (createdObj.comp);
+        EstimationCorrector.Model.pairedComparisons.push (createdObj.comp);
         var createdSpan = CorrectorUIManager.Utils.AddChild (createdObj.tdmid, "span");
         createdSpan.textContent = "V";
         
@@ -95,15 +103,15 @@ var EstimationCorrector = {
             // this is a view thing, for one comparison.
             createdObj.comp["updateRating"] = function ()
             {
-                var initialComparisons = EstimationCorrector.pairedComparisons;
+                var initialComparisons = EstimationCorrector.Model.pairedComparisons;
                 var estimatesWithMe = EstimationCorrector.Estimate(0);
                 
                 var myPos = initialComparisons.indexOf(this);
                 var compsWOMe = initialComparisons.slice(0, myPos).concat (initialComparisons.slice (myPos+1, initialComparisons.length));
-                EstimationCorrector.pairedComparisons = compsWOMe;
+                EstimationCorrector.Model.pairedComparisons = compsWOMe;
                 var estimatesWOMe = EstimationCorrector.Estimate(0);
                 // restore the data
-                EstimationCorrector.pairedComparisons = initialComparisons;
+                EstimationCorrector.Model.pairedComparisons = initialComparisons;
                 
                 var statsWOMe = Computations.AverageAndStdDev (estimatesWOMe);
                 var statsWithMe = Computations.AverageAndStdDev (estimatesWithMe);
@@ -119,8 +127,8 @@ var EstimationCorrector = {
     
     update : function () {
         var i = 0;
-        for (i = 0; i < this.pairedComparisons.length; i++) {
-            var pairedComparison = this.pairedComparisons[i];
+        for (i = 0; i < EstimationCorrector.Model.pairedComparisons.length; i++) {
+            var pairedComparison = EstimationCorrector.Model.pairedComparisons[i];
             pairedComparison.updateUI();
 			try {
 				pairedComparison.updateRating();
@@ -131,7 +139,9 @@ var EstimationCorrector = {
     
     }
 };
+// ---------------------- end of one file ... ---------------------------------
 
+// ---------------------- start of new file ... -------------------------------
 var CorrectorTableView = {
 	// should contain the table
     table : document.getElementById("extinctionEstimates"),
@@ -177,7 +187,7 @@ var CorrectorTableView = {
             CorrectorUIManager[CorrectorUIManager.algorithms[CorrectorUIManager.selectedAlgorithm]].CreateComparisonUIRow(); // two, for Argelander
     },
 	
-	// function to add the argerlander row here
+	// function to add the Argerlander row here
 	// and function to add the paired row here
 
 };
@@ -185,7 +195,7 @@ var CorrectorTableView = {
 // control, mostly
 var CorrectorUIManager = {
 	
-	// should be split to a sepparate UI manager, for actual brightness estimates
+	// should be split to a separate UI manager, for actual brightness estimates
     //table : document.getElementById("extinctionEstimates"),
     //tableHeader : document.getElementById("extinctionEstimatesHeader"), 
     

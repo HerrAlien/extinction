@@ -33,7 +33,7 @@ var Results = {
         // update all airmasses
         try {
             // update the variable comparison aimass,
-            var comps = EstimationCorrector.pairedComparisons;
+            var comps = EstimationCorrector.Model.pairedComparisons;
             var i = 0;
             for (i = 0; i < comps.length; i++) {
                 ExtinctionCoefficient.updateAirmassForComparison(comps[i], latitude, longitude, lst);
@@ -87,19 +87,19 @@ var Results = {
             var airmassB = "unknown";
             var airmassV = "unknown";
             try {
-                airmassA =  EstimationCorrector.pairedComparisons[0].first.bright().airmass;
+                airmassA =  EstimationCorrector.Model.pairedComparisons[0].first.bright().airmass;
             } catch (err) {
                 airmassA = "unknown";
             }
 
             try {
-                airmassB = EstimationCorrector.pairedComparisons[0].second.dim().airmass;
+                airmassB = EstimationCorrector.Model.pairedComparisons[0].second.dim().airmass;
             } catch (err) {
                 airmassB = "unknown";
             }
 
             try {
-                airmassV = EstimationCorrector.pairedComparisons[0].first.dim().airmass;
+                airmassV = EstimationCorrector.Model.pairedComparisons[0].first.dim().airmass;
             } catch (err) {
                 airmassV = "unknown";
             }
