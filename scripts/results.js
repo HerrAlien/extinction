@@ -72,7 +72,7 @@ var Results = {
             // compute estimate with K = 0
             var K = 0;
             try {
-                var variableBrightnessArr = EstimationCorrector.Estimate (K);
+                var variableBrightnessArr = EstimationCorrector.Model.Estimate (K);
                 var variableMagStats = Computations.AverageAndStdDev (variableBrightnessArr);
                 Results.brightnessNoExtinction.textContent = Computations.Round (variableMagStats.avg, 2) + 
                                                                                 " (std. dev. " + 
@@ -122,7 +122,7 @@ var Results = {
                 K = parseFloat (coeffInput.value);
                 
                 try {
-                    variableBrightnessArr = EstimationCorrector.Estimate (K);
+                    variableBrightnessArr = EstimationCorrector.Model.Estimate (K);
                 } catch (err) {
                 }
             } else {
@@ -137,7 +137,7 @@ var Results = {
 
                 var i = 0;
                 for (i = 0; i < kvals.length; i++) {
-                    variableBrightnessArr = variableBrightnessArr.concat (EstimationCorrector.Estimate (kvals[i]));
+                    variableBrightnessArr = variableBrightnessArr.concat (EstimationCorrector.Model.Estimate (kvals[i]));
                 }
             }
             

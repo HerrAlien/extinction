@@ -24,32 +24,30 @@ var EstimationCorrector = {
     // a collection of comparisons, with airmasses, just to determine the brightness,
     // given an extinction coefficient.
         Model : {
-        pairedComparisons : []
-    },
+        pairedComparisons : [],
     
-    Estimate : function (k){
-        
-        var i = 0;
-        var values = [];
-        for (i = 0; i < EstimationCorrector.Model.pairedComparisons.length; i++) {
-			var pairedComparison = EstimationCorrector.Model.pairedComparisons[i];
-			var bright = pairedComparison.first.bright();
-			var b2v = pairedComparison.first.value();
-			var variable = pairedComparison.first.dim(); // or second.bright () ...
-			var v2d = pairedComparison.second.value();
-			var dim = pairedComparison.second.dim(); 
-				
-			// provide corrections for the difference airmass
-			var brightMag = bright.mag + k * (bright.airmass - variable.airmass);
-			var dimMag = dim.mag + k * (dim.airmass - variable.airmass);
-				
-			if (b2v == 0 && v2d == 0)
-				values.push(brightMag);
-			else
-				values.push (brightMag + b2v * (dimMag - brightMag) / (b2v + v2d));
+        Estimate : function (k){
+            var i = 0;
+            var values = [];
+            for (i = 0; i < EstimationCorrector.Model.pairedComparisons.length; i++) {
+                var pairedComparison = EstimationCorrector.Model.pairedComparisons[i];
+                var bright = pairedComparison.first.bright();
+                var b2v = pairedComparison.first.value();
+                var variable = pairedComparison.first.dim(); // or second.bright () ...
+                var v2d = pairedComparison.second.value();
+                var dim = pairedComparison.second.dim(); 
+                    
+                // provide corrections for the difference airmass
+                var brightMag = bright.mag + k * (bright.airmass - variable.airmass);
+                var dimMag = dim.mag + k * (dim.airmass - variable.airmass);
+                    
+                if (b2v == 0 && v2d == 0)
+                    values.push(brightMag);
+                else
+                    values.push (brightMag + b2v * (dimMag - brightMag) / (b2v + v2d));
+            }
+            return values;
         }
-        
-        return values;
     },
     
     init : function () {
@@ -104,12 +102,12 @@ var EstimationCorrector = {
             createdObj.comp["updateRating"] = function ()
             {
                 var initialComparisons = EstimationCorrector.Model.pairedComparisons;
-                var estimatesWithMe = EstimationCorrector.Estimate(0);
+                var estimatesWithMe = EstimationCorrector.Model.Estimate(0);
                 
                 var myPos = initialComparisons.indexOf(this);
                 var compsWOMe = initialComparisons.slice(0, myPos).concat (initialComparisons.slice (myPos+1, initialComparisons.length));
                 EstimationCorrector.Model.pairedComparisons = compsWOMe;
-                var estimatesWOMe = EstimationCorrector.Estimate(0);
+                var estimatesWOMe = EstimationCorrector.Model.Estimate(0);
                 // restore the data
                 EstimationCorrector.Model.pairedComparisons = initialComparisons;
                 
