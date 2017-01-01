@@ -29,7 +29,7 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl.html
 var Hipparcos = {
     config : {
         method: "GET",
-        url : "http://apm5.ast.cam.ac.uk/cgi-bin/wdb/hipp/tycho/query",
+        url : "http://casu.ast.cam.ac.uk/casu-cgi/wdb/hipp/tycho/query",
         params : [ "ra"  /* RA of the center of the square region to search in */, 
                    "dec" /* DEC of the center of the square region to search in */, 
                    "box" /* half size of the square region, in degrees */,
@@ -81,8 +81,9 @@ var Hipparcos = {
                         Hipparcos.config.params[0] + "=" + ra_deg / 15.0 + "&" +
                         Hipparcos.config.params[1] + "=" + dec_deg + "&" +
                         Hipparcos.config.params[2] + "=" + fov_arcmin / 60.0 + "&" +
-                        Hipparcos.config.params[3] + "=<" + maglim 
-                        + "&proxyfor=casu-adc-tycho";
+                        Hipparcos.config.params[3] + "=<" + maglim + 
+                        
+                        "&proxyfor=casu-adc-tycho";
         
         xmlHttpReq.open(Hipparcos.config.method, Hipparcos.config.url + "?" + queryString, true);
         xmlHttpReq.send(null); 
@@ -111,9 +112,9 @@ var Hipparcos = {
             // ra - 9 
             // dec - 10 
             // Vmag - 21
-            var starToAdd = { "ra" :  Computations.parseCoordinate(columns[9].innerHTML, " ") * 15 , 
-                            "dec" : Computations.parseCoordinate(columns[10].innerHTML, " "), 
-                            "mag" : Computations.evalNum(columns[21].innerHTML), 
+            var starToAdd = { "ra" :  Computations.parseCoordinate(columns[3].innerHTML, " ") * 15 , 
+                            "dec" : Computations.parseCoordinate(columns[4].innerHTML, " "), 
+                            "mag" : Computations.evalNum(columns[15].innerHTML), 
                             "label" : "NA", 
                             "airmass" : 1 };
             stars.push (starToAdd);
