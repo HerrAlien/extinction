@@ -93,7 +93,7 @@ if ($allowAccess)
             }
                         
             if ($proxyfor == 'casu-adc-tycho'){
-                $url = "http://apm5.ast.cam.ac.uk/cgi-bin/wdb/hipp/tycho/query?" . $qstring;
+                $url = "http://casu.ast.cam.ac.uk/casu-cgi/wdb/hipp/tycho/query?" . $qstring;
             }
 
             $contextArr = [
