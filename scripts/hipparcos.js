@@ -31,7 +31,7 @@ var Hipparcos = {
         method: "GET",
         url : "http://casu.ast.cam.ac.uk/casu-cgi/wdb/hipp/tycho/query",
         params : [ "ra"  /* RA of the center of the square region to search in */, 
-                   "dec" /* DEC of the center of the square region to search in */, 
+                   "declination" /* DEC of the center of the square region to search in */, 
                    "box" /* half size of the square region, in degrees */,
                    "vtmag" /* magnitude of the faintest star to be included */],
         columnDelimiter : "|"
