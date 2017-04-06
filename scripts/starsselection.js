@@ -64,7 +64,12 @@ var StarsSelection = {
                         if (!st)
                             return;
                         data.star = st;
-                        this.setDisplayedString (data.star.label + "  ( X = " + Computations.Round(data.star.airmass, 3) + " )");
+                        var airmass = "unknown";
+                        try{
+                            airmass = Computations.Round(data.star.airmass, 3);
+                        } catch (err) {
+                        }
+                        this.setDisplayedString (data.star.label + "  ( X = " + airmass + " )");
                     }   
                     this.get = function () {
                         return data.star;
