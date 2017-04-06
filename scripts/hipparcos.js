@@ -24,12 +24,23 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl.html
 var Hipparcos = {
     config : {
         method: "GET",
-        url : "http://casu.ast.cam.ac.uk/casu-cgi/wdb/hipp/tycho/query",
-        params : [ "ra"  /* RA of the center of the square region to search in */, 
-                   "declination" /* DEC of the center of the square region to search in */, 
-                   "box" /* half size of the square region, in degrees */,
-                   "vtmag" /* magnitude of the faintest star to be included */],
-        columnDelimiter : "|"
+        url : "http://tapvizier.u-strasbg.fr/adql/",
+        /*! $1 - limiting magnitude
+            $2 - lower RA limit
+            $3 - upper RA limit
+            $4 - lower DEC limit
+            $5 - upper DEC limit
+        */
+        sql : {
+            __query__ : "SELECT \"RA(ICRS)\", \"DE(ICRS)\", \"Vmag\" FROM \"I/239/tyc_main\" WHERE \"Vmag\" < $1 and \"RA(ICRS)\" > $2 and \"RA(ICRS)\" < $3 and \"DE(ICRS)\" > $4 and \"DE(ICRS)\" < $5",
+            getQuery : function (vmag, ramin, ramax, decmin, decmax){
+                var q = this.__query__.replace ("$1", vmag);
+                q = q.replace ("$2", ramin);
+                q = q.replace ("$3", ramax);
+                q = q.replace ("$4", decmin);
+                return q.replace ("$5", decmaz);
+            }
+        }
     },
     
     config_debug : {
