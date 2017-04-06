@@ -109,8 +109,14 @@ var StarsSelection = {
                     }
                     
                     this.update = function () {
-						if (data.star)
-							this.setDisplayedString (data.star.label + "  ( X = " + Computations.Round(data.star.airmass, 3) + " )");
+						if (data.star){
+						        var airmass = "unknown";
+						        try {
+						            airmass = Computations.Round(data.star.airmass, 3);
+						        } catch (err) {
+						        }
+							this.setDisplayedString (data.star.label + "  ( X = " + airmass + " )");
+						}
                     }
 					
 					this.showAsActive = function (isActive) {
