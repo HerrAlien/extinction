@@ -21,6 +21,11 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl.html
 /* http://apm5.ast.cam.ac.uk/cgi-bin/wdb/hipp/tycho/query?max_rows_returned=1000&tab_dec=on&tab_ra=on&tab_box=on&tab_vtmag=on&box=10&ra=18.61578888888889&dec=-28.927722222222222&vtmag=<7
 */
 
+/*
+    Yet another model side class :)
+    Same requirements as for the photometry table.
+*/
+
 var Hipparcos = {
     config : {
         method: "GET",
@@ -42,7 +47,13 @@ var Hipparcos = {
         config : { "ra" : 0, "dec" : 0, "fov" : 0, "mag" : 0 }
     },
     
-    init : function (ra_deg, dec_deg, fov_arcmin, maglim) {
+    onStarsRetrieved : false,
+	
+	init : function () {
+		Hipparcos.onStarsRetrieved = Notifications.NewNoParameter();
+	},
+    
+    setFrameData : function (ra_deg, dec_deg, fov_arcmin, maglim) {
         var xmlHttpReq = new XMLHttpRequest({mozSystem: true});
         Hipparcos.chart.config.ra = ra_deg;
         Hipparcos.chart.config.dec = dec_deg;
@@ -53,11 +64,12 @@ var Hipparcos = {
                 var doc =  xmlHttpReq.responseText;
                 if (doc == ""){
                     // bad connection?
+                    // TODO: should be a notification
                     Log.message ("Could not retrieve the position of stars; check your internet connection.");
                     return;
                 }
                 Hipparcos.ParseStarsFromText (doc);
-                Hipparcos.onInit();
+                Hipparcos.onStarsRetrieved.notify();
             }
         }
         Hipparcos.sendRequest (xmlHttpReq, ra_deg, dec_deg, fov_arcmin, maglim);
@@ -84,10 +96,6 @@ var Hipparcos = {
         xmlHttpReq.send(null); 
     },
 
-    onInit : function () {
-        
-    },
-    
     ParseStarsFromText : function (text) {
         var stars = [];
 
@@ -118,7 +126,6 @@ var Hipparcos = {
 };
 
 try {
-if (Initialization)
     Initialization.init();
 } catch (err) {
 }

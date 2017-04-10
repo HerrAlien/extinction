@@ -18,70 +18,76 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see https://www.gnu.org/licenses/agpl.html
 */
 
+/* ... a mix of everything. */
 var EstimationCorrector = {
+    // --- model side ------
+    // a collection of comparisons, with airmasses, just to determine the brightness,
+    // given an extinction coefficient.
+        Model : {
+        pairedComparisons : [],
     
-    pairedComparisons : [],
-    
-    Estimate : function (k){
-        
-        var i = 0;
-        var values = [];
-        for (i = 0; i < EstimationCorrector.pairedComparisons.length; i++) {
-            var pairedComparison = EstimationCorrector.pairedComparisons[i];
-            var bright = pairedComparison.first.bright();
-            var b2v = pairedComparison.first.value();
-            var variable = pairedComparison.first.dim(); // or second.bright () ...
-            var v2d = pairedComparison.second.value();
-            var dim = pairedComparison.second.dim(); 
-            
-            // provide corrections for the difference airmass
-            var brightMag = bright.mag + k * (bright.airmass - variable.airmass);
-            var dimMag = dim.mag + k * (dim.airmass - variable.airmass);
-            
-            if (b2v == 0 && v2d == 0)
-                values.push(brightMag);
-            else
-                values.push (brightMag + b2v * (dimMag - brightMag) / (b2v + v2d));
+        Estimate : function (k){
+            var i = 0;
+            var values = [];
+            for (i = 0; i < EstimationCorrector.Model.pairedComparisons.length; i++) {
+                var pairedComparison = EstimationCorrector.Model.pairedComparisons[i];
+                var bright = pairedComparison.first.bright();
+                var b2v = pairedComparison.first.value();
+                var variable = pairedComparison.first.dim(); // or second.bright () ...
+                var v2d = pairedComparison.second.value();
+                var dim = pairedComparison.second.dim(); 
+                    
+                // provide corrections for the difference airmass
+                var brightMag = bright.mag + k * (bright.airmass - variable.airmass);
+                var dimMag = dim.mag + k * (dim.airmass - variable.airmass);
+                    
+                if (b2v == 0 && v2d == 0)
+                    values.push(brightMag);
+                else
+                    values.push (brightMag + b2v * (dimMag - brightMag) / (b2v + v2d));
+            }
+            return values;
         }
-        
-        return values;
     },
     
     init : function () {
 		// reset estimates
-        EstimationCorrector.pairedComparisons = [];
+        EstimationCorrector.Model.pairedComparisons = [];
 		// empty the table of estimates ...
 		var table = CorrectorUIManager.extraEstimatesTable;
 		while (table.hasChildNodes())
 			table.removeChild (table.firstChild);
 		// add the first estimate
-        EstimationCorrector.addNewComparison ();
+        this.addNewComparison ();
 
 		// reset the estimates for extinction
 		CorrectorUIManager.ClearComparisonsList();
-        CorrectorUIManager.ResetHeader();	
+        CorrectorTableView.ResetHeader();
 		CorrectorUIManager.useArgelander.onclick();
         CorrectorUIManager.useArgelander.checked = true;
     },
     
     updateAirmassFromInput : function (star) {
-        var latitude = Computations.evalNum (document.getElementById ("lat").value);
-        var longitude = Computations.evalNum (document.getElementById ("long").value);
-        var timeString = document.getElementById ("dateTime").value;
-            
-        var lst = Computations.LSTFromTimeString (timeString, longitude);
-        ExtinctionCoefficient.updateAirmassForStar (star, latitude, longitude, lst);        
+        star.updateAirmass(Location.latitude, Location.longitude, Location.lst);
     },
     
+    // this is a control side of things.
     addNewComparison : function () {
+		// this is view-ish ... should not be here.
+        // todo: refactor as a callback on the model change.
+        // ask the model to start adding a comparison
+        // => the view gets notified and starts prepairing the DOM elements for the request
+        // => then notifies that the GUI for the request is done
+        // => then the model side wraps up creation of the comparison, notifies of completion
+        // => then the view wraps up with the delete link creation
         var table = CorrectorUIManager.extraEstimatesTable;
         var createdObj = CorrectorUIManager.Utils.AddPairedComparison (table);
-        CorrectorUIManager.Utils.AddDeleteLink (createdObj.row, createdObj.tddelete, createdObj.comp, EstimationCorrector.pairedComparisons);
+        CorrectorUIManager.Utils.AddDeleteLink (createdObj.row, createdObj.tddelete, createdObj.comp, EstimationCorrector.Model.pairedComparisons);
 
         createdObj.midSelector.set (PhotmetryTable.variableStar);
-        createdObj.midSelector.setClassName ("hidden");
+        createdObj.midSelector.show (false);
 
-        EstimationCorrector.pairedComparisons.push (createdObj.comp);
+        EstimationCorrector.Model.pairedComparisons.push (createdObj.comp);
         var createdSpan = CorrectorUIManager.Utils.AddChild (createdObj.tdmid, "span");
         createdSpan.textContent = "V";
         
@@ -92,17 +98,18 @@ var EstimationCorrector = {
             var tdRating = addChild(createdObj.row, "td");
             var ratingDiv = addChild (tdRating, "div");
             ratingDiv.className = "norating";
+            // this is a view thing, for one comparison.
             createdObj.comp["updateRating"] = function ()
             {
-                var initialComparisons = EstimationCorrector.pairedComparisons;
-                var estimatesWithMe = EstimationCorrector.Estimate(0);
+                var initialComparisons = EstimationCorrector.Model.pairedComparisons;
+                var estimatesWithMe = EstimationCorrector.Model.Estimate(0);
                 
                 var myPos = initialComparisons.indexOf(this);
                 var compsWOMe = initialComparisons.slice(0, myPos).concat (initialComparisons.slice (myPos+1, initialComparisons.length));
-                EstimationCorrector.pairedComparisons = compsWOMe;
-                var estimatesWOMe = EstimationCorrector.Estimate(0);
+                EstimationCorrector.Model.pairedComparisons = compsWOMe;
+                var estimatesWOMe = EstimationCorrector.Model.Estimate(0);
                 // restore the data
-                EstimationCorrector.pairedComparisons = initialComparisons;
+                EstimationCorrector.Model.pairedComparisons = initialComparisons;
                 
                 var statsWOMe = Computations.AverageAndStdDev (estimatesWOMe);
                 var statsWithMe = Computations.AverageAndStdDev (estimatesWithMe);
@@ -118,19 +125,79 @@ var EstimationCorrector = {
     
     update : function () {
         var i = 0;
-        for (i = 0; i < EstimationCorrector.pairedComparisons.length; i++) {
-            var pairedComparison = EstimationCorrector.pairedComparisons[i];
+        for (i = 0; i < EstimationCorrector.Model.pairedComparisons.length; i++) {
+            var pairedComparison = EstimationCorrector.Model.pairedComparisons[i];
             pairedComparison.updateUI();
-            pairedComparison.updateRating();
+			try {
+				pairedComparison.updateRating();
+			} catch (err) {
+				;
+			}
         }
     
     }
 };
+// ---------------------- end of one file ... ---------------------------------
 
-var CorrectorUIManager = {
+// ---------------------- start of new file ... -------------------------------
+var CorrectorTableView = {
+	// should contain the table
     table : document.getElementById("extinctionEstimates"),
-    tableHeader : document.getElementById("extinctionEstimatesHeader"), 
+    tableHeader : document.getElementById("extinctionEstimatesHeader"),
+	
+	// should probably be in CorrectorTableView
+	// should be called from a notification (algo change)
+    ResetHeader : function () {
+        var addChild = CorrectorUIManager.Utils.AddChild;
+        CorrectorUIManager.Utils.ClearDOM(this.tableHeader);
+        if (0 == CorrectorUIManager.selectedAlgorithm) {
+            var tdbright =  addChild (this.tableHeader, "td");
+            var tdval =  addChild (this.tableHeader, "td");
+            var tddim =  addChild (this.tableHeader, "td");
+
+            tdbright.textContent = "Bright star"; 
+            tddim.textContent = "Dim star"; 
+            tdval.textContent = "steps"; 
+        } else {
+            var tdbright =  addChild (this.tableHeader, "td");
+            var tdval_bm =  addChild (this.tableHeader, "td");
+            var tdmid =  addChild (this.tableHeader, "td");
+            var tdval_md =  addChild (this.tableHeader, "td");
+            var tddim =  addChild (this.tableHeader, "td");
+
+            tdbright.textContent = "Bright star"; 
+            tdval_bm.textContent = "steps"; 
+            tddim.textContent = "Dim star"; 
+            tdval_md.textContent = "steps"; 
+            tdmid.textContent = "Middle star"; 
+        }
+
+		// set up a destination for the add link
+        var tdadd =  addChild (this.tableHeader, "td");
+		// have the control create the link
+        CorrectorUIManager.createAddAnchor (tdadd);
+
+		// add a column for the rating view.
+        var tdRating = addChild (this.tableHeader, "td");
+        tdRating.style["background"] = "#ffffff";
+        CorrectorUIManager[CorrectorUIManager.algorithms[CorrectorUIManager.selectedAlgorithm]].CreateComparisonUIRow(); // one compariso is enough for pairs
+        if (0 == CorrectorUIManager.selectedAlgorithm)
+            CorrectorUIManager[CorrectorUIManager.algorithms[CorrectorUIManager.selectedAlgorithm]].CreateComparisonUIRow(); // two, for Argelander
+    },
+	
+	// function to add the Argerlander row here
+	// and function to add the paired row here
+
+};
+
+// control, mostly
+var CorrectorUIManager = {
+	
+	// should be split to a separate UI manager, for actual brightness estimates
+    //table : document.getElementById("extinctionEstimates"),
+    //tableHeader : document.getElementById("extinctionEstimatesHeader"), 
     
+	// and only this should be the controller for the corrector.
     useValueForK : document.getElementById ("useValueForK"),
     computeK : document.getElementById ("computeK"),
     useArgelander : document.getElementById ("useArgelander"),
@@ -140,132 +207,86 @@ var CorrectorUIManager = {
     extraEstimatesTable : document.getElementById ("extraEstimates"), 
     
     selectedAlgorithm : 0,
+	addRowAnchor : false,
+	
+	createAddAnchor : function (parentElem) {
+		this.addRowAnchor = this.Utils.AddChild(parentElem, "a");
+        this.addRowAnchor.textContent = "(+) Add row";
+        this.addRowAnchor.noref="";
+        this.addRowAnchor.className = "addAnchor";
+        this.addRowAnchor.onclick = function () { // this should call notifications ...
+            CorrectorUIManager[CorrectorUIManager.algorithms[CorrectorUIManager.selectedAlgorithm]].CreateComparisonUIRow();
+        }
+	},
+	
+	onSelectedArgelanderNotif : {},
+	
+	// should have a notification object for adding a correction entry
     
     init : function () {
-        CorrectorUIManager.useValueForK.onclick = function () {
+		
+		StarsSelection.afterStarSelection.add (this.onUserInput);
+		
+        this.useValueForK.onclick = function () {
             CorrectorUIManager.computeK.checked = false;
             CorrectorUIManager.onUserInput();
         }
-        CorrectorUIManager.computeK.onclick = function () {
+        this.computeK.onclick = function () {
             CorrectorUIManager.useValueForK.checked = false;
             CorrectorUIManager.onUserInput();
         }
-        CorrectorUIManager.addVariableEstimateLink.onclick = function () {
+        this.addVariableEstimateLink.onclick = function () {
             EstimationCorrector.addNewComparison ();
         }
         
-        CorrectorUIManager.useArgelander.onclick = function () {
+		// this should be handled by an array of functions
+        this.useArgelander.onclick = function () {
+			// one handler ...
             CorrectorUIManager.usePaired.checked = false;
+			// one handler ...
             CorrectorUIManager.selectedAlgorithm = 0;
+			// one handler ...
             ExtinctionCoefficient.currentAlgorithmID = 0;
+			// one handler ...
             CorrectorUIManager.ClearComparisonsList();
-            CorrectorUIManager.ResetHeader();
+			// one handler ...
+            CorrectorTableView.ResetHeader();
+			// one handler ...
+			// this one should just update the results view, with a K = 0 
+			// or equal to the value from the input field.
             try{
             CorrectorUIManager.onUserInput();
             } catch (err) {}
         }
-        CorrectorUIManager.usePaired.onclick = function () {
+        this.usePaired.onclick = function () {
+			// one handler ...
             CorrectorUIManager.useArgelander.checked = false;
+			// one handler ...
             CorrectorUIManager.selectedAlgorithm = 1;
+			// one handler ...
             ExtinctionCoefficient.currentAlgorithmID = 1;
+			// one handler ...
             CorrectorUIManager.ClearComparisonsList();
-            CorrectorUIManager.ResetHeader();
+			// one handler ...
+            CorrectorTableView.ResetHeader();
+			// one handler ...
+			// this one should just update the results view, with a K = 0 
+			// or equal to the value from the input field.
             try{
             CorrectorUIManager.onUserInput();
             } catch (err) {}
         }
         
-        CorrectorUIManager.useArgelander.onclick();
-        CorrectorUIManager.useArgelander.checked = true;
-        
-        var currentDate = new Date();
-        
-        var month = currentDate.getMonth() + 1;
-        if (month < 10)
-            month = "0" + month;
-        
-        var day = currentDate.getUTCDate();
-        if (day < 10)
-            day = "0" + day;
-        
-        var h = currentDate.getUTCHours();
-        if (h < 10)
-            h = "0" + h;
-        
-        var m = currentDate.getUTCMinutes();
-        if (m < 10)
-            m = "0" + m;
-
-        var s = currentDate.getUTCSeconds();
-        if (s < 10)
-            s = "0" + s;
-
-        document.getElementById("dateTime").value = currentDate.getUTCFullYear() + "/" + month + "/" + day +
-                                                    " " + h + ":" + m + ":" + s;
-        
-        document.getElementById("geolocation").onclick = function () {
-			var geoLocation = navigator.geolocation || window.navigator.geolocation;
-            if (geoLocation) {
-                geoLocation.getCurrentPosition (function (position) {
-                    var lat = document.getElementById("lat");
-                    var long = document.getElementById("long");
-                    lat.value = position.coords.latitude;
-                    long.value = position.coords.longitude;
-                    InputValidator.validate (lat);
-                    InputValidator.validate (long);
-                    CorrectorUIManager.onLocationOrTimeChanged();
-                    
-               });
-            }
-        }
-    },
-    
-    ResetHeader : function () {
-        var addChild = CorrectorUIManager.Utils.AddChild;
-        CorrectorUIManager.Utils.ClearDOM(CorrectorUIManager.tableHeader);
-        if (0 == CorrectorUIManager.selectedAlgorithm) {
-            var tdbright =  addChild (CorrectorUIManager.tableHeader, "td");
-            var tdval =  addChild (CorrectorUIManager.tableHeader, "td");
-            var tddim =  addChild (CorrectorUIManager.tableHeader, "td");
-
-            tdbright.textContent = "Bright star"; 
-            tddim.textContent = "Dim star"; 
-            tdval.textContent = "steps"; 
-        } else {
-            var tdbright =  addChild (CorrectorUIManager.tableHeader, "td");
-            var tdval_bm =  addChild (CorrectorUIManager.tableHeader, "td");
-            var tdmid =  addChild (CorrectorUIManager.tableHeader, "td");
-            var tdval_md =  addChild (CorrectorUIManager.tableHeader, "td");
-            var tddim =  addChild (CorrectorUIManager.tableHeader, "td");
-
-            tdbright.textContent = "Bright star"; 
-            tdval_bm.textContent = "steps"; 
-            tddim.textContent = "Dim star"; 
-            tdval_md.textContent = "steps"; 
-            tdmid.textContent = "Middle star"; 
-        }
-
-        var tdadd =  addChild (CorrectorUIManager.tableHeader, "td");
-        var anch = addChild(tdadd, "a");
-        anch.textContent = "(+) Add row";
-        anch.noref="";
-        anch.className = "addAnchor";
-        anch.onclick = function () {
-                CorrectorUIManager[CorrectorUIManager.algorithms[CorrectorUIManager.selectedAlgorithm]].CreateComparisonUIRow();
-        }
-        
-        var tdRating = addChild (CorrectorUIManager.tableHeader, "td");
-        tdRating.style["background"] = "#ffffff";
-        CorrectorUIManager[CorrectorUIManager.algorithms[CorrectorUIManager.selectedAlgorithm]].CreateComparisonUIRow(); // one compariso is enough for pairs
-        if (0 == CorrectorUIManager.selectedAlgorithm)
-            CorrectorUIManager[CorrectorUIManager.algorithms[CorrectorUIManager.selectedAlgorithm]].CreateComparisonUIRow(); // two, for Argelander
+        this.useArgelander.onclick();
+        this.useArgelander.checked = true;
     },
     
     algorithms : ["Argelander", "Paired"],
     
     ClearComparisonsList : function () {
         ExtinctionCoefficient.comparisons = [];
-        CorrectorUIManager.Utils.ClearDOM (CorrectorUIManager.table);
+		// this should be in view
+        this.Utils.ClearDOM (CorrectorTableView.table);
     },
     
     Utils : {
@@ -283,7 +304,7 @@ var CorrectorUIManager = {
         
         AddDeleteLink : function (_row, _tddelete, _comp, 
                                   _arrayToRemoveComparisonFrom) {
-            var addChild = CorrectorUIManager.Utils.AddChild;
+            var addChild = this.AddChild;
             (function (r, t, c, a) {
                 var tddelete = t;
                 var deleteAnchor = addChild (tddelete, "a");
@@ -307,7 +328,7 @@ var CorrectorUIManager = {
         },
         
         AddPairedComparison : function (table) {
-            var addChild = CorrectorUIManager.Utils.AddChild;
+            var addChild = this.AddChild;
             
             var row = addChild (table, "tr");
             var tdbright =  addChild (row, "td");
@@ -333,6 +354,8 @@ var CorrectorUIManager = {
             var midSelector = StarsSelection.Selector.build (midImput);
             var dimSelector = StarsSelection.Selector.build (dimInput);
             
+            // TODO: get notified about selection, to update stats.
+            
 			InputValidator.AddNumberMinimumValidator (b2m, 0);
 			InputValidator.AddNumberMinimumValidator (m2d, 0);
 			
@@ -346,13 +369,16 @@ var CorrectorUIManager = {
             m2d.onmouseenter = m2d.onfocus;
 
             var comp = ExtinctionCoefficient.PairedComparison(brightSelector, b2m, midSelector, m2d, dimSelector);
+			// this is the view object.
+			// should interrogate the model side (the comp object) when being notified by the controller
             return { "comp": comp, "midSelector" : midSelector, "tdmid" : tdmid, "row" :  row, "tddelete" : tddelete};
         }
     },
     
     Argelander : {
+		// should be a notif. handler
         CreateComparisonUIRow : function () {
-            var table = CorrectorUIManager.table;
+            var table = CorrectorTableView.table;
             var addChild = CorrectorUIManager.Utils.AddChild;
             
             var row = addChild (table, "tr");
@@ -384,8 +410,9 @@ var CorrectorUIManager = {
     },
     
     Paired : {
+		// should be a notif. handler
         CreateComparisonUIRow : function () {
-            var table = CorrectorUIManager.table;
+            var table = CorrectorTableView.table;
             var createdObj = CorrectorUIManager.Utils.AddPairedComparison (table);
             CorrectorUIManager.Utils.AddDeleteLink (createdObj.row, createdObj.tddelete, createdObj.comp, ExtinctionCoefficient.comparisons);
             ExtinctionCoefficient.comparisons.push (createdObj.comp);
@@ -396,7 +423,7 @@ var CorrectorUIManager = {
     },
     
     AddRatingIndicatorForExtinctionEstimate : function (comp, row) {
-               var addChild = CorrectorUIManager.Utils.AddChild; 
+               var addChild = this.Utils.AddChild; 
                (function(){
                 var tdRating = addChild (row, "td");
                 var div = addChild (tdRating, "div");
@@ -428,143 +455,15 @@ var CorrectorUIManager = {
     }, 
     
     onLocationOrTimeChanged : function () {
-        try {
-            // update all airmasses
-            var latitude = Computations.evalNum (document.getElementById ("lat").value);
-            var longitude = Computations.evalNum (document.getElementById ("long").value);
-            var timeString = document.getElementById ("dateTime").value;
-            var lst = Computations.LSTFromTimeString (timeString, longitude);
-        } catch (err) {
-        }
-            
-        try {
-            // update the variable comparison aimass,
-            var comps = EstimationCorrector.pairedComparisons;
-            var i = 0;
-            for (i = 0; i < comps.length; i++) {
-                ExtinctionCoefficient.updateAirmassForComparison(comps[i], latitude, longitude, lst);
-            }
-            // display the airmasses
-        } catch (err) {
-        }
-            
-        try {
-            ExtinctionCoefficient.updateAirmass (latitude, longitude, timeString);
-            // then call the user input callbavck
-        } catch (err) {
-        }
-        
-        try {
-            CorrectorUIManager.onUserInput();
-        } catch (err) {
-        }
+        Results.onLocationOrTimeChanged();
     },
     
     onUserInput : function () {
-        
-        var coeffInput = document.getElementById ("K");
-        
-        try {
-        
-            try {
-                EstimationCorrector.update();
-            } catch (err) {
-            }
-
-            // this is the main callback ...
-            // compute estimate with K = 0
-            var K = 0;
-            var variableBrightness = 0;
-            try {
-                var variableBrightnessArr = EstimationCorrector.Estimate (K);
-                var variableMagStats = Computations.AverageAndStdDev (variableBrightnessArr);
-                document.getElementById("brightnessNoExtinction").textContent = Computations.Round (variableMagStats.avg, 2) + 
-                                                                                " (std. dev. " + 
-                                                                                Computations.Round (variableMagStats.stdDev, 2) + 
-                                                                                ")";
-            } catch (err) {
-            }
-            
-            try {
-                // update airmass of V - it never gets selected by the user
-                EstimationCorrector.updateAirmassFromInput (PhotmetryTable.variableStar);
-            } catch (err) {
-            }
-            
-            // display airmasses
-            var airmassA = "unknown";
-            var airmassB = "unknown";
-            var airmassV = "unknown";
-            try {
-                airmassA =  EstimationCorrector.pairedComparisons[0].first.bright().airmass;
-            } catch (err) {
-                airmassA = "unknown";
-            }
-
-            try {
-                airmassB = EstimationCorrector.pairedComparisons[0].second.dim().airmass;
-            } catch (err) {
-                airmassB = "unknown";
-            }
-
-            try {
-                airmassV = EstimationCorrector.pairedComparisons[0].first.dim().airmass;
-            } catch (err) {
-                airmassV = "unknown";
-            }
-            
-            document.getElementById ("airmassV").textContent = Computations.Round (airmassV, 3);
-            
-            var extinctionCorrectionRequired = Math.abs (airmassA - airmassB) > 0.2 ||
-                                               Math.abs (airmassA - airmassV) > 0.2 ||
-                                               Math.abs (airmassV - airmassB) > 0.2;
-            if (extinctionCorrectionRequired)
-                document.getElementById ("shouldComputeExtinction").className = "hidden";
-            else
-                document.getElementById ("shouldComputeExtinction").className = "";
-            
-            var variableBrightnessArr = [];
-            // get K:
-            //  - this can be a constant
-            if (document.getElementById ("useValueForK").checked) {
-                coeffInput.readOnly = false;
-                K = parseFloat (coeffInput.value);
-                
-                try {
-                    variableBrightnessArr = EstimationCorrector.Estimate (K);
-                } catch (err) {
-                }
-            } else {
-            //  - or it must be determined from observations
-                coeffInput.readOnly = true;
-                var kvals = ExtinctionCoefficient.rebuildValues();
-
-                var kstats = Computations.AverageAndStdDev (kvals);
-                coeffInput.value = Computations.Round (kstats.avg, 4);
-                
-                InputValidator.validate (coeffInput);
-
-                var i = 0;
-                for (i = 0; i < kvals.length; i++) {
-                    variableBrightnessArr = variableBrightnessArr.concat (EstimationCorrector.Estimate (kvals[i]));
-                }
-            }
-            
-            var variableMagStats = Computations.AverageAndStdDev (variableBrightnessArr);
-            document.getElementById("brightnessWithExtinction").textContent = Computations.Round (variableMagStats.avg, 2) + 
-                                                                              " (std. dev. " + 
-                                                                              Computations.Round (variableMagStats.stdDev, 2) + 
-                                                                              ")";
-            
-        } catch (err) {
-        }
-        ExtinctionCoefficient.updateUI();
-        DataShareSave.update();
+        Results.onUserInput();
     }
 };
 
 try {
-if (Initialization)
     Initialization.init();
 } catch (err) {
 }

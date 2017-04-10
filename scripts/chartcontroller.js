@@ -27,11 +27,26 @@ var ChartController = {
         updateChartButton : document.getElementById("updateChart")
     },
     
+    onChartOrientationChanged : false,
+    
+    onUpdateChartClicked : false,
+    
     init : function () {
-        var ui = ChartController.ui;
+        
+		this.onChartOrientationChanged = Notifications.NewNoParameter();
+		this.onUpdateChartClicked = Notifications.NewNoParameter();
+		
+        this.onChartOrientationChanged.add ( function () { 
+            SVGChart.chartOrientation = ChartController.ui.orientationElem.value;
+    	    SVGChart.redraw(); });
+        
+        var ui = this.ui;
         var starNameInput = ui.variableStarElem;
         var fovInput = ui.fovElem;
         var magInput = ui.limittingMagnitudeElem;
+        
+        ui.orientationElem.onchange = this.onChartOrientationChanged.notify;
+
 
         InputValidator.AddNumberRangeValidator (magInput, 0, 20);
         InputValidator.AddNumberRangeValidator (fovInput, 0, 1200);
@@ -76,7 +91,8 @@ var ChartController = {
             }
         }
         
-        ui.updateChartButton.onclick = function () {            
+        ui.updateChartButton.onclick = this.onUpdateChartClicked.notify;
+        this.onUpdateChartClicked.add ( function () { // keep it private ...
             if (!InputValidator.validate (starNameInput))
                 return;
             
@@ -84,8 +100,7 @@ var ChartController = {
         	  var limittingMag = magInput.value;
         	  var starName = starNameInput.value;
             if (!PhotmetryTable.AAVSO.IsChartID(starName)) {
-                var c = {};
-        		    c.elemToMoveTo = magInput;
+                var c = { "elemToMoveTo" : magInput };
                 if (!InputValidator.validate_internal (c, function() { if ("" == limittingMag) return "Value required"; return ""; } ) ||
                     !InputValidator.validate(magInput))
                     return;
@@ -94,37 +109,20 @@ var ChartController = {
                     !InputValidator.validate(fovInput))
                     return;
             }
-            
-        	  Log.message ("Loading photometry table ...");
-        	  setTimeout (
-                function(){
-                    if (PhotmetryTable.AAVSO.IsChartID(starName))
-                        PhotmetryTable.initFromChartID (starName);
-                    else
-                        PhotmetryTable.initFromStarName (starName, fov, limittingMag);
-                }, 1);
-				
-            if (ChartController.onUpdateChartPressed) 
-				ChartController.onUpdateChartPressed();
-        }
-        
-        ui.orientationElem.onchange = function () {
-    	     SVGChart.chartOrientation = this.value;
-    	     SVGChart.drawBorder ();
-    	     SVGChart.redrawStars();
-    	     SVGChart.drawCenterMark();
-    	     SVGChart.redrawLabels();	
-        }
-    },
-    
-    // this is a callback    
-    onUpdateChartPressed : function () {
-        DataShareSave.update();
+            SVGChart.clear();
+        	Log.message ("Loading photometry table ...");
+        	setTimeout ( function(){
+                            if (PhotmetryTable.AAVSO.IsChartID(starName))
+                                PhotmetryTable.AAVSO.initFromChartID (starName);
+                            else
+                                PhotmetryTable.AAVSO.initFromStarName (starName, fov, limittingMag);
+                        }, 1);
+        });
+        this.onUpdateChartClicked.add (DataShareSave.update);
     }
 };
 
 try {
-if (Initialization)
     Initialization.init();
 } catch (err) {
 }

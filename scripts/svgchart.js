@@ -18,6 +18,14 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see https://www.gnu.org/licenses/agpl.html
 */
 
+/*
+    Mostly view, so it needs to subscribe to events launched by the model side:
+        - the photometry table, to redraw labels
+        - the other stars, from HIPPARCOS
+
+    It exposes the "on star label clicked" event, for others to subscribe to it.
+*/
+
 var SVGChart = {
     size : 500,
     focalLength : 0,
@@ -35,30 +43,48 @@ var SVGChart = {
 	borderDOM : null,
 	centerMarkDOM : null,
     
-    init : function (ra, dec, _fov_arcmin, _mag) {
-        // clear it up first
-        while (SVGChart.image.hasChildNodes())
-            SVGChart.image.removeChild (SVGChart.image.firstChild);
-
-		// clean up any left over references
-		SVGChart.starsDOM = null;
-		SVGChart.labelsDOM = null;
-		SVGChart.borderDOM = null;
-		SVGChart.centerMarkDOM = null;
-	
+    setFrameData : function (ra, dec, _fov_arcmin, _mag) {
+        this.clear();
         // save the data
-        SVGChart.ra = ra;
-        SVGChart.dec = dec;
-        SVGChart.fov = _fov_arcmin / 60.0;
-        SVGChart.limittingMag = _mag;
+        this.ra = ra;
+        this.dec = dec;
+        this.fov = _fov_arcmin / 60.0;
+        this.limittingMag = _mag;
         // knowing the size, now compute the focal length
         // w/2 = FL * tan (fov/2) => FL = w / 2 * tan (fov/2)
-        SVGChart.focalLength = SVGChart.size / (2 * Math.tan (SVGChart.fov * Math.PI / 360));
+        this.focalLength = this.size / (2 * Math.tan (this.fov * Math.PI / 360));
     },
     
-    updateStars : function (_stars) {
-        SVGChart.stars = _stars;
-        SVGChart.stars.sort(function(a, b) { 
+    clear : function () {
+        // clear it up first
+        while (this.image.hasChildNodes())
+            this.image.removeChild (this.image.firstChild);
+
+		// clean up any left over references
+		this.starsDOM = null;
+		this.labelsDOM = null;
+		this.borderDOM = null;
+		this.centerMarkDOM = null;
+        this.drawBorder();
+    },
+	
+	starLabelClick : {
+		handlers : [],
+		
+		notify : function (selectedStar) {
+			for (var i = 0; i < this.handlers.length; i++){
+				this.handlers[i](selectedStar);
+			}
+		},
+		// anybody can sign up to be notified.
+		add : function (handlerToAdd) {
+			this.handlers.push (handlerToAdd);
+		}
+	},
+    
+    setStars : function (_stars) {
+        this.stars = _stars;
+        this.stars.sort(function(a, b) { 
                 if (a.mag < b.mag)
                     return -1;
                 if (b.mag < a.mag)
@@ -66,30 +92,29 @@ var SVGChart = {
                 return 0;
             } 
         );
-        SVGChart.redrawStars();
     },
 	
 	redrawStars : function () {
-		if (SVGChart.starsDOM)
-			SVGChart.image.removeChild (SVGChart.starsDOM);
-        SVGChart.starsDOM = SVGChart.image.ownerDocument.createElementNS (SVGChart.namespace, "g");
-        SVGChart.image.appendChild (SVGChart.starsDOM);
+		if (this.starsDOM)
+			this.image.removeChild (this.starsDOM);
+        this.starsDOM = this.image.ownerDocument.createElementNS (this.namespace, "g");
+        this.image.appendChild (this.starsDOM);
 		
         var i = 0;
-        for (i = 0; i < SVGChart.stars.length; i++) {
-            SVGChart.drawStar (SVGChart.starsDOM, SVGChart.stars[i]);
+        for (i = 0; i < this.stars.length; i++) {
+            this.drawStar (this.starsDOM, this.stars[i]);
         }
 	},
     
     drawStar : function (_elementToDrawTo, _star) {
-		if (!SVGChart.isStarVisible(_star))
+		if (!this.isStarVisible(_star))
 			return;
         // compute the coordinates, in pixels
-        var coords = SVGChart.radec2xy (_star.ra, _star.dec);
+        var coords = this.radec2xy (_star.ra, _star.dec);
         // compute the radius
-        var radius = 1.1 * Math.pow (1.35, SVGChart.limittingMag - _star.mag);
+        var radius = 1.1 * Math.pow (1.35, this.limittingMag - _star.mag);
         // create a circle element, and that position, using that radius, filled black.
-        var circleElem = _elementToDrawTo.ownerDocument.createElementNS (SVGChart.namespace, "circle");
+        var circleElem = _elementToDrawTo.ownerDocument.createElementNS (this.namespace, "circle");
         _elementToDrawTo.appendChild (circleElem);
         circleElem.setAttribute ("cx", coords[0]);
         circleElem.setAttribute ("cy", coords [1]);
@@ -99,34 +124,29 @@ var SVGChart = {
         circleElem.setAttribute ("stroke-width", 1);
     },
     
-    updateComparisonLabels : function (_stars) {
-		SVGChart.labels = _stars;
-		SVGChart.redrawLabels();
-	},
-    
 	redrawLabels : function () {
-		if (SVGChart.labelsDOM)
-			SVGChart.image.removeChild (SVGChart.labelsDOM);
-        SVGChart.labelsDOM = SVGChart.image.ownerDocument.createElementNS (SVGChart.namespace, "g");
-        SVGChart.image.appendChild (SVGChart.labelsDOM);		
+		if (this.labelsDOM)
+			this.image.removeChild (this.labelsDOM);
+        this.labelsDOM = this.image.ownerDocument.createElementNS (this.namespace, "g");
+        this.image.appendChild (this.labelsDOM);		
 
 		var i = 0;
-        for (i = 0; i < SVGChart.labels.length; i++) {
-            SVGChart.drawLabel (SVGChart.labelsDOM, SVGChart.labels[i]);
+        for (i = 0; i < this.labels.length; i++) {
+            this.drawLabel (this.labelsDOM, this.labels[i]);
         }
 	},
 	
     drawLabel : function (_elementToDrawTo, _star) {
-		if (!SVGChart.isStarVisible(_star))
+		if (!this.isStarVisible(_star))
 			return;
 		
         // compute coordinates, in pixels
-		var coords = SVGChart.radec2xy (_star.ra, _star.dec);
-		var radius = 1 * Math.pow (1.35, SVGChart.limittingMag - _star.mag);
+		var coords = this.radec2xy (_star.ra, _star.dec);
+		var radius = 1 * Math.pow (1.35, this.limittingMag - _star.mag);
 		coords[0] += radius + 1;
 		coords[1] += radius + 5;
 		
-		var textDOM = _elementToDrawTo.ownerDocument.createElementNS (SVGChart.namespace, "text");
+		var textDOM = _elementToDrawTo.ownerDocument.createElementNS (this.namespace, "text");
 		_elementToDrawTo.appendChild(textDOM);
 		textDOM.setAttribute("x", coords[0]);
 		textDOM.setAttribute("y", coords[1]);
@@ -137,53 +157,48 @@ var SVGChart = {
         // set the cursor as pointer (style wise)
 		textDOM.style["cursor"] = "pointer";		
         // associate a function for the onclick event
-		textDOM.onclick = (function (_s) {
-			var comparisonStar = _s;
-			return function () {
-				StarsSelection.setSelectedStar (comparisonStar);
-			}
-		})(_star);
+		textDOM.onclick = function () { SVGChart.starLabelClick.notify (_star); }		
 	},
 	
 	isStarVisible : function (_star) {
-		var halfFov = SVGChart.fov / 2;
-		return (_star.mag <= SVGChart.limittingMag) &&
-			   (_star.ra >= SVGChart.ra - halfFov) && 
-			   (_star.ra <= SVGChart.ra + halfFov) && 
-			   (_star.dec >= SVGChart.dec - halfFov) && 
-			   (_star.dec <= SVGChart.dec + halfFov); 
+		var halfFov = this.fov / 2;
+		return (_star.mag <= this.limittingMag) &&
+			   (_star.ra >= this.ra - halfFov) && 
+			   (_star.ra <= this.ra + halfFov) && 
+			   (_star.dec >= this.dec - halfFov) && 
+			   (_star.dec <= this.dec + halfFov); 
 	},
     
     radec2xy : function (ra, dec) {
-        var dra_rad = (ra - SVGChart.ra) * Math.PI / 180;
-        var ddec_rad = (dec - SVGChart.dec) * Math.PI / 180;
+        var dra_rad = (ra - this.ra) * Math.PI / 180;
+        var ddec_rad = (dec - this.dec) * Math.PI / 180;
         
         var signX = 1; // west to the right
-        if (SVGChart.chartOrientation == 1 || SVGChart.chartOrientation == 2)
+        if (this.chartOrientation == 1 || this.chartOrientation == 2)
             signX = -1; // east to the right
         
         var signY = 1; // north up
-        if (SVGChart.chartOrientation == 1 || SVGChart.chartOrientation == 3)
+        if (this.chartOrientation == 1 || this.chartOrientation == 3)
             signY = -1; // south up
 
-        return [SVGChart.size / 2 - signX * SVGChart.focalLength * Math.tan (dra_rad), 
-                SVGChart.size / 2 - signY * SVGChart.focalLength * Math.tan (ddec_rad)];
+        return [this.size / 2 - signX * this.focalLength * Math.tan (dra_rad), 
+                this.size / 2 - signY * this.focalLength * Math.tan (ddec_rad)];
     },
 	
 	drawCenterMark : function () {
-		if (SVGChart.centerMarkDOM)
-			SVGChart.image.removeChild (SVGChart.centerMarkDOM);
-        SVGChart.centerMarkDOM = SVGChart.image.ownerDocument.createElementNS (SVGChart.namespace, "g");
-        SVGChart.image.appendChild (SVGChart.centerMarkDOM);	
+		if (this.centerMarkDOM)
+			this.image.removeChild (this.centerMarkDOM);
+        this.centerMarkDOM = this.image.ownerDocument.createElementNS (this.namespace, "g");
+        this.image.appendChild (this.centerMarkDOM);	
 
 		var center = SVGChart.size / 2;
 		var offset = 7;
 		
-        SVGChart.Draw.line (SVGChart.centerMarkDOM, center - offset, center, center + offset, center, "black", 1);
-        SVGChart.Draw.line (SVGChart.centerMarkDOM, center, center - offset, center, center + offset, "black", 1);
+        this.Draw.line (this.centerMarkDOM, center - offset, center, center + offset, center, "black", 1);
+        this.Draw.line (this.centerMarkDOM, center, center - offset, center, center + offset, "black", 1);
 		
-		var circleElem = SVGChart.centerMarkDOM.ownerDocument.createElementNS (SVGChart.namespace, "circle");
-        SVGChart.centerMarkDOM.appendChild (circleElem);
+		var circleElem = this.centerMarkDOM.ownerDocument.createElementNS (this.namespace, "circle");
+        this.centerMarkDOM.appendChild (circleElem);
         circleElem.setAttribute ("cx", center);
         circleElem.setAttribute ("cy", center);
         circleElem.setAttribute ("r", 3);
@@ -194,50 +209,50 @@ var SVGChart = {
 	
 	drawBorder : function () {
 		
-		if (SVGChart.borderDOM)
-			SVGChart.image.removeChild (SVGChart.borderDOM);
-		SVGChart.borderDOM = SVGChart.image.ownerDocument.createElementNS (SVGChart.namespace, "g");
-		SVGChart.image.appendChild (SVGChart.borderDOM);
+		if (this.borderDOM)
+			this.image.removeChild (this.borderDOM);
+		this.borderDOM = this.image.ownerDocument.createElementNS (this.namespace, "g");
+		this.image.appendChild (this.borderDOM);
 
 		var margin = 1;
         var lineLen = SVGChart.size - margin;
-        SVGChart.Draw.line(SVGChart.borderDOM, margin, margin, lineLen, margin, "black", margin);
-        SVGChart.Draw.line(SVGChart.borderDOM, margin, margin, margin, lineLen, "black", margin);
-        SVGChart.Draw.line(SVGChart.borderDOM, lineLen, lineLen, lineLen, margin, "black", margin);
-        SVGChart.Draw.line(SVGChart.borderDOM, lineLen, lineLen, margin, lineLen, "black", margin);
+        this.Draw.line(this.borderDOM, margin, margin, lineLen, margin, "black", margin);
+        this.Draw.line(this.borderDOM, margin, margin, margin, lineLen, "black", margin);
+        this.Draw.line(this.borderDOM, lineLen, lineLen, lineLen, margin, "black", margin);
+        this.Draw.line(this.borderDOM, lineLen, lineLen, margin, lineLen, "black", margin);
                 
 		// now, draw NEWS ...
-        var half = SVGChart.size/2;
+        var half = this.size/2;
 		var textSize = 10;
 		var x = half;
 		var y = 0; // north up
-		if (SVGChart.chartOrientation == 1 || SVGChart.chartOrientation == 3)
-			y = SVGChart.size - textSize; // south up
-        SVGChart.Draw.coordinateMarker (SVGChart.borderDOM, "N", x, y, textSize);
+		if (this.chartOrientation == 1 || this.chartOrientation == 3)
+			y = this.size - textSize; // south up
+        this.Draw.coordinateMarker (this.borderDOM, "N", x, y, textSize);
 		
 		y = half;
 		x = 0; // west to the right
-		if (SVGChart.chartOrientation == 1 || SVGChart.chartOrientation == 2)
-			x = SVGChart.size - textSize; // east to the right
-        SVGChart.Draw.coordinateMarker (SVGChart.borderDOM, "E", x, y, textSize);
+		if (this.chartOrientation == 1 || this.chartOrientation == 2)
+			x = this.size - textSize; // east to the right
+        this.Draw.coordinateMarker (this.borderDOM, "E", x, y, textSize);
 
-		x = SVGChart.size - textSize; //west to the right
-		if (SVGChart.chartOrientation == 1 || SVGChart.chartOrientation == 2)
+		x = this.size - textSize; //west to the right
+		if (this.chartOrientation == 1 || this.chartOrientation == 2)
 			x = 0; // east to the right
-        SVGChart.Draw.coordinateMarker (SVGChart.borderDOM, "W", x, y, textSize);
+        this.Draw.coordinateMarker (this.borderDOM, "W", x, y, textSize);
 
 		x = half;
-		y = SVGChart.size - textSize; // north up
-		if (SVGChart.chartOrientation == 1 || SVGChart.chartOrientation == 3)
+		y = this.size - textSize; // north up
+		if (this.chartOrientation == 1 || this.chartOrientation == 3)
 			y = 0; // south up
-        SVGChart.Draw.coordinateMarker (SVGChart.borderDOM, "S", x, y, textSize);
+        this.Draw.coordinateMarker (this.borderDOM, "S", x, y, textSize);
 	},
 	
     redraw : function () {
-        SVGChart.redrawStars();
-        SVGChart.drawCenterMark();
-    	SVGChart.redrawLabels ();
-        SVGChart.drawBorder ();
+        this.redrawStars();
+        this.drawCenterMark();
+    	this.redrawLabels ();
+        this.drawBorder ();
     },
     
     Draw : { 
@@ -269,11 +284,11 @@ var SVGChart = {
             txt.style["fontSize"] = (size - 1) + "px";
             txt.style["fontFamily"] = "Arial";
         }
+        
     }
 };
 
 try {
-if (Initialization)
     Initialization.init();
 } catch (err) {
 }

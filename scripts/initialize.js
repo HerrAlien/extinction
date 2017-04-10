@@ -47,35 +47,14 @@ var AppVersion = {
     }
 };
 
-var LocationUI = {
-    dateTime : document.getElementById("dateTime"),
-    latitude  : document.getElementById("lat"),
-    longitude : document.getElementById("long"),
-      
-      init : function () {
-        var lat = LocationUI.latitude;
-        var long = LocationUI.longitude;
-        LocationUI.dateTime.oninput = CorrectorUIManager.onLocationOrTimeChanged;
-
-        InputValidator.AddNumberRangeValidator (lat, -90, 90);
-        InputValidator.AddNumberRangeValidator (long, -180, 180);
-        lat.onfocus = function () { InputValidator.validate (this); }
-        long.onfocus = function () { InputValidator.validate (this); }
-        lat.oninput = function () { this.onfocus(); CorrectorUIManager.onLocationOrTimeChanged(); }
-        long.oninput = function () { this.onfocus(); CorrectorUIManager.onLocationOrTimeChanged(); }
-        lat.onmouseenter = lat.onfocus;
-        long.onmouseenter = long.onfocus;
-    }
-};
-
 var Initialization = {
 
     doneInit : false,
     url : false,  
     
     setURL : function (_u) {
-        Initialization.url = _u;
-        DataShareLoader.load(Initialization.url);
+        this.url = _u;
+        DataShareLoader.load(this.url);
     },
     
     sesionData : {
@@ -90,74 +69,80 @@ var Initialization = {
     },
 
     initFromSessionData : function() {
-        var Photometry = Initialization.sesionData.Photometry;
-        PhotmetryTable.frame = Photometry.frame;
-        PhotmetryTable.variableStar = Photometry.variableStar;
-        PhotmetryTable.comparisonStars = Photometry.comparisonStars;
-        Hipparcos.chart = Initialization.sesionData.Hipparcos.chart;
+		PhotmetryTable.initFromJSON (this.sesionData.Photometry);
+        Hipparcos.chart = this.sesionData.Hipparcos.chart;
         
         var starNameInput = ChartController.ui.variableStarElem;
         starNameInput.value = PhotmetryTable.frame.chartID;
         starNameInput.oninput();
         
-        SVGChart.init (PhotmetryTable.variableStar.ra, PhotmetryTable.variableStar.dec, PhotmetryTable.frame.fov, PhotmetryTable.frame.maglimit);
+        SVGChart.setFrameData (PhotmetryTable.variableStar.ra, PhotmetryTable.variableStar.dec, PhotmetryTable.frame.fov, PhotmetryTable.frame.maglimit);
+        SVGChart.labels = PhotmetryTable.comparisonStars;
         SVGChart.drawBorder ();
-        Hipparcos.onInit();
+        Hipparcos.onStarsRetrieved.notify();
         EstimationCorrector.init();
-        CorrectorUIManager.onLocationOrTimeChanged();
+        Results.onLocationOrTimeChanged();
     },
     
   init: function () {
       try {
       if (!ChartController || !StarsSelection || !CorrectorUIManager || !SVGChart || 
           !PhotmetryTable || !InputValidator || !Hipparcos || !DataShareLoader || 
-          !DataShareSave || Initialization.doneInit)
+		  !Notifications || !DataShareSave || !Results || !Location ||
+		  Initialization.doneInit)
         return;
-      } catch (err) {
+
+	} catch (err) {
         return;
     }
-      
-    ChartController.init();
-    StarsSelection.init();
-    CorrectorUIManager.init();
-    DataShareSave.init();
 
-    PhotmetryTable.onInit = function () {
+	PhotmetryTable.init();	
+	ChartController.init();
+	StarsSelection.init();
+	CorrectorUIManager.init();
+	DataShareSave.init();
+	Hipparcos.init();
+	Location.init();
+		
+    Location.onLocationUpdated.add (Results.onLocationOrTimeChanged);    
+        
+	// TODO: ensure this happens only once
+    PhotmetryTable.onTableRetrieved.add(function () {
     	setTimeout (function() {
             var coords = [PhotmetryTable.variableStar.ra, PhotmetryTable.variableStar.dec];
             var frame = PhotmetryTable.frame;   
             EstimationCorrector.init();
             Log.message ("Loading stars from Tycho catalogue ...");
             setTimeout (function() {
-                    Hipparcos.init(coords[0], coords[1], frame.fov, frame.maglimit);
-                    SVGChart.init (coords[0], coords[1], frame.fov, frame.maglimit);
-                    SVGChart.drawBorder ();
-                    CorrectorUIManager.onLocationOrTimeChanged();
+                    Hipparcos.setFrameData(coords[0], coords[1], frame.fov, frame.maglimit);
+                    SVGChart.setFrameData (coords[0], coords[1], frame.fov, frame.maglimit);
+                    // TODO also set the comparison labels here
+                    SVGChart.labels = PhotmetryTable.comparisonStars;
+                    Results.onLocationOrTimeChanged();
                 }, 1);
 			
 			// this sets whatever data we have from the URL.
 			DataShareLoader.setUserInputData();
         }, 1);
-    }
+    });
+    
+    Hipparcos.onStarsRetrieved.add (function () {
+        SVGChart.setStars (Hipparcos.chart.stars);  
+        SVGChart.redraw();
+        Log.message ("Done! " + PhotmetryTable.variableStar.name + ", lim. mag.=" + PhotmetryTable.frame.maglimit + ", FOV[']=" + PhotmetryTable.frame.fov + ";\nchart id=" + PhotmetryTable.frame.chartID);
+    });
 
     var extinctionCoeffInput = document.getElementById("K");
     InputValidator.AddNumberMinimumValidator (extinctionCoeffInput, 0);
 
     extinctionCoeffInput.onfocus =  function () { InputValidator.validate (this); }
     extinctionCoeffInput.onmouseenter =  extinctionCoeffInput.onfocus;
-    extinctionCoeffInput.oninput = function () { this.onfocus(); CorrectorUIManager.onLocationOrTimeChanged(); }
+    extinctionCoeffInput.oninput = function () { this.onfocus(); Results.onLocationOrTimeChanged(); }
 
     document.documentElement.onscroll = InputValidator.UpdateErrorLabelPosition;
     window.onresize = InputValidator.UpdateErrorLabelPosition;
-
-    Hipparcos.onInit = function () {
-    	Log.message ("Done!");
-        SVGChart.updateStars (Hipparcos.chart.stars);   	
-    	SVGChart.drawCenterMark();
-    	SVGChart.updateComparisonLabels (PhotmetryTable.comparisonStars);
-    	Log.message (PhotmetryTable.variableStar.name + ", lim. mag.=" + PhotmetryTable.frame.maglimit + ", FOV[']=" + PhotmetryTable.frame.fov + ";\nchart id=" + PhotmetryTable.frame.chartID);
-    }
     
+
     document.body.onclick = function (){
         if (StarsSelection.selectionJustActivated) 
             StarsSelection.selectionJustActivated = false;
@@ -170,10 +155,12 @@ var Initialization = {
     }
         
     AppVersion.updateVersionString();
-    LocationUI.init();
-    Initialization.initFromSessionData();
-    Initialization.doneInit = true;
+    this.initFromSessionData();
+    this.doneInit = true;
   }
 };
 
-Initialization.init();
+try {
+    Initialization.init();
+} catch (err) {
+}
