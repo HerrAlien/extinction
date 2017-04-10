@@ -1,7 +1,7 @@
 {
     "name" : "Extinction-o-Meter",
 	"description": " utility that makes computation of atmospheric extinction easier",
-    "version": "1.2.9",
+    "version": "1.2.10",
 	"type": "privileged",
 	"default_locale": "en",
     "icons" : { 
