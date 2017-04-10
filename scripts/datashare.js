@@ -18,69 +18,72 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see https://www.gnu.org/licenses/agpl.html
 */
 
+// alternate model data, to be parsed and loaded.
 var DataShareLoader = {
     
     url : false,
     urlDataObj : false,
     
     load : function (fromURL) {
-        DataShareLoader.url = fromURL;
-        DataShareLoader.initFromMembers();
+        this.url = fromURL;
+        this.initFromMembers();
 		CorrectorUIManager.onUserInput();
     },
     
     initFromMembers : function () {
-		DataShareLoader.urlDataObj = false;
-        if (!DataShareLoader.url)
+		this.urlDataObj = false;
+        if (!this.url)
             return;
         if (!Initialization.doneInit) {
             setTimeout (function () {DataShareLoader.initFromMembers(); }, 1);
             return;
         }
         
-        DataShareLoader.initDataObj();
-		if (DataShareLoader.urlDataObj)
-			DataShareLoader.loadFromObj();
+        this.initDataObj();
+		if (this.urlDataObj)
+			this.loadFromObj();
     },
     
     initDataObj : function () {
-        var hashes = DataShareLoader.url.split ('#');
+        var hashes = this.url.split ('#');
         if (hashes.length != 2)
             return;
-        DataShareLoader.urlDataObj = JSON.parse (decodeURIComponent(hashes[1]));
+        this.urlDataObj = JSON.parse (decodeURIComponent(hashes[1]));
     },
     
     loadFromObj : function () {
         Log.message ("Loading from URL ...");
-		if (DataShareLoader.urlDataObj.lat)
-			LocationUI.latitude.value = DataShareLoader.urlDataObj.lat;
+		if (this.urlDataObj.lat)
+			Location.latitude = Computations.evalNum(this.urlDataObj.lat);
 		
-		if (DataShareLoader.urlDataObj.long)
-			LocationUI.longitude.value = DataShareLoader.urlDataObj.long;
+		if (this.urlDataObj.long)
+			Location.longitude = Computations.evalNum(this.urlDataObj.long);
 		
-		if (DataShareLoader.urlDataObj.dateTime)
-			LocationUI.dateTime.value = DataShareLoader.urlDataObj.dateTime;
-        // TODO: user input update
-        if (DataShareLoader.urlDataObj.id)
-			ChartController.ui.variableStarElem.value = DataShareLoader.urlDataObj.id;
+		if (this.urlDataObj.dateTime)
+			Location.enteredTime = this.urlDataObj.dateTime;
+        
+		Location.Controls.update();	
+		// TODO: user input update
+        if (this.urlDataObj.id)
+			ChartController.ui.variableStarElem.value = this.urlDataObj.id;
 		
-		if (DataShareLoader.urlDataObj.fov)
-				ChartController.ui.fovElem.value = DataShareLoader.urlDataObj.fov;
+		if (this.urlDataObj.fov)
+				ChartController.ui.fovElem.value = this.urlDataObj.fov;
 			
-		if (DataShareLoader.urlDataObj.maglim)
-				ChartController.ui.limittingMagnitudeElem.value = DataShareLoader.urlDataObj.maglim;
+		if (this.urlDataObj.maglim)
+				ChartController.ui.limittingMagnitudeElem.value = this.urlDataObj.maglim;
         
         // extinction value
-		document.getElementById ("K").value = DataShareLoader.urlDataObj.K;
+		document.getElementById ("K").value = this.urlDataObj.K;
         // extinction value vs. determined
-		CorrectorUIManager.useValueForK.checked = DataShareLoader.urlDataObj.useValueForK;
+		CorrectorUIManager.useValueForK.checked = this.urlDataObj.useValueForK;
         CorrectorUIManager.computeK.checked = !CorrectorUIManager.useValueForK.checked;
 
         ChartController.ui.updateChartButton.onclick();
     },
     
     setUserInputData : function () {
-        var urlDataObj = DataShareLoader.urlDataObj;
+        var urlDataObj = this.urlDataObj;
 		if (!urlDataObj)
 			return;
 		
@@ -89,17 +92,17 @@ var DataShareLoader = {
         // brightness estimates
 		// ... clear the list up first?
         var i = 0;
-        for (i = 0; i < EstimationCorrector.pairedComparisons.length && i < urlDataObj.brightComps.length; i++)
-            DataShareLoader.copyComparisonData (EstimationCorrector.pairedComparisons[i], urlDataObj.brightComps [i]);
+        for (i = 0; i < EstimationCorrector.Model.pairedComparisons.length && i < urlDataObj.brightComps.length; i++)
+            this.copyComparisonData (EstimationCorrector.Model.pairedComparisons[i], urlDataObj.brightComps [i]);
             
         // add remaining comparisons
         for (; i < urlDataObj.brightComps.length; i++) {
             var addedObject = EstimationCorrector.addNewComparison();
             // set values via the addedObject.comp
-            DataShareLoader.copyComparisonData (addedObject.comp, urlDataObj.brightComps [i]);
+            this.copyComparisonData (addedObject.comp, urlDataObj.brightComps [i]);
         }
         
-        EstimationCorrector.pairedComparisons.length = urlDataObj.brightComps.length;
+        EstimationCorrector.Model.pairedComparisons.length = urlDataObj.brightComps.length;
         // after setting all, call update on EstimationCorrector
         EstimationCorrector.update();
         
@@ -137,8 +140,8 @@ var DataShareLoader = {
         }
 		ExtinctionCoefficient.comparisons.length = urlDataObj["ext"].length;
         // clear up member data
-        DataShareLoader.url = false;
-        DataShareLoader.urlDataObj = false;
+        this.url = false;
+        this.urlDataObj = false;
         // finally, user input update.
     },
     
@@ -210,18 +213,19 @@ var DataShareLoader = {
 
 };
 
+// Other view of the model side, more easily to share and load.
 var DataShareSave = {
 	
 	urlinput : document.getElementById("datashareurl"),
     baseURL : "http://extinction-o-meter.appspot.com/",
 
     init: function () {
-        if (!DataShareSave.urlinput)
+        if (!this.urlinput)
             return;
         
-        DataShareSave.urlinput.onclick = function () { DataShareSave.urlinput.select(); }
+        this.urlinput.onclick = function () { DataShareSave.urlinput.select(); }
         
-        DataShareSave.update();
+        this.update();
     },
 	
 	ArgelanderExtComp2JSON : function (comp) {
@@ -242,24 +246,26 @@ var DataShareSave = {
 		return obj;
 	},
     
+	// this is basically a handler
+	// that should be registered with a bunch of notifications.
     update: function () {
-        if (!DataShareSave.urlinput)
+        if (!this.urlinput)
             return;
         
         var dataObj = {};
         // fetch the data
-		dataObj["lat"] = LocationUI.latitude.value;
-		dataObj["long"] = LocationUI.longitude.value;
-		dataObj["dateTime"] = LocationUI.dateTime.value;
+		dataObj["lat"] = Location.latitude;
+		dataObj["long"] = Location.longitude;
+		dataObj["dateTime"] = Location.enteredTime;
         // always, always save data here from the photometry table.
 		dataObj["id"] = PhotmetryTable.frame.chartID;
 		dataObj["fov"] = PhotmetryTable.frame.fov;
 		dataObj["maglim"] = PhotmetryTable.frame.maglimit;
 	    dataObj["brightComps"] = [];
 		var i = 0;
-		for (i = 0; i < EstimationCorrector.pairedComparisons.length; i++) {
+		for (i = 0; i < EstimationCorrector.Model.pairedComparisons.length; i++) {
 			var objToAdd = {};
-			var comparisonToSave = EstimationCorrector.pairedComparisons[i];
+			var comparisonToSave = EstimationCorrector.Model.pairedComparisons[i];
 			// index of the bright star in the PhotmetryTable.comparisonStars
 			objToAdd["b"] = PhotmetryTable.comparisonStars.indexOf(comparisonToSave.first.bright());
 			objToAdd["b2v"] = comparisonToSave.first.value();
@@ -274,21 +280,20 @@ var DataShareSave = {
 		
 		dataObj["ext"] = [];
 		
-		var serializationFunc = DataShareSave.ArgelanderExtComp2JSON;
+		var serializationFunc = this.ArgelanderExtComp2JSON;
 		if (1 ==  CorrectorUIManager.selectedAlgorithm)
-			serializationFunc = DataShareSave.PairedExtComp2JSON;
+			serializationFunc = this.PairedExtComp2JSON;
 		
 		for (i = 0; i < ExtinctionCoefficient.comparisons.length; i++)
 			dataObj["ext"].push(serializationFunc(ExtinctionCoefficient.comparisons[i]));
 		
         // stringify it, and build the URL
-        var fullURL = DataShareSave.baseURL + "#" + JSON.stringify(dataObj);
-        DataShareSave.urlinput.value = fullURL;
+        var fullURL = this.baseURL + "#" + JSON.stringify(dataObj);
+        this.urlinput.value = fullURL;
     }
 };
 
 try {
-if (Initialization)
     Initialization.init();
 } catch (err) {
 }

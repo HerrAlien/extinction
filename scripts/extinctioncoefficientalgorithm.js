@@ -18,8 +18,12 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see https://www.gnu.org/licenses/agpl.html
 */
 
+/* model side logic, with some control elements */
+
 var ExtinctionCoefficient = {
 
+// this is the model side.
+// keeps all comparisons that are used to compute K
     comparisons : [],
     
     validValuesRange : [0.0 , 10.0],
@@ -27,44 +31,30 @@ var ExtinctionCoefficient = {
     algorithms : ["Argelander", "Paired"],
     currentAlgorithmID : 0,
 
-    updateAirmass : function (_lat, _long, _time){
-        
-        var lst = Computations.LSTFromTimeString (_time, _long);
-        
+    updateAirmass : function (lat, long, lst){
         var compIndex = 0;
-        var comps = ExtinctionCoefficient.comparisons;
+        var comps = this.comparisons;
         for (compIndex = 0; compIndex < comps.length; compIndex++) {
-            ExtinctionCoefficient.updateAirmassForComparison(comps[compIndex], _lat, _long, lst);
+            this.updateAirmassForComparison(comps[compIndex], lat, long, lst);
         }
     },
     
-    updateAirmassForComparison : function (comp, _lat, _long, lst) {
+    updateAirmassForComparison : function (comp, lat, long, lst) {
         if (!comp)
             return;
         var stars = comp.getStars();
         var starIndex = 0;
         for (starIndex = 0; starIndex < stars.length; starIndex++) {
-            ExtinctionCoefficient.updateAirmassForStar (stars[starIndex], _lat, _long, lst);
+            stars[starIndex].updateAirmass(lat, long, lst);
         }
     },
     
-    updateAirmassForStar : function (star,  _lat, _long, lst) {
-        if (!star)
-            return;
-        // for each star, compute altitude
-        var alt = Computations.Alt (star.ra, star.dec, lst, _lat, _long);
-        // then airmass
-        if (isNaN (alt))
-            return;
-        star.airmass = Computations.Airmass (alt);
-    },
-    
     rebuildValues : function () {
-        if (ExtinctionCoefficient.currentAlgorithmID < 0 || ExtinctionCoefficient.currentAlgorithmID > ExtinctionCoefficient.algorithms.length)
+        if (this.currentAlgorithmID < 0 || this.currentAlgorithmID > this.algorithms.length)
             throw "invalid algorithm selected";
         
-        var algo = ExtinctionCoefficient.algorithms[ExtinctionCoefficient.currentAlgorithmID];
-        var values_beforeFilter = ExtinctionCoefficient[algo].getKValues();
+        var algo = this.algorithms[this.currentAlgorithmID];
+        var values_beforeFilter = this[algo].getKValues();
         
         if (values_beforeFilter.length == 0)
             return 0;
@@ -72,8 +62,8 @@ var ExtinctionCoefficient = {
         var i = 0;
         var usedValues = [];
         for (i = 0; i < values_beforeFilter.length; i++) {
-            if (values_beforeFilter[i] > ExtinctionCoefficient.validValuesRange [0] && 
-                values_beforeFilter[i] < ExtinctionCoefficient.validValuesRange [1]) {
+            if (values_beforeFilter[i] > this.validValuesRange [0] && 
+                values_beforeFilter[i] < this.validValuesRange [1]) {
                 usedValues.push (values_beforeFilter[i]);
             }
         }
@@ -89,10 +79,10 @@ var ExtinctionCoefficient = {
     getkValue : function (firstSingleComparison, secondSingleComparison) {
         
         if (firstSingleComparison.value() == 0)
-            return ExtinctionCoefficient.getkValueFromSingleComparison (firstSingleComparison);
+            return this.getkValueFromSingleComparison (firstSingleComparison);
         
         if (secondSingleComparison.value() == 0) 
-            return ExtinctionCoefficient.getkValueFromSingleComparison (secondSingleComparison);
+            return this.getkValueFromSingleComparison (secondSingleComparison);
         
         var a = firstSingleComparison.value() * (secondSingleComparison.bright().mag - secondSingleComparison.dim().mag);
         var b = secondSingleComparison.value() * (firstSingleComparison.bright().mag - firstSingleComparison.dim().mag);
@@ -104,7 +94,7 @@ var ExtinctionCoefficient = {
     },
     
     getValidComparisons : function () {
-        var initial_comps = ExtinctionCoefficient.comparisons; // avoid long names
+        var initial_comps = this.comparisons; // avoid long names
         var comps = [];
             
         var i = 0;
@@ -115,26 +105,39 @@ var ExtinctionCoefficient = {
         return comps;
     },
 
+    /* mostly control side, but has view elements */
     SingleComparison : function (brighterStarSelector, degreesEditor, dimmerStarSelector) {
         return (function () {
             var b = brighterStarSelector;
             var deg = degreesEditor;
             var d = dimmerStarSelector;
+			var compChanged = Notifications.NewNoParameter();
+			compChanged.add(CorrectorUIManager.onUserInput);
+
             InputValidator.AddNumberMinimumValidator (deg, 0);
             deg.onfocus = function () { InputValidator.validate(this); }
-            deg.oninput = function () { this.onfocus(); CorrectorUIManager.onUserInput(); };
+            deg.oninput = function () { this.onfocus(); compChanged.notify(); };
             deg.onmuseenter = deg.onfocus;
+			
+			StarsSelection.afterStarSelection.add (function (sel, star) {
+				if (sel == b || sel == d)
+					compChanged.notify();
+			});
             
             return {
+				//! returns the star selected as bright
                 "bright" : function () { return this.ui.brightSelector.get(); },
+				//! returns the number of brightness steps between the two stars
                 "value" : function () { return Computations.evalNum(this.ui.valueLineEdit.value); } ,
-                "dim" : function () { return this.ui.dimSelector.get(); },
+                //! returns the star selected as dim
+				"dim" : function () { return this.ui.dimSelector.get(); },
                 "ui" : {
                     "brightSelector" : b,
                     "valueLineEdit" : deg,
                     "dimSelector" : d
                 },
-                
+                //! returns true if the comparison is valid (all star selection fields set,
+				//! and all brightness steps filled in)
                 "isValid" : function () {
                     var valid = false;
                     try {
@@ -145,19 +148,23 @@ var ExtinctionCoefficient = {
                     }
                     return valid;
                 },
-                
+                //! Returns all stars used by this comparison
                 "getStars" : function () {
                     return [this.bright(), this.dim()];
                 },
-                
+ 				//! Does what says on the box - updates the UI               
                 "updateUI" : function () {
                     this.ui.brightSelector.update();
                     this.ui.dimSelector.update();
-                }
+                },
+				//! notification when either the selected stars
+				//! or the brightness between them is changed.
+				"onComparisonChanged" : compChanged
             };
         })();
     },
 
+    /* mostly control side, but has view elements */
     PairedComparison : function (brighterStarSelector, b2m_editor, midStarSelector, m2d_editor, dimStarSelector) {
         return (function () {
             var b = brighterStarSelector;
@@ -165,24 +172,41 @@ var ExtinctionCoefficient = {
             var m = midStarSelector;
             var deg2 = m2d_editor;
             var d = dimStarSelector;
+			
+			var _first = ExtinctionCoefficient.SingleComparison (b, deg1, m);
+			var _second = ExtinctionCoefficient.SingleComparison (m, deg2, d);
+			
+			var compChanged = Notifications.NewNoParameter();
+			_first.onComparisonChanged.add (compChanged.notify);
+			_second.onComparisonChanged.add (compChanged.notify);
             
             return {
-                "first" : ExtinctionCoefficient.SingleComparison (b, deg1, m),
-                "second" : ExtinctionCoefficient.SingleComparison (m, deg2, d),
+				//! the first simple comparison (bright to mid)
+                "first" : _first,
+				//! the second comparison - mid to dim stars
+                "second" : _second,
+				//! returns true if the comparison is valid (all star selection fields set,
+				//! and all brightness steps filled in)
                 "isValid" : function () {
                     return this.first.isValid() && this.second.isValid();
                 },
+				//! Returns all stars used by this comparison
                 "getStars" : function () {
                     return ((this.first.getStars()).concat(this.second.getStars()));
                 },
+				//! Does what says on the box - updates the UI
                 "updateUI" : function () {
                     this.first.updateUI();
                     this.second.updateUI();
-                }
+                },
+				//! notification when either the selected stars
+				//! or the brightness between them is changed.
+				"onComparisonChanged" : compChanged
             };
         })();
     },
     
+    // algo, model side
     Argelander : {
         /** used to get an array of K constants. Assumes all comparisons are of single type */
         getKValues : function () {
@@ -208,7 +232,8 @@ var ExtinctionCoefficient = {
             return kvals;
         }
     },
-
+    
+    // algo, model side
     Paired : {
         /** used to get an array of K constants. Assumes all comparisons are of paired type */
         getKValues : function () {
@@ -247,9 +272,10 @@ var ExtinctionCoefficient = {
         }
     },
     
+    // controller side.
     updateUI : function () {
         var i = 0;
-        var comps = ExtinctionCoefficient.comparisons; // avoid long names
+        var comps = this.comparisons; // avoid long names
         for (; i < comps.length; i++) {
             comps[i].updateUI();
             comps[i].updateRating();
@@ -260,7 +286,6 @@ var ExtinctionCoefficient = {
 };
 
 try {
-if (Initialization)
     Initialization.init();
 } catch (err) {
 }
