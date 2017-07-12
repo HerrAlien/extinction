@@ -95,6 +95,10 @@ if ($allowAccess)
             if ($proxyfor == 'casu-adc-tycho'){
                 $url = "http://casu.ast.cam.ac.uk/casu-cgi/wdb/hipp/tycho/query?" . $qstring;
             }
+            
+            if ($proxyfor == 'vizieR') {
+                $url = "http://tapvizier.u-strasbg.fr/TAPVizieR/tap/sync?". $qstring;
+            }
 
             $contextArr = [
               'http' => [
