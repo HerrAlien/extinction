@@ -21,26 +21,16 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl.html
 /* http://apm5.ast.cam.ac.uk/cgi-bin/wdb/hipp/tycho/query?max_rows_returned=1000&tab_dec=on&tab_ra=on&tab_box=on&tab_vtmag=on&box=10&ra=18.61578888888889&dec=-28.927722222222222&vtmag=<7
 */
 
+/*
+    Yet another model side class :)
+    Same requirements as for the photometry table.
+*/
+
 var Hipparcos = {
     config : {
         method: "GET",
-        url : "http://tapvizier.u-strasbg.fr/adql/",
-        /*! $1 - limiting magnitude
-            $2 - lower RA limit
-            $3 - upper RA limit
-            $4 - lower DEC limit
-            $5 - upper DEC limit
-        */
-        sql : {
-            __query__ : "SELECT \"RA(ICRS)\", \"DE(ICRS)\", \"Vmag\" FROM \"I/239/tyc_main\" WHERE \"Vmag\" < $1 and \"RA(ICRS)\" > $2 and \"RA(ICRS)\" < $3 and \"DE(ICRS)\" > $4 and \"DE(ICRS)\" < $5",
-            getQuery : function (vmag, ramin, ramax, decmin, decmax){
-                var q = this.__query__.replace ("$1", vmag);
-                q = q.replace ("$2", ramin);
-                q = q.replace ("$3", ramax);
-                q = q.replace ("$4", decmin);
-                return q.replace ("$5", decmaz);
-            }
-        }
+        url : "http://tapvizier.u-strasbg.fr/TAPVizieR/tap/sync",
+        qstring : "proxyfor=vizieR&request=doQuery&format=json&lang=adql&phase=RUN&query="
     },
     
     config_debug : {
@@ -53,39 +43,48 @@ var Hipparcos = {
         config : { "ra" : 0, "dec" : 0, "fov" : 0, "mag" : 0 }
     },
     
-    init : function (ra_deg, dec_deg, fov_arcmin, maglim) {
+    onStarsRetrieved : false,
+	
+	init : function () {
+		Hipparcos.onStarsRetrieved = Notifications.NewNoParameter();
+	},
+    
+    setFrameData : function (ra_deg, dec_deg, fov_arcmin, maglim) {
         var xmlHttpReq = new XMLHttpRequest({mozSystem: true});
-        Hipparcos.chart.config.ra = ra_deg;
-        Hipparcos.chart.config.dec = dec_deg;
-        Hipparcos.chart.config.fov = fov_arcmin;
-        Hipparcos.chart.config.mag = maglim;
-        xmlHttpReq.onreadystatechange = function() {
-            if(xmlHttpReq.readyState == 4) {
-                var doc =  xmlHttpReq.responseText;
-                if (doc == ""){
+
+        var pollURL = false;
+        var data = Hipparcos.config.qstring + encodeURI(Hipparcos.buildAdqlQuery(ra_deg, dec_deg, fov_arcmin, maglim));
+
+                
+        var jobHttpRequest = new XMLHttpRequest({mozSystem: true});
+        jobHttpRequest.onreadystatechange = function() {
+            if(jobHttpRequest.readyState == 2) {
+                pollURL = jobHttpRequest.getResponseHeader("Location");
+                //Hipparcos.poll (pollURL);
+            }
+            if(jobHttpRequest.readyState == 4) {
+                var jobdoc =  jobHttpRequest.responseText;
+                if (jobdoc == ""){
                     // bad connection?
+                    // TODO: should be a notification
                     Log.message ("Could not retrieve the position of stars; check your internet connection.");
                     return;
                 }
-                Hipparcos.ParseStarsFromText (doc);
-                Hipparcos.onInit();
+                
+                Hipparcos.ParseStarsFromText(jobdoc);
+                Hipparcos.onStarsRetrieved.notify();
             }
         }
-        Hipparcos.sendRequest (xmlHttpReq, ra_deg, dec_deg, fov_arcmin, maglim);
+        jobHttpRequest.open("GET", Hipparcos.config.url+ "?" + data, true);
+        jobHttpRequest.send(null);
     },
     
-    sendRequest : function (xmlHttpReq, ra_deg, dec_deg, fov_arcmin, maglim) {
-        
-        var queryString = "max_rows_returned=1000&tab_dec=on&tab_ra=on&tab_box=on&tab_vtmag=on&full_screen_mode=0&" +
-                        Hipparcos.config.params[0] + "=" + ra_deg / 15.0 + "&" +
-                        Hipparcos.config.params[1] + "=" + dec_deg + "&" +
-                        Hipparcos.config.params[2] + "=" + fov_arcmin / 60.0 + "&" +
-                        Hipparcos.config.params[3] + "=<" + maglim + 
-                        
-                        "&proxyfor=casu-adc-tycho";
-        
-        xmlHttpReq.open(Hipparcos.config.method, Hipparcos.config.url + "?" + queryString, true);
-        xmlHttpReq.send(null); 
+    buildAdqlQuery : function (ra_deg, dec_deg, fov_arcmin, maglim) {
+        var fovDeg = fov_arcmin/60;
+        var adqlQuery =  'SELECT "Vmag", "RA(ICRS)", "DE(ICRS)" FROM "I/239/tyc_main" WHERE "Vmag" < ' + maglim + 
+                            ' and 1=CONTAINS(POINT(\'ICRS\',"I/239/tyc_main"."RA(ICRS)","I/239/tyc_main"."DE(ICRS)"), BOX(\'ICRS\', ' +
+                            ra_deg + ', '+ dec_deg +', '+ fovDeg +', '+ fovDeg +'))';
+        return adqlQuery;
     },
     
     sendRequest_debug : function (xmlHttpReq) {
@@ -94,30 +93,18 @@ var Hipparcos = {
                         true);
         xmlHttpReq.send(null); 
     },
-
-    onInit : function () {
-        
-    },
-    
+ 
     ParseStarsFromText : function (text) {
         var stars = [];
 
-        var parser=new DOMParser();
-        var xmlDoc=parser.parseFromString(text,"text/html");
-        var entries = xmlDoc.getElementsByTagName("tr");
-        
-        var rowIndex = 0;
-        for (; rowIndex < entries.length; rowIndex++) {
-            var row = entries[rowIndex];
-            var columns = row.getElementsByTagName("td");
-            if (columns.length == 0)
-                continue;
-            // ra - 9 
-            // dec - 10 
-            // Vmag - 21
-            var starToAdd = { "ra" :  Computations.parseCoordinate(columns[3].innerHTML, " ") * 15 , 
-                            "dec" : Computations.parseCoordinate(columns[4].innerHTML, " "), 
-                            "mag" : Computations.evalNum(columns[15].innerHTML), 
+        var data = JSON.parse(text);
+       
+        for (var entryIndex in  data.data) {
+            var entry = data.data[entryIndex];
+
+            var starToAdd = { "ra" :  entry[1], 
+                            "dec" : entry[2], 
+                            "mag" : entry[0], 
                             "label" : "NA", 
                             "airmass" : 1 };
             stars.push (starToAdd);
@@ -128,8 +115,4 @@ var Hipparcos = {
     }
 };
 
-try {
-if (Initialization)
-    Initialization.init();
-} catch (err) {
-}
+Hipparcos.init();
