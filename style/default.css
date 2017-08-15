@@ -27,10 +27,14 @@ html, body {
 	margin: 0px;
     padding: 0px;
     font-family: Arial;
-    font-size: 12px;
+    font-size: 15px;
     text-align: left;
     line-height: 1.5em;
 	-webkit-user-select: text;
+}
+
+a {
+    text-decoration: underline;
 }
 
 .brightnessInput {
@@ -48,7 +52,6 @@ html, body {
         
     #donate a {
         cursor: pointer;
-		text-decoration: none;
     }
 	
 	#banner span {
@@ -252,7 +255,7 @@ text-align: center;
 }
 
 td {
-	font-size: 11px;
+	font-size: 14px;
 }
 
 .happy, .sad, .meh{
@@ -347,4 +350,16 @@ svg, #svgContainer {
 h1 {
     display: inline;
     font-size: 1.25em;
+}
+
+#variableStarName {
+    width: 150px;
+}
+
+#wizard > ol > li:nth-child(1) {
+    border-top: none;
+}
+
+#poweredBy {
+    border-top: solid 1px #cacacf;
 }
