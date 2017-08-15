@@ -341,3 +341,8 @@ svg, #svgContainer {
         max-width: 496px;
     }
 }
+
+h1 {
+    display: inline;
+    font-size: 1.25em;
+}

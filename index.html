@@ -48,15 +48,15 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl.html
         <div id="wizard">        
         <ol>
           <li class="alt">
-            <label><span class="title">Date & time</span> (JD or UTC yyyy/mm/dd hh:mm:ss):  <input placeholder="[JD or yyyy/mm/dd hh:mm:ss]" id="dateTime" size="13"></label>
+            <label><h1>Date & time</h1> (JD or UTC yyyy/mm/dd hh:mm:ss):  <input placeholder="[JD or yyyy/mm/dd hh:mm:ss]" id="dateTime" size="13"></label>
           </li>
           <li>
-            <span class="title">Location</span> (0.5 degree accuracy is enough):<br>
+            <h1>Location</h1> (0.5 degree accuracy is enough):<br>
             <label>Latitude: <input placeholder="[degrees]" id="lat" size="7"></label>, <label>longitude: <input placeholder="[degrees]" id="long" size="7"></label> (or <a class="addAnchor" nohref id="geolocation">get them from Geolocation</a>).
           </li>
 
           <li class="alt">
-              <span class="title">Chart:</span><br>
+              <h1>Chart:</h1><br>
               <label>Name of the variable star, or AAVSO chart ID: <input placeholder="[name of star or AAVSO chart ID]" id="variableStarName" size="24"></label><br>
               <label>Limiting magnitude: <input placeholder="[number]" id="mag" size="7"></label>,
               <label>FOV [arc minutes]: <input placeholder="[number]" id="fov" size="7"></label><br>
@@ -72,7 +72,7 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl.html
           </li>
     
           <li>
-              <span class="title">Brightness estimate</span> as (A (brightness steps) V (brightness steps) B)<br>
+              <h1>Brightness estimate</h1> as (A (brightness steps) V (brightness steps) B)<br>
               <table>
                 <tr class="header">
                     <td>Bright star</td>
@@ -91,7 +91,7 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl.html
               For the airmass values above, you should <span id="shouldComputeExtinction">not need to</span> correct for extinction.
           </li>
           
-          <li> <span class="title">Extinction coefficient (K)</span><br>
+          <li> <h1>Extinction coefficient (K)</h1><br>
               <input type="radio" id="useValueForK" checked="on"> <label for="useValueForK">Use value:</label> <input id="K" placeholder="[number]" size="5" value="0"><br>
               <input type="radio" id="computeK"> <label for="computeK">Or compute it from observations (using</label> <a target="_blank" href="https://docs.google.com/document/d/18RcrzoP0-Xy8_-xsWbnwWAj2m1lAL5WrHUm5S-Neu7Y/edit?usp=sharing">this method</a>):<br>
               <input type="radio" id="useArgelander"><label for="useArgelander">Argelander comparisons</label> <input type="radio" id="usePaired"><label for="usePaired">Paired comparisons</label>
@@ -122,9 +122,9 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl.html
  
  <div id="results">
             Air mass for variable star <span id="varname0">V</span> is <span id="airmassV">unknown</span>.
-            <span class="title">Without considering extinction</span>, brightness of <span id="varname1">V</span> is:
+            <h1>Without considering extinction</span>, brightness of <span id="varname1">V</span> is:
               <span id="brightnessNoExtinction">unknown</span>.
-          <span class="title">Considering extinction</span>, brightness of <span id="varname2">V</span> is:
+          <h1>Considering extinction</span>, brightness of <span id="varname2">V</span> is:
           <span id="brightnessWithExtinction">unknown</span>. <br>
         <label>Share data using the URL below:<br>
 		 <input id="datashareurl"/> </label>         
