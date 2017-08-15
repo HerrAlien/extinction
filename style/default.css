@@ -230,6 +230,11 @@ text-align: center;
 	border: 0px;
 }
 
+#poweredBy div svg {
+	height: 64px; 
+	border: 0px;
+}
+
 #poweredBy div a{
 	text-decoration: none;
 	font-family: "Arial";
