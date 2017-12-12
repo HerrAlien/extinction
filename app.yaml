@@ -22,9 +22,19 @@ handlers:
   static_files: manifest.json
   upload: manifest.json
 
+- url: /manifest.pwa.json
+  static_files: manifest.pwa.json
+  upload: manifest.pwa.json
+
 - url: /googleec11f857b3fda7de.html
   static_files: googleec11f857b3fda7de.html
   upload: googleec11f857b3fda7de.html
+  
+- url:          /serviceworker.js
+  static_files:  serviceworker.js
+  upload:        serviceworker.js
+  mime_type:     text/javascript; charset=UTF-8
+
 
 - url: /.*
   script: index.php
