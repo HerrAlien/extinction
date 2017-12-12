@@ -55,7 +55,7 @@ a {
     }
 	
 	#banner span {
-		font-size: 12px;
+		font-size: 18px;
 	}
     
     #submitButton {
@@ -116,7 +116,7 @@ pre {
 
 #wizard {
     float: left;
-    margin: 25px 3px 0px 0px;
+    margin: 30px 3px 0px 0px;
     max-width: 495px;
 	width: 100%;
     text-align: left;
@@ -249,7 +249,7 @@ text-align: center;
 
 #topmenu {
     text-align: right;
-    font-size: 10px;
+    font-size: 13px;
     margin: 0px;
     float: right;
 }

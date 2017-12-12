@@ -8,23 +8,47 @@ handlers:
 - url: /favicon\..*
   static_files: resources/icon.png
   upload: resources/icon\.png
+  secure: always
+  expiration: "30d"
 
 - url: /scripts
   static_dir: scripts
+  secure: always
+  expiration: "30d"
 
 - url: /style
   static_dir: style
+  secure: always
+  expiration: "30d"
 
 - url: /resources
   static_dir: resources
+  secure: always
+  expiration: "30d"
 
 - url: /manifest.json
   static_files: manifest.json
   upload: manifest.json
+  secure: always
+  expiration: "30d"
+
+- url: /manifest.pwa.json
+  static_files: manifest.pwa.json
+  upload: manifest.pwa.json
+  secure: always
+  expiration: "30d"
 
 - url: /googleec11f857b3fda7de.html
   static_files: googleec11f857b3fda7de.html
   upload: googleec11f857b3fda7de.html
+  
+- url:          /serviceworker.js
+  static_files:  serviceworker.js
+  upload:        serviceworker.js
+  mime_type:     text/javascript; charset=UTF-8
+  secure: always
+  expiration: "30d"
 
 - url: /.*
   script: index.php
+  secure: always
