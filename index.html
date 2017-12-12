@@ -23,20 +23,20 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl.html
 <head>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="theme-color" content="#ffffff" />
     <title>Extinction-O-Meter</title>
     <link rel="alternate" href="http://extinction-o-meter.appspot.com" hreflang="en-us" />
 	<link rel="stylesheet" type="text/css" href="style/default.css"  />
 	<link rel="shortcut icon" href="resources/icon.png"> 
     <link rel="apple-itouch-icon" href="resources/icon.png"> 
     <link rel="manifest" href="manifest.pwa.json">
-
 </head>
 
   <body>
     <div id="container">
       <div id="topmenu">
-          <a href="https://bitbucket.org/herr_alien/extinction-o-meter/" target="_blank">Project Homepage</a> | 
-          <a href="https://bitbucket.org/herr_alien/extinction-o-meter/wiki/Tutorial" target="_blank">Tutorial</a>
+          <a href="https://bitbucket.org/herr_alien/extinction-o-meter/" target="_blank" rel="noopener" >Project Homepage</a> | 
+          <a href="https://bitbucket.org/herr_alien/extinction-o-meter/wiki/Tutorial" target="_blank" rel="noopener" >Tutorial</a>
       </div>
       <div class="clear">&nbsp;</div>
       <div id="banner">
@@ -94,7 +94,7 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl.html
           
           <li> <h1>Extinction coefficient (K)</h1><br>
               <input type="radio" id="useValueForK" checked="on"> <label for="useValueForK">Use value:</label> <input id="K" placeholder="[number]" size="5" value="0"><br>
-              <input type="radio" id="computeK"> <label for="computeK">Or compute it from observations (using</label> <a target="_blank" href="https://docs.google.com/document/d/18RcrzoP0-Xy8_-xsWbnwWAj2m1lAL5WrHUm5S-Neu7Y/edit?usp=sharing">this method</a>):<br>
+              <input type="radio" id="computeK"> <label for="computeK">Or compute it from observations (using</label> <a target="_blank" rel="noopener"  href="https://docs.google.com/document/d/18RcrzoP0-Xy8_-xsWbnwWAj2m1lAL5WrHUm5S-Neu7Y/edit?usp=sharing">this method</a>):<br>
               <input type="radio" id="useArgelander"><label for="useArgelander">Argelander comparisons</label> <input type="radio" id="usePaired"><label for="usePaired">Paired comparisons</label>
               <table>
                 <tr id="extinctionEstimatesHeader">
@@ -134,19 +134,19 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl.html
 	  <div id="footer">
 		<div id="poweredBy">
 			Powered by:<br>
-			<div><a href="http://www.aavso.org" target="_blank">AAVSO</a><br>
-			<a href="http://www.aavso.org" target="_blank"><img alt="AAVSO" src="resources/aavso-logo.jpg"></a></div>
-			<div><a href="http://www.rssd.esa.int" target="_blank">ESA</a><br>
-			<a href="http://www.rssd.esa.int" target="_blank"><img alt="RSSD ESA" src="resources/rssd-esa-logo.jpg"></a></div>
-			<div><a href="http://vizier.u-strasbg.fr/" target="_blank">VizieR</a><br>
-			     <a href="http://vizier.u-strasbg.fr/" target="_blank"><img alt="VizieR" src="resources/vizier_small.png"></a></div>
-			<div><a href="https://www.bitbucket.org" target="_blank">BitBucket</a><br>
-			<a href="https://www.bitbucket.org" target="_blank"><svg viewBox="0 8 32 52" preserveAspectRatio="xMinYMin slice"  xmlns="http://www.w3.org/2000/svg"><svg xmlns="http://www.w3.org/2000/svg"><g> <path d="M14.54,16.44h0C6.53,16.44,0,18.59,0,21.26,0,22,1.74,32.06,2.44,36.06c.31,1.79,4.95,4.42,12.09,4.42v0c7.15,0,11.78-2.63,12.09-4.42.69-4,2.44-14.09,2.44-14.79C29.07,18.59,22.54,16.44,14.54,16.44Zm0,20.8a4.62,4.62,0,1,1,4.62-4.62A4.62,4.62,0,0,1,14.54,37.24Zm0-14.49c-5.14,0-9.31-.9-9.31-2s4.17-2,9.31-2,9.31.9,9.31,2S19.67,22.76,14.53,22.75Z"></path> <path d="M25,40.07a.68.68,0,0,0-.4.16s-3.58,2.83-10,2.83-10-2.83-10-2.83a.68.68,0,0,0-.4-.16.51.51,0,0,0-.51.57.67.67,0,0,0,0,.12c.56,3,1,5.08,1,5.4C5.1,48.35,9.38,50,14.54,50h0c5.15,0,9.43-1.65,9.92-3.84.07-.32.48-2.43,1-5.4a.67.67,0,0,0,0-.12A.51.51,0,0,0,25,40.07Z"></path> <circle cx="14.53" cy="32.62" r="2.32"></circle> </g></svg></svg></a></div>
+			<div><a href="http://www.aavso.org" target="_blank" rel="noopener"  alt="AAVSO" >AAVSO</a><br>
+			<a href="http://www.aavso.org" target="_blank" rel="noopener" ><img alt="AAVSO" src="resources/aavso-logo.jpg"></a></div>
+			<div><a href="http://www.rssd.esa.int" target="_blank" rel="noopener" alt="RSSD ESA">ESA</a><br>
+			<a href="http://www.rssd.esa.int" target="_blank" rel="noopener" ><img alt="RSSD ESA" src="resources/rssd-esa-logo.jpg"></a></div>
+			<div><a href="http://vizier.u-strasbg.fr/" target="_blank" rel="noopener" alt="VizieR" >VizieR</a><br>
+			     <a href="http://vizier.u-strasbg.fr/" target="_blank" rel="noopener" ><img alt="VizieR" src="resources/vizier_small.png"></a></div>
+			<div><a href="https://www.bitbucket.org" target="_blank" rel="noopener" alt="BitBucket">BitBucket</a><br>
+			<a href="https://www.bitbucket.org" target="_blank" rel="noopener" alt="BitBucket"><svg alt="BitBucket" viewBox="0 8 32 52" preserveAspectRatio="xMinYMin slice"  xmlns="http://www.w3.org/2000/svg"><svg xmlns="http://www.w3.org/2000/svg"><g> <path d="M14.54,16.44h0C6.53,16.44,0,18.59,0,21.26,0,22,1.74,32.06,2.44,36.06c.31,1.79,4.95,4.42,12.09,4.42v0c7.15,0,11.78-2.63,12.09-4.42.69-4,2.44-14.09,2.44-14.79C29.07,18.59,22.54,16.44,14.54,16.44Zm0,20.8a4.62,4.62,0,1,1,4.62-4.62A4.62,4.62,0,0,1,14.54,37.24Zm0-14.49c-5.14,0-9.31-.9-9.31-2s4.17-2,9.31-2,9.31.9,9.31,2S19.67,22.76,14.53,22.75Z"></path> <path d="M25,40.07a.68.68,0,0,0-.4.16s-3.58,2.83-10,2.83-10-2.83-10-2.83a.68.68,0,0,0-.4-.16.51.51,0,0,0-.51.57.67.67,0,0,0,0,.12c.56,3,1,5.08,1,5.4C5.1,48.35,9.38,50,14.54,50h0c5.15,0,9.43-1.65,9.92-3.84.07-.32.48-2.43,1-5.4a.67.67,0,0,0,0-.12A.51.51,0,0,0,25,40.07Z"></path> <circle cx="14.53" cy="32.62" r="2.32"></circle> </g></svg></svg></a></div>
 		
 		</div>
 		<div style="float: right">
                 <div id="donate">
-                     <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=D3CKMU6R4DU56" target="_blank">Donate using PayPal</a><br>
+                     <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=D3CKMU6R4DU56" target="_blank" rel="noopener" >Donate using PayPal</a><br>
                 </div>
                 <br>
                 Version <span id="version"></span>
@@ -156,7 +156,7 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl.html
 		
         <div id="license">
 			Extinction-O-Meter - an HTML & JavaScript utility to apply differential extinction corrections to brightness estimates.<br>
-			(source code available at &lt;<a href="https://bitbucket.org/herr_alien/extinction-o-meter" target="_blank">https://bitbucket.org/herr_alien/extinction-o-meter</a>&gt;)<br>
+			(source code available at &lt;<a href="https://bitbucket.org/herr_alien/extinction-o-meter" target="_blank" rel="noopener" >https://bitbucket.org/herr_alien/extinction-o-meter</a>&gt;)<br>
 			<br>               
 			Copyright 2015  Herr_Alien &lt;alexandru.garofide@gmail.com&gt;<br>
 			<br>                
@@ -171,7 +171,7 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl.html
 			GNU Affero General Public License for more details.<br>
 			<br>
 			You should have received a copy of the GNU Affero General Public License
-			along with this program.  If not, see &lt;<a target="_blank"  href="https://www.gnu.org/licenses/agpl.html">https://www.gnu.org/licenses/agpl.html</a>&gt;.
+			along with this program.  If not, see &lt;<a target="_blank" rel="noopener"   href="https://www.gnu.org/licenses/agpl.html">https://www.gnu.org/licenses/agpl.html</a>&gt;.
         </div>
 
       </div>
