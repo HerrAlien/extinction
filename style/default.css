@@ -130,15 +130,12 @@ pre {
 #wizard ol li, #wizard ol li.alt {
     margin: 7px 0px 7px 0px;
     padding: 4px 0px 4px 0px;
+    border-top: solid 1px #CaCaCf;
 }
 
 #wizard ol li.alt, #results{
-	background-color: #F0F0F4;
-	border: solid 1px #CaCaCf;
-}
-
-span.title {
-
+/*	background-color: #F0F0F4;
+	border: solid 1px #CaCaCf; */
 }
 
 #mainarea {
@@ -287,8 +284,8 @@ td {
     margin: 0px auto 20px auto;
     padding: 5px;
 	width: 100%;
-    border: 2px solid #000000;
     max-width:984px;
+    border-top: solid 1px #CaCaCf;
 }
 
 svg, #svgContainer {
@@ -357,4 +354,12 @@ h1 {
 
 #variableStarName {
     width: 150px;
+}
+
+#wizard > ol > li:nth-child(1) {
+    border-top: none;
+}
+
+#poweredBy {
+    border-top: solid 1px #cacacf;
 }
