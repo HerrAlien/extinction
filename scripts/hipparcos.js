@@ -55,28 +55,11 @@ var Hipparcos = {
         var pollURL = false;
         var data = Hipparcos.config.qstring + encodeURI(Hipparcos.buildAdqlQuery(ra_deg, dec_deg, fov_arcmin, maglim));
 
-                
-        var jobHttpRequest = new XMLHttpRequest({mozSystem: true});
-        jobHttpRequest.onreadystatechange = function() {
-            if(jobHttpRequest.readyState == 2) {
-                pollURL = jobHttpRequest.getResponseHeader("Location");
-                //Hipparcos.poll (pollURL);
-            }
-            if(jobHttpRequest.readyState == 4) {
-                var jobdoc =  jobHttpRequest.responseText;
-                if (jobdoc == ""){
-                    // bad connection?
-                    // TODO: should be a notification
-                    Log.message ("Could not retrieve the position of stars; check your internet connection.");
-                    return;
-                }
-                
-                Hipparcos.ParseStarsFromText(jobdoc);
+		fetch(Hipparcos.config.url+ "?" + data).then (response => {
+				return response.text(); }).then (text => {
+                Hipparcos.ParseStarsFromText(text);
                 Hipparcos.onStarsRetrieved.notify();
-            }
-        }
-        jobHttpRequest.open("GET", Hipparcos.config.url+ "?" + data, true);
-        jobHttpRequest.send(null);
+		});
     },
     
     buildAdqlQuery : function (ra_deg, dec_deg, fov_arcmin, maglim) {
