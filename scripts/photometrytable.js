@@ -148,7 +148,8 @@ var PhotmetryTable = {
 							"&" + cfg.params[2] + "=" + limitingMag +
 							"&proxyfor=aavso-vsp")
 			      .then(response => { return response.text()})
-			      .then(text => { PhotmetryTable.AAVSO.onDataRetrieved(text); });
+			      .then(text => { PhotmetryTable.AAVSO.onDataRetrieved(text); })
+			      .catch (err => { Log.message ("Could not retrieve the photometry table; check your internet connection."); });
 		},
 		
 		initFromChartID : function (chartID) {
