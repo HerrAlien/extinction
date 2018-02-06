@@ -82,7 +82,7 @@ var Hipparcos = {
     buildAdqlQuery : function (ra_deg, dec_deg, fov_arcmin, maglim) {
         var fovDeg = fov_arcmin/60;
         var adqlQuery =  'SELECT "Vmag", "RAICRS", "DEICRS" FROM "I/239/hip_main" WHERE "Vmag" < ' + maglim + 
-                            ' and 1=CONTAINS(POINT(\'ICRS\',"I/239/hip_main"."RAICRS","I/239/hip_main"."DEICRS"), BOX(\'ICRS\', ' +
+                            ' and 1=CONTAINS(POINT(\'ICRS\',"RAICRS","DEICRS"), BOX(\'ICRS\', ' +
                             ra_deg + ', '+ dec_deg +', '+ fovDeg +', '+ fovDeg +'))';
         return adqlQuery;
     },
