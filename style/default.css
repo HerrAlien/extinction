@@ -363,3 +363,16 @@ h1 {
 #poweredBy {
     border-top: solid 1px #cacacf;
 }
+
+#footer-nav {
+	margin-top: 10px;
+	text-align: center;
+}
+
+#privacy {
+	margin-top: 20px;
+	font-size: 12px;
+	line-height: 1;
+	text-align: justify;
+	padding: 10px;
+}
