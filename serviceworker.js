@@ -17,7 +17,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see https://www.gnu.org/licenses/agpl.html */
 
 (function() {
-var CACHE_NAME = 'Cache-for-extinction-o-meter-v5';
+var CACHE_NAME = 'Cache-for-extinction-o-meter-v6';
 var urlsToCache = [
 "/"
 ];
